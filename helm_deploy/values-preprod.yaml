@@ -5,7 +5,7 @@ generic-service:
   replicaCount: 2
 
   ingress:
-    host: hmpps-authorization-preprod.hmpps.service.justice.gov.uk
+    host: authorization-preprod.hmpps.service.justice.gov.uk
 
   env:
     INGRESS_URL: "https://hmpps-authorization-preprod.hmpps.service.justice.gov.uk"

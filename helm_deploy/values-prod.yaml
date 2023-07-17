@@ -3,7 +3,7 @@
 
 generic-service:
   ingress:
-    host: hmpps-authorization.hmpps.service.justice.gov.uk
+    host: authorization.hmpps.service.justice.gov.uk
 
   env:
     INGRESS_URL: "https://hmpps-authorization.hmpps.service.justice.gov.uk"
