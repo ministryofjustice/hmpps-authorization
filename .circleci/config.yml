@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@7.2.1
+  hmpps: ministryofjustice/hmpps@7
   slack: circleci/slack@4.12.5
 
 parameters:
@@ -52,7 +52,7 @@ jobs:
             - node_modules
             - build
             - dist
-            - .cache/Cypress
+            - assets/stylesheets
 
   unit_test:
     executor:
@@ -104,9 +104,9 @@ jobs:
       - store_test_results:
           path: test_results
       - store_artifacts:
-          path: integration-tests/videos
+          path: integration_tests/videos
       - store_artifacts:
-          path: integration-tests/screenshots
+          path: integration_tests/screenshots
 
 workflows:
   version: 2

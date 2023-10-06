@@ -31,14 +31,16 @@ export interface ApiConfig {
 
 export default {
   buildNumber: get('BUILD_NUMBER', '1_0_0', requiredInProduction),
+  productId: get('PRODUCT_ID', 'UNASSIGNED', requiredInProduction),
   gitRef: get('GIT_REF', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
+  branchName: get('GIT_BRANCH', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
   production,
   https: production,
   staticResourceCacheDuration: '1h',
   redis: {
     host: get('REDIS_HOST', 'localhost', requiredInProduction),
     port: parseInt(process.env.REDIS_PORT, 10) || 6379,
-    password: process.env.REDIS_PASSWORD,
+    password: process.env.REDIS_AUTH_TOKEN,
     tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
   },
   session: {
@@ -70,4 +72,5 @@ export default {
     },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  environmentName: get('ENVIRONMENT_NAME', ''),
 }
