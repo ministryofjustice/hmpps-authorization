@@ -1,44 +1,50 @@
-import baseClientFactory from '../testutils/factories'
+import { listBaseClientResponseFactory } from '../testutils/factories'
 
-import BaseClientApiRestClient from '../data/baseClientApiClient'
+import BaseClientApiClient from '../data/baseClientApiClient'
 import BaseClientService from './baseClientService'
+import mapListBaseClientsResponse from '../mappers/baseClientApi/listBaseClients'
 
 jest.mock('../data/baseClientApiClient')
 
 describe('BaseClientService', () => {
-  const baseClientApiRestClient = new BaseClientApiRestClient(null) as jest.Mocked<BaseClientApiRestClient>
-  const baseClientApiRestClientFactory = jest.fn()
+  const baseClientApiClient = new BaseClientApiClient(null) as jest.Mocked<BaseClientApiClient>
+  const baseClientApiClientFactory = jest.fn()
 
-  const service = new BaseClientService(baseClientApiRestClientFactory)
+  const service = new BaseClientService(baseClientApiClientFactory)
 
   const token = 'SOME_TOKEN'
 
   beforeEach(() => {
     jest.resetAllMocks()
-    baseClientApiRestClientFactory.mockReturnValue(baseClientApiRestClient)
+    baseClientApiClientFactory.mockReturnValue(baseClientApiClient)
   })
 
   describe('getBaseClients', () => {
-    it('calls the getBaseClients method of the base client and returns the response', async () => {
-      const baseClients = baseClientFactory.buildList(2)
-      baseClientApiRestClient.getBaseClients.mockResolvedValue(baseClients)
+    it('calls the getBaseClients method of the base client', async () => {
+      // Given the baseClientApiClient is mocked to return a response
+      const baseClients = listBaseClientResponseFactory.build()
+      baseClientApiClient.listBaseClients.mockResolvedValue(baseClients)
 
-      const result = await service.getBaseClients(token)
+      // When we call the service
+      await service.getBaseClients(token)
 
-      expect(result).toEqual(baseClients)
-      expect(baseClientApiRestClientFactory).toHaveBeenCalledWith(token)
-      expect(baseClientApiRestClient.getBaseClients).toHaveBeenCalled()
+      // The service builds a baseClientApiClient with the token
+      expect(baseClientApiClientFactory).toHaveBeenCalledWith(token)
+
+      // And calls the listBaseClients method
+      expect(baseClientApiClient.listBaseClients).toHaveBeenCalled()
     })
 
-    it('sorts the baseClients returned by id', async () => {
-      const baseClientsA = baseClientFactory.build({ baseClientId: 'A' })
-      const baseClientsB = baseClientFactory.build({ baseClientId: 'B' })
+    it('maps the listBaseClientResponse to BaseClient[]', async () => {
+      // Given the baseClientApiClient is mocked to return a response
+      const response = listBaseClientResponseFactory.build()
+      baseClientApiClient.listBaseClients.mockResolvedValue(response)
 
-      baseClientApiRestClient.getBaseClients.mockResolvedValue([baseClientsB, baseClientsA])
+      // When we call the service
+      const output = await service.getBaseClients(token)
 
-      const result = await service.getBaseClients(token)
-
-      expect(result).toEqual([baseClientsA, baseClientsB])
+      // Then it maps the response to the mapped version
+      expect(output).toEqual(mapListBaseClientsResponse(response))
     })
   })
 })

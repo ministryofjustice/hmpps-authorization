@@ -5,6 +5,7 @@ export interface BaseClient {
   scopes: string[]
   grantType: string
   audit: string
+  count: number
   clientCredentials: ClientCredentialsDetails
   authorisationCode: AuthorisationCodeDetails
   service: ServiceDetails

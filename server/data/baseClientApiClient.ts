@@ -1,46 +1,31 @@
 import RestClient from './restClient'
-import { BaseClientApiClient } from './interfaces/baseClientApiClient'
 import { BaseClient } from '../interfaces/baseClientApi/baseClient'
 import { Client } from '../interfaces/baseClientApi/client'
-import config, { ApiConfig } from '../config'
+import config from '../config'
+import { ListBaseClientsResponse } from '../interfaces/baseClientApi/baseClientResponse'
 
-export default class BaseClientApiRestClient implements BaseClientApiClient {
-  restClient: RestClient
-
+export default class BaseClientApiClient extends RestClient {
   constructor(token: string) {
-    this.restClient = new RestClient(
-      'baseClientApiRestClient',
-      config.apis.hmppsAuthorizationServer as ApiConfig,
-      token,
-    )
+    super('HMPPS Authorization Server', config.apis.hmppsAuthorizationServer, token)
   }
 
-  private async get(args: object): Promise<unknown> {
-    try {
-      return await this.restClient.get(args)
-    } catch (error) {
-      return error
-    }
+  listBaseClients(): Promise<ListBaseClientsResponse> {
+    return this.get({ path: `/clients/all` }) as Promise<ListBaseClientsResponse>
   }
 
-  private async post(args: object): Promise<unknown> {
-    return this.restClient.post(args)
+  getBaseClient(baseClientId: string): Promise<BaseClient> {
+    return this.get({ path: `/base-client/${baseClientId}` }) as Promise<BaseClient>
   }
 
-  async getBaseClients(): Promise<BaseClient[]> {
-    return (await this.get({ path: `/base-clients` })) as Promise<BaseClient[]>
+  addBaseClient(baseClient: BaseClient): Promise<BaseClient> {
+    return this.post({
+      path: `/base-client`,
+      data: baseClient as unknown as Record<string, unknown>,
+    }) as Promise<BaseClient>
   }
 
-  async getBaseClient(baseClientId: string): Promise<BaseClient> {
-    return (await this.get({ path: `/base-client/${baseClientId}` })) as Promise<BaseClient>
-  }
-
-  async addBaseClient(baseClient: BaseClient): Promise<BaseClient> {
-    return (await this.post({ path: `/base-client`, data: baseClient })) as Promise<BaseClient>
-  }
-
-  async addClientInstance(baseClientId: string): Promise<Client> {
-    return (await this.post({ path: `/base-client/${baseClientId}/clients` })) as Promise<Client>
+  addClientInstance(baseClientId: string): Promise<Client> {
+    return this.post({ path: `/base-client/${baseClientId}/clients` }) as Promise<Client>
   }
 
   async deleteClientInstance(baseClientId: string, clientId: string): Promise<void> {

@@ -1,8 +1,7 @@
 import nock from 'nock'
 import config from '../config'
-import { BaseClientApiClient } from './interfaces/baseClientApiClient'
-import BaseClientApiRestClient from './baseClientApiClient'
-import baseClientFactory from '../testutils/factories'
+import { listBaseClientResponseFactory } from '../testutils/factories'
+import BaseClientApiClient from './baseClientApiClient'
 
 jest.mock('./tokenStore')
 
@@ -14,7 +13,7 @@ describe('baseClientApiClient', () => {
 
   beforeEach(() => {
     baseClientApi = nock(config.apis.hmppsAuthorizationServer.url)
-    baseClientApiClient = new BaseClientApiRestClient(token.access_token)
+    baseClientApiClient = new BaseClientApiClient(token.access_token)
   })
 
   afterEach(() => {
@@ -26,15 +25,18 @@ describe('baseClientApiClient', () => {
     baseClientApi.get(url).matchHeader('authorization', `Bearer ${token.access_token}`).reply(200, returnData)
   }
 
-  describe('getBaseClients', () => {
+  describe('listBaseClients', () => {
     it('Should return data from the API', async () => {
-      const testBaseClients = baseClientFactory.buildList(2)
+      // Given the network is mocked to return a response
+      const testResponse = listBaseClientResponseFactory.build()
+      mockSuccessfulBaseClientRestApiCall(`/clients/all`, testResponse)
 
-      mockSuccessfulBaseClientRestApiCall(`/base-clients`, testBaseClients)
-
-      const promise = baseClientApiClient.getBaseClients()
+      // When we call the API client
+      const promise = baseClientApiClient.listBaseClients()
       const output = await promise
-      expect(output).toEqual(testBaseClients)
+
+      // Then it returns the mocked response
+      expect(output).toEqual(testResponse)
     })
   })
 })
