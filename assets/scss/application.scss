@@ -9,3 +9,9 @@ $govuk-page-width: $moj-page-width;
 
 @import './components/header-bar';
 @import 'assets/scss/local';
+
+.extra-wide {
+  .govuk-width-container {
+    max-width: 1300px;
+  }
+}

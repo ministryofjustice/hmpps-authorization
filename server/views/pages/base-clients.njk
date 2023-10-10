@@ -1,0 +1,151 @@
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set pageName="Home" %}
+{% set bodyClasses = "extra-wide" %}
+
+{% block header %}
+  {% include "partials/moj_header.html" %}
+{% endblock %}
+
+{%- from "moj/components/header/macro.njk" import mojHeader -%}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/label/macro.njk" import govukLabel %}
+
+{%- from "govuk/components/checkboxes/macro.njk" import govukCheckboxes -%}
+{%- from "govuk/components/input/macro.njk" import govukInput -%}
+{%- from "govuk/components/table/macro.njk" import govukTable -%}
+{%- from "moj/components/filter/macro.njk" import mojFilter -%}
+{%- from "moj/components/button-menu/macro.njk" import mojButtonMenu -%}
+
+
+{% set filterOptionsHtml %}
+
+  {{ govukInput({
+    id: 'role',
+    name: 'role',
+    label: {
+      text: 'Role',
+      classes: 'govuk-label--m'
+    }
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: 'grant-type',
+    name: 'grantType',
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+      legend: {
+        text: 'Grant type',
+        classes: 'govuk-fieldset__legend--m'
+      }
+    },
+    items: [
+      {
+        value: 'client-credentials',
+        text: 'Client credentials',
+        checked: true
+      },
+      {
+        value: 'authorization-code',
+        text: 'Authorization code',
+        checked: true
+      }
+    ]
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: 'client-type',
+    name: 'clientType',
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+      legend: {
+        text: 'Client type',
+        classes: 'govuk-fieldset__legend--m'
+      }
+    },
+    items: [
+      {
+        value: 'service',
+        text: 'Service',
+        checked: true
+      },
+      {
+        value: 'personal',
+        text: 'Personal',
+        checked: true
+      },
+      {
+        value: 'blank',
+        text: '[blank]',
+        checked: true
+      }
+    ]
+  }) }}
+
+{% endset %}
+
+
+
+{% block content %}
+
+  <div class="moj-filter-layout">
+
+    <div class="moj-filter-layout__filter">
+
+      {{ mojFilter({
+        heading: {
+          text: 'Filter'
+        },
+
+        optionsHtml: filterOptionsHtml
+      }) }}
+
+    </div>
+
+    <div class="moj-filter-layout__content">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+          <h1 class="govuk-heading-xl">
+            OAuth Client details
+          </h1>
+          <h2 class="govuk-heading-l">Clients</h2>
+        </div>
+      </div>
+
+      <div class="moj-action-bar">
+
+        <div class="moj-action-bar__filter"></div>
+        {{ mojButtonMenu({
+          items: [{
+            text: 'Add new client',
+            href:"/clients/add",
+            classes: 'govuk-button--primary'
+          }]
+        }) }}
+      </div>
+
+      <div class="moj-scrollable-pane">
+        {{ govukTable({
+          firstCellIsHeader: true,
+          attributes: {
+            'data-module': 'moj-sortable-table'
+          },
+          head: presenter.tableHeader,
+          rows: presenter.tableRows
+        }) }}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+  {% block pageScripts %}
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/initMOJFilterPage.js"></script>
+  {% endblock %}
