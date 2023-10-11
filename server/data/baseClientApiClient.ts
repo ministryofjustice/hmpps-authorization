@@ -27,16 +27,16 @@ export default class BaseClientApiClient extends RestClient {
   addClientInstance(baseClientId: string): Promise<Client> {
     return this.post({ path: `/base-client/${baseClientId}/clients` }) as Promise<Client>
   }
-
-  async deleteClientInstance(baseClientId: string, clientId: string): Promise<void> {
-    return Promise.resolve(undefined)
-  }
-
-  async getClientInstances(baseClientId: string): Promise<Client[]> {
-    return Promise.resolve([])
-  }
-
-  async updateBaseClient(baseClient: BaseClient): Promise<BaseClient> {
-    return Promise.resolve(undefined)
-  }
+  //
+  // async deleteClientInstance(baseClientId: string, clientId: string): Promise<void> {
+  //   return Promise.resolve(undefined)
+  // }
+  //
+  // async getClientInstances(baseClientId: string): Promise<Client[]> {
+  //   return Promise.resolve([])
+  // }
+  //
+  // async updateBaseClient(baseClient: BaseClient): Promise<BaseClient> {
+  //   return Promise.resolve(undefined)
+  // }
 }

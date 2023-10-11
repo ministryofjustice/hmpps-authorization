@@ -11,11 +11,12 @@ export default function baseClientRouter(services: Services): Router {
       path,
       handlers.map(handler => asyncMiddleware(handler)),
     )
-  const post = (path: string | string[], ...handlers: RequestHandler[]) =>
-    router.post(
-      path,
-      handlers.map(handler => asyncMiddleware(handler)),
-    )
+
+  // const post = (path: string | string[], ...handlers: RequestHandler[]) =>
+  //   router.post(
+  //     path,
+  //     handlers.map(handler => asyncMiddleware(handler)),
+  //   )
 
   const baseClientController = new BaseClientController(services.baseClientService)
 

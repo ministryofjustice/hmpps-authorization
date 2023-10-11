@@ -1,6 +1,5 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
-import { BaseClient } from '../../../interfaces/baseClientApi/baseClient'
 import { ListBaseClientsResponse } from '../../../interfaces/baseClientApi/baseClientResponse'
 
 export default Factory.define<ListBaseClientsResponse>(() => ({

@@ -1,6 +1,4 @@
 import { RequestHandler } from 'express'
-import { RestClientBuilder } from '../data'
-import BaseClientApiClient from '../data/baseClientApiClient'
 import { BaseClientService } from '../services'
 import listBaseClientsPresenter from '../views/presenters/listBaseClientsPresenter'
 
