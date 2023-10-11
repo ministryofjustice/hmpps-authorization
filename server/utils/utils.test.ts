@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName } from './utils'
+import { convertToTitleCase, initialiseName, multiSeparatorSplit } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -26,5 +26,19 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
+  })
+})
+
+describe('multi separator split', () => {
+  it.each([
+    ['null', null, [' '], []],
+    ['Empty string', '', [' '], []],
+    ['One word', 'view', [' '], ['view']],
+    ['One separator', 'view read', [' '], ['view', 'read']],
+    ['Two separators - relevant separator first', 'view read', [' ', ','], ['view', 'read']],
+    ['Two separators - relevant separator second', 'view read', [',', ' '], ['view', 'read']],
+    ['Multiple relevant separators', 'read,write delete', [',', ' '], ['read', 'write', 'delete']],
+  ])('%s multiSeparatorSplit', (_: string, a: string, b: string[], expected: string[]) => {
+    expect(multiSeparatorSplit(a, b)).toEqual(expected)
   })
 })

@@ -1,5 +1,6 @@
 import { ListBaseClientsResponse } from '../../interfaces/baseClientApi/baseClientResponse'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
+import { multiSeparatorSplit } from '../../utils/utils'
 
 export default (response: ListBaseClientsResponse): BaseClient[] => {
   const { clients } = response
@@ -14,7 +15,7 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
         audit: '',
         count: client.count ? client.count : 0,
         clientCredentials: {
-          authorities: rolesToArray(client.roles),
+          authorities: multiSeparatorSplit(client.roles, [' ', ',', '\n']),
           databaseUserName: '',
         },
         authorisationCode: {
@@ -25,7 +26,7 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
         service: {
           serviceName: client.teamName || '',
           description: '',
-          authorisedRoles: rolesToArray(client.roles),
+          authorisedRoles: multiSeparatorSplit(client.roles, [' ', ',', '\n']),
           url: '',
           contact: '',
           status: '',
@@ -46,11 +47,4 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
         },
       }) as BaseClient,
   )
-}
-
-const rolesToArray = (roles?: string): string[] => {
-  if (!roles) {
-    return []
-  }
-  return roles.split(',')
 }
