@@ -1,5 +1,5 @@
-import { BaseClient } from '../interfaces/baseClientApi/baseClient'
-import { convertToTitleCase } from '../utils/utils'
+import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
+import { convertToTitleCase } from '../../utils/utils'
 
 const indexTableHead = () => {
   return [

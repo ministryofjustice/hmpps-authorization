@@ -2,7 +2,7 @@ import { RequestHandler } from 'express'
 import { RestClientBuilder } from '../data'
 import BaseClientApiClient from '../data/baseClientApiClient'
 import { BaseClientService } from '../services'
-import listBaseClientsPresenter from '../mappers/listBaseClientsPresenter'
+import listBaseClientsPresenter from '../views/presenters/listBaseClientsPresenter'
 
 export default class BaseClientController {
   constructor(private readonly baseClientService: BaseClientService) {}

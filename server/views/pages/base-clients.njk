@@ -7,7 +7,7 @@
 {% set bodyClasses = "extra-wide" %}
 
 {% block header %}
-  {% include "partials/moj_header.html" %}
+  {% include "partials/header.njk" %}
 {% endblock %}
 
 {%- from "moj/components/header/macro.njk" import mojHeader -%}
@@ -137,7 +137,7 @@
           attributes: {
             'data-module': 'moj-sortable-table'
           },
-          head: presenter.tableHeader,
+          head: presenter.tableHead,
           rows: presenter.tableRows
         }) }}
       </div>
