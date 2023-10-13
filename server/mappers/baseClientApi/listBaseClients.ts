@@ -4,6 +4,9 @@ import { multiSeparatorSplit } from '../../utils/utils'
 
 export default (response: ListBaseClientsResponse): BaseClient[] => {
   const { clients } = response
+  if (!clients) {
+    return []
+  }
   return clients.map(
     client =>
       ({
