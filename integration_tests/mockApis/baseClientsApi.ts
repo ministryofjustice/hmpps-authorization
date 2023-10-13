@@ -6,7 +6,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/baseClientsApi/clients/all`,
+        urlPattern: `/baseClientsApi/base-clients`,
       },
       response: {
         status: 200,

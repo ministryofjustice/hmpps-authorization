@@ -10,7 +10,7 @@ export default class BaseClientApiClient extends RestClient {
   }
 
   listBaseClients(): Promise<ListBaseClientsResponse> {
-    return this.get({ path: `/clients/all` }) as Promise<ListBaseClientsResponse>
+    return this.get({ path: `/base-clients` }) as Promise<ListBaseClientsResponse>
   }
 
   getBaseClient(baseClientId: string): Promise<BaseClient> {

@@ -29,7 +29,7 @@ describe('baseClientApiClient', () => {
     it('Should return data from the API', async () => {
       // Given the network is mocked to return a response
       const testResponse = listBaseClientResponseFactory.build()
-      mockSuccessfulBaseClientRestApiCall(`/clients/all`, testResponse)
+      mockSuccessfulBaseClientRestApiCall(`/base-clients`, testResponse)
 
       // When we call the API client
       const promise = baseClientApiClient.listBaseClients()
