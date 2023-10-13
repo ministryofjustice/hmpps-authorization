@@ -30,9 +30,4 @@ export default defineConfig({
     specPattern: 'integration_tests/e2e/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: 'integration_tests/support/index.ts',
   },
-  env: {
-    HMPPS_AUTH_URL: 'http://localhost:9091',
-    HMPPS_AUTHORIZATION_SERVER_URL: 'http://localhost:9091',
-    TOKEN_VERIFICATION_API_URL: 'http://localhost:9091',
-  },
 })
