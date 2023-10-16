@@ -8,7 +8,12 @@ import {
 import BaseClientApiClient from '../data/baseClientApiClient'
 import BaseClientService from './baseClientService'
 import mapListBaseClientsResponse from '../mappers/baseClientApi/listBaseClients'
-import { mapAddBaseClientRequest, mapClientSecrets, mapGetBaseClientResponse } from '../mappers'
+import {
+  mapAddBaseClientRequest,
+  mapClientSecrets,
+  mapGetBaseClientResponse,
+  mapUpdateBaseClientRequest,
+} from '../mappers'
 
 jest.mock('../data/baseClientApiClient')
 
@@ -112,6 +117,24 @@ describe('BaseClientService', () => {
 
       // Then it maps the response to the mapped version
       expect(output).toEqual(mapClientSecrets(response))
+    })
+  })
+
+  describe('updateBaseClient', () => {
+    it('calls the updateBaseClient method of the base client', async () => {
+      // Given the baseClientApiClient is mocked to return a response
+      const baseClient = baseClientFactory.build()
+      const request = mapUpdateBaseClientRequest(baseClient)
+      baseClientApiClient.updateBaseClient.mockResolvedValue(new Response())
+
+      // When we call the service
+      await service.updateBaseClient(token, baseClient)
+
+      // The service builds a baseClientApiClient with the token
+      expect(baseClientApiClientFactory).toHaveBeenCalledWith(token)
+
+      // And calls the addBaseClient method
+      expect(baseClientApiClient.updateBaseClient).toHaveBeenCalledWith(baseClient.baseClientId, request)
     })
   })
 })

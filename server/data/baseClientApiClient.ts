@@ -1,12 +1,11 @@
 import RestClient from './restClient'
-import { Client } from '../interfaces/baseClientApi/client'
 import config from '../config'
 import {
   GetBaseClientResponse,
   ListBaseClientsResponse,
   ClientSecretsResponse,
 } from '../interfaces/baseClientApi/baseClientResponse'
-import { AddBaseClientRequest } from '../interfaces/baseClientApi/baseClientRequestBody'
+import { AddBaseClientRequest, UpdateBaseClientRequest } from '../interfaces/baseClientApi/baseClientRequestBody'
 
 export default class BaseClientApiClient extends RestClient {
   constructor(token: string) {
@@ -28,9 +27,17 @@ export default class BaseClientApiClient extends RestClient {
     }) as Promise<ClientSecretsResponse>
   }
 
-  addClientInstance(baseClientId: string): Promise<Client> {
-    return this.post({ path: `/base-client/${baseClientId}/clients` }) as Promise<Client>
+  updateBaseClient(baseClientId: string, request: UpdateBaseClientRequest): Promise<Response> {
+    return this.put({
+      path: `/base-clients/${baseClientId}`,
+      data: request as unknown as Record<string, unknown>,
+    }) as Promise<Response>
   }
+
+  //
+  // addClientInstance(baseClientId: string): Promise<Client> {
+  //   return this.post({ path: `/base-client/${baseClientId}/clients` }) as Promise<Client>
+  // }
   //
   // async deleteClientInstance(baseClientId: string, clientId: string): Promise<void> {
   //   return Promise.resolve(undefined)

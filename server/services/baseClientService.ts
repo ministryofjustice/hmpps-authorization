@@ -6,12 +6,13 @@ import {
   mapClientSecrets,
   mapGetBaseClientResponse,
   mapListBaseClientsResponse,
+  mapUpdateBaseClientRequest,
 } from '../mappers'
 
 export default class BaseClientService {
   constructor(private readonly baseClientApiClientFactory: RestClientBuilder<BaseClientApiRestClient>) {}
 
-  async listBaseClients(token: string): Promise<Array<BaseClient>> {
+  async listBaseClients(token: string): Promise<BaseClient[]> {
     const baseClientApiClient = this.baseClientApiClientFactory(token)
     const listBaseClientsResponse = await baseClientApiClient.listBaseClients()
     const baseClients = mapListBaseClientsResponse(listBaseClientsResponse)
@@ -38,5 +39,11 @@ export default class BaseClientService {
     const request = mapAddBaseClientRequest(baseClient)
     const response = await baseClientApiClient.addBaseClient(request)
     return mapClientSecrets(response)
+  }
+
+  async updateBaseClient(token: string, baseClient: BaseClient): Promise<Response> {
+    const baseClientApiClient = this.baseClientApiClientFactory(token)
+    const request = mapUpdateBaseClientRequest(baseClient)
+    return baseClientApiClient.updateBaseClient(baseClient.baseClientId, request)
   }
 }

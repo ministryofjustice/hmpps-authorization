@@ -7,6 +7,7 @@ import {
 } from '../testutils/factories'
 import BaseClientApiClient from './baseClientApiClient'
 import addBaseClientRequest from '../testutils/factories/requests/addBaseClientRequest'
+import updateBaseClientRequest from '../testutils/factories/requests/updateBaseClientRequest'
 
 jest.mock('./tokenStore')
 
@@ -32,6 +33,10 @@ describe('baseClientApiClient', () => {
 
   const mockSuccessfulBaseClientRestApiPostCall = <TReturnData>(url: string, returnData: TReturnData) => {
     baseClientApi.post(url).matchHeader('authorization', `Bearer ${token.access_token}`).reply(200, returnData)
+  }
+
+  const mockBaseClientRestApiPutCall = <TReturnData>(url: string, status: number, returnData: TReturnData) => {
+    baseClientApi.put(url).matchHeader('authorization', `Bearer ${token.access_token}`).reply(status, returnData)
   }
 
   describe('listBaseClients', () => {
@@ -78,6 +83,35 @@ describe('baseClientApiClient', () => {
 
       // Then it returns the mocked response
       expect(output).toEqual(testResponse)
+    })
+  })
+
+  describe('updateBaseClient', () => {
+    it('Should return a success response from the API', async () => {
+      // Given the network is mocked to return a response
+      const testRequest = updateBaseClientRequest.build()
+      mockBaseClientRestApiPutCall(`/base-clients/base_client_id`, 200, null)
+
+      // When we call the API client
+      try {
+        await baseClientApiClient.updateBaseClient('base_client_id', testRequest)
+      } catch {
+        fail('Should not throw an error')
+      }
+    })
+
+    it('Errors if unsuccessful', async () => {
+      // Given the network is mocked to return a response
+      const testRequest = updateBaseClientRequest.build()
+      mockBaseClientRestApiPutCall(`/base-clients/base_client_id`, 400, null)
+
+      // When we call the API client
+      try {
+        await baseClientApiClient.updateBaseClient('base_client_id', testRequest)
+      } catch (e) {
+        return
+      }
+      fail('Should have thrown an error')
     })
   })
 })
