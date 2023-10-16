@@ -1,12 +1,12 @@
 import BaseClientApiRestClient from '../data/baseClientApiClient'
 import { RestClientBuilder } from '../data'
 import { BaseClient } from '../interfaces/baseClientApi/baseClient'
-import mapListBaseClientsResponse from '../mappers/baseClientApi/listBaseClients'
+import { mapGetBaseClientResponse, mapListBaseClientsResponse } from '../mappers'
 
 export default class BaseClientService {
   constructor(private readonly baseClientApiClientFactory: RestClientBuilder<BaseClientApiRestClient>) {}
 
-  async getBaseClients(token: string): Promise<Array<BaseClient>> {
+  async listBaseClients(token: string): Promise<Array<BaseClient>> {
     const baseClientApiClient = this.baseClientApiClientFactory(token)
     const listBaseClientsResponse = await baseClientApiClient.listBaseClients()
     const baseClients = mapListBaseClientsResponse(listBaseClientsResponse)
@@ -20,5 +20,11 @@ export default class BaseClientService {
       }
       return 0
     })
+  }
+
+  async getBaseClient(token: string, baseClientId: string): Promise<BaseClient> {
+    const baseClientApiClient = this.baseClientApiClientFactory(token)
+    const getBaseClientsResponse = await baseClientApiClient.getBaseClient(baseClientId)
+    return mapGetBaseClientResponse(getBaseClientsResponse)
   }
 }

@@ -8,7 +8,7 @@ export default class BaseClientController {
   public displayBaseClients(): RequestHandler {
     return async (req, res) => {
       const userToken = res.locals.user.token
-      const baseClients = await this.baseClientService.getBaseClients(userToken)
+      const baseClients = await this.baseClientService.listBaseClients(userToken)
 
       const presenter = listBaseClientsPresenter(baseClients)
 

@@ -2,7 +2,7 @@ import RestClient from './restClient'
 import { BaseClient } from '../interfaces/baseClientApi/baseClient'
 import { Client } from '../interfaces/baseClientApi/client'
 import config from '../config'
-import { ListBaseClientsResponse } from '../interfaces/baseClientApi/baseClientResponse'
+import { GetBaseClientResponse, ListBaseClientsResponse } from '../interfaces/baseClientApi/baseClientResponse'
 
 export default class BaseClientApiClient extends RestClient {
   constructor(token: string) {
@@ -13,8 +13,8 @@ export default class BaseClientApiClient extends RestClient {
     return this.get({ path: `/base-clients` }) as Promise<ListBaseClientsResponse>
   }
 
-  getBaseClient(baseClientId: string): Promise<BaseClient> {
-    return this.get({ path: `/base-client/${baseClientId}` }) as Promise<BaseClient>
+  getBaseClient(baseClientId: string): Promise<GetBaseClientResponse> {
+    return this.get({ path: `/base-clients/${baseClientId}` }) as Promise<GetBaseClientResponse>
   }
 
   addBaseClient(baseClient: BaseClient): Promise<BaseClient> {

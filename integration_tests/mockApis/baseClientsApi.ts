@@ -17,4 +17,20 @@ export default {
       },
     })
   },
+
+  stubGetBaseClient: (args: { premisesId: string }) => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/baseClientsApi/base-clients/baseClientId`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: listBaseClientsResponseMock,
+      },
+    })
+  },
 }
