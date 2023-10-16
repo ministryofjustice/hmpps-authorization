@@ -1,6 +1,5 @@
-import { GetBaseClientResponse, ListBaseClientsResponse } from '../../interfaces/baseClientApi/baseClientResponse'
+import { GetBaseClientResponse } from '../../interfaces/baseClientApi/baseClientResponse'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
-import { multiSeparatorSplit } from '../../utils/utils'
 
 export default (response: GetBaseClientResponse): BaseClient => {
   return {

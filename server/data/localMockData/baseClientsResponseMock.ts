@@ -1,6 +1,6 @@
-import { ListBaseClientsResponse } from '../../interfaces/baseClientApi/baseClientResponse'
+import { GetBaseClientResponse, ListBaseClientsResponse } from '../../interfaces/baseClientApi/baseClientResponse'
 
-const listBaseClientsResponseMock: ListBaseClientsResponse = {
+export const listBaseClientsResponseMock: ListBaseClientsResponse = {
   clients: [
     {
       baseClientId: `base_client_id_1`,
@@ -25,4 +25,14 @@ const listBaseClientsResponseMock: ListBaseClientsResponse = {
     },
   ],
 }
-export default listBaseClientsResponseMock
+
+export const getBaseClientResponseMock: GetBaseClientResponse = {
+  clientId: 'baseClientId1',
+  scopes: ['read', 'write'],
+  authorities: ['ROLE_CLIENT_CREDENTIALS'],
+  ips: [],
+  jiraNumber: 'jiraNumber',
+  databaseUserName: 'databaseUserName',
+  validDays: 1,
+  accessTokenValidityMinutes: 60,
+}

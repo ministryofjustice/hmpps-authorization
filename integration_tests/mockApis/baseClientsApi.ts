@@ -1,5 +1,8 @@
 import { stubFor } from './wiremock'
-import listBaseClientsResponseMock from '../../server/data/localMockData/baseClientsResponseMock'
+import {
+  listBaseClientsResponseMock,
+  getBaseClientResponseMock,
+} from '../../server/data/localMockData/baseClientsResponseMock'
 
 export default {
   stubListBaseClients: () => {
@@ -18,7 +21,7 @@ export default {
     })
   },
 
-  stubGetBaseClient: (args: { premisesId: string }) => {
+  stubGetBaseClient: () => {
     return stubFor({
       request: {
         method: 'GET',
@@ -29,7 +32,7 @@ export default {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: listBaseClientsResponseMock,
+        jsonBody: getBaseClientResponseMock,
       },
     })
   },
