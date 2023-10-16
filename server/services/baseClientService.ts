@@ -1,7 +1,12 @@
 import BaseClientApiRestClient from '../data/baseClientApiClient'
 import { RestClientBuilder } from '../data'
-import { BaseClient } from '../interfaces/baseClientApi/baseClient'
-import { mapGetBaseClientResponse, mapListBaseClientsResponse } from '../mappers'
+import { BaseClient, ClientSecrets } from '../interfaces/baseClientApi/baseClient'
+import {
+  mapAddBaseClientRequest,
+  mapClientSecrets,
+  mapGetBaseClientResponse,
+  mapListBaseClientsResponse,
+} from '../mappers'
 
 export default class BaseClientService {
   constructor(private readonly baseClientApiClientFactory: RestClientBuilder<BaseClientApiRestClient>) {}
@@ -26,5 +31,12 @@ export default class BaseClientService {
     const baseClientApiClient = this.baseClientApiClientFactory(token)
     const getBaseClientsResponse = await baseClientApiClient.getBaseClient(baseClientId)
     return mapGetBaseClientResponse(getBaseClientsResponse)
+  }
+
+  async addBaseClient(token: string, baseClient: BaseClient): Promise<ClientSecrets> {
+    const baseClientApiClient = this.baseClientApiClientFactory(token)
+    const request = mapAddBaseClientRequest(baseClient)
+    const response = await baseClientApiClient.addBaseClient(request)
+    return mapClientSecrets(response)
   }
 }

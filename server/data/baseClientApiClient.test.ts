@@ -1,7 +1,12 @@
 import nock from 'nock'
 import config from '../config'
-import { getBaseClientResponseFactory, listBaseClientResponseFactory } from '../testutils/factories'
+import {
+  clientSecretsResponseFactory,
+  getBaseClientResponseFactory,
+  listBaseClientResponseFactory,
+} from '../testutils/factories'
 import BaseClientApiClient from './baseClientApiClient'
+import addBaseClientRequest from '../testutils/factories/requests/addBaseClientRequest'
 
 jest.mock('./tokenStore')
 
@@ -23,6 +28,10 @@ describe('baseClientApiClient', () => {
 
   const mockSuccessfulBaseClientRestApiCall = <TReturnData>(url: string, returnData: TReturnData) => {
     baseClientApi.get(url).matchHeader('authorization', `Bearer ${token.access_token}`).reply(200, returnData)
+  }
+
+  const mockSuccessfulBaseClientRestApiPostCall = <TReturnData>(url: string, returnData: TReturnData) => {
+    baseClientApi.post(url).matchHeader('authorization', `Bearer ${token.access_token}`).reply(200, returnData)
   }
 
   describe('listBaseClients', () => {
@@ -48,6 +57,23 @@ describe('baseClientApiClient', () => {
 
       // When we call the API client
       const promise = baseClientApiClient.getBaseClient('base_client_id')
+      const output = await promise
+
+      // Then it returns the mocked response
+      expect(output).toEqual(testResponse)
+    })
+  })
+
+  describe('addBaseClient', () => {
+    it('Should return data from the API', async () => {
+      // Given the network is mocked to return a response
+      const testResponse = clientSecretsResponseFactory.build()
+      const testRequest = addBaseClientRequest.build()
+
+      mockSuccessfulBaseClientRestApiPostCall(`/base-clients`, testResponse)
+
+      // When we call the API client
+      const promise = baseClientApiClient.addBaseClient(testRequest)
       const output = await promise
 
       // Then it returns the mocked response

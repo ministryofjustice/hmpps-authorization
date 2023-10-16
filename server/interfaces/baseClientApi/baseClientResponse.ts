@@ -23,3 +23,10 @@ export interface GetBaseClientResponse {
   validDays?: number
   accessTokenValidityMinutes?: number
 }
+
+export interface ClientSecretsResponse {
+  clientId: string
+  clientSecret: string
+  base64ClientId: string
+  base64ClientSecret: string
+}

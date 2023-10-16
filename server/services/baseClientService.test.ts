@@ -1,9 +1,14 @@
-import { getBaseClientResponseFactory, listBaseClientResponseFactory } from '../testutils/factories'
+import {
+  baseClientFactory,
+  getBaseClientResponseFactory,
+  listBaseClientResponseFactory,
+  clientSecretsResponseFactory,
+} from '../testutils/factories'
 
 import BaseClientApiClient from '../data/baseClientApiClient'
 import BaseClientService from './baseClientService'
 import mapListBaseClientsResponse from '../mappers/baseClientApi/listBaseClients'
-import { mapGetBaseClientResponse } from '../mappers'
+import { mapAddBaseClientRequest, mapClientSecrets, mapGetBaseClientResponse } from '../mappers'
 
 jest.mock('../data/baseClientApiClient')
 
@@ -75,6 +80,38 @@ describe('BaseClientService', () => {
 
       // Then it maps the response to the mapped version
       expect(output).toEqual(mapGetBaseClientResponse(response))
+    })
+  })
+
+  describe('addBaseClient', () => {
+    it('calls the addBaseClient method of the base client', async () => {
+      // Given the baseClientApiClient is mocked to return a response
+      const baseClient = baseClientFactory.build()
+      const request = mapAddBaseClientRequest(baseClient)
+      const response = clientSecretsResponseFactory.build()
+      baseClientApiClient.addBaseClient.mockResolvedValue(response)
+
+      // When we call the service
+      await service.addBaseClient(token, baseClient)
+
+      // The service builds a baseClientApiClient with the token
+      expect(baseClientApiClientFactory).toHaveBeenCalledWith(token)
+
+      // And calls the addBaseClient method
+      expect(baseClientApiClient.addBaseClient).toHaveBeenCalledWith(request)
+    })
+
+    it('maps the response to a ClientSecrets object', async () => {
+      // Given the baseClientApiClient is mocked to return a response
+      const baseClient = baseClientFactory.build()
+      const response = clientSecretsResponseFactory.build()
+      baseClientApiClient.addBaseClient.mockResolvedValue(response)
+
+      // When we call the service
+      const output = await service.addBaseClient(token, baseClient)
+
+      // Then it maps the response to the mapped version
+      expect(output).toEqual(mapClientSecrets(response))
     })
   })
 })

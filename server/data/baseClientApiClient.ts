@@ -1,8 +1,12 @@
 import RestClient from './restClient'
-import { BaseClient } from '../interfaces/baseClientApi/baseClient'
 import { Client } from '../interfaces/baseClientApi/client'
 import config from '../config'
-import { GetBaseClientResponse, ListBaseClientsResponse } from '../interfaces/baseClientApi/baseClientResponse'
+import {
+  GetBaseClientResponse,
+  ListBaseClientsResponse,
+  ClientSecretsResponse,
+} from '../interfaces/baseClientApi/baseClientResponse'
+import { AddBaseClientRequest } from '../interfaces/baseClientApi/baseClientRequestBody'
 
 export default class BaseClientApiClient extends RestClient {
   constructor(token: string) {
@@ -17,11 +21,11 @@ export default class BaseClientApiClient extends RestClient {
     return this.get({ path: `/base-clients/${baseClientId}` }) as Promise<GetBaseClientResponse>
   }
 
-  addBaseClient(baseClient: BaseClient): Promise<BaseClient> {
+  addBaseClient(baseClientRequest: AddBaseClientRequest): Promise<ClientSecretsResponse> {
     return this.post({
-      path: `/base-client`,
-      data: baseClient as unknown as Record<string, unknown>,
-    }) as Promise<BaseClient>
+      path: `/base-clients`,
+      data: baseClientRequest as unknown as Record<string, unknown>,
+    }) as Promise<ClientSecretsResponse>
   }
 
   addClientInstance(baseClientId: string): Promise<Client> {

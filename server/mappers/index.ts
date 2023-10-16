@@ -2,5 +2,7 @@
 
 import mapGetBaseClientResponse from './baseClientApi/getBaseClient'
 import mapListBaseClientsResponse from './baseClientApi/listBaseClients'
+import mapAddBaseClientRequest from './baseClientApi/addBaseClient'
+import mapClientSecrets from './baseClientApi/clientSecrets'
 
-export { mapGetBaseClientResponse, mapListBaseClientsResponse }
+export { mapGetBaseClientResponse, mapListBaseClientsResponse, mapAddBaseClientRequest, mapClientSecrets }

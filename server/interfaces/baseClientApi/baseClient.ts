@@ -49,3 +49,10 @@ interface ClientConfig {
   expiryDate?: string
   allowedIPs: string[]
 }
+
+export interface ClientSecrets {
+  clientId: string
+  clientSecret: string
+  base64ClientId: string
+  base64ClientSecret: string
+}
