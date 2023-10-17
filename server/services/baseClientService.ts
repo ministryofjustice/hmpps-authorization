@@ -6,9 +6,11 @@ import {
   mapClientSecrets,
   mapGetBaseClientResponse,
   mapListBaseClientsResponse,
+  mapListClientInstancesResponse,
   mapUpdateBaseClientDeploymentRequest,
   mapUpdateBaseClientRequest,
 } from '../mappers'
+import { Client } from '../interfaces/baseClientApi/client'
 
 export default class BaseClientService {
   constructor(private readonly baseClientApiClientFactory: RestClientBuilder<BaseClientApiRestClient>) {}
@@ -16,17 +18,7 @@ export default class BaseClientService {
   async listBaseClients(token: string): Promise<BaseClient[]> {
     const baseClientApiClient = this.baseClientApiClientFactory(token)
     const listBaseClientsResponse = await baseClientApiClient.listBaseClients()
-    const baseClients = mapListBaseClientsResponse(listBaseClientsResponse)
-
-    return baseClients.sort((a, b) => {
-      if (a.baseClientId < b.baseClientId) {
-        return -1
-      }
-      if (a.baseClientId > b.baseClientId) {
-        return 1
-      }
-      return 0
-    })
+    return mapListBaseClientsResponse(listBaseClientsResponse)
   }
 
   async getBaseClient(token: string, baseClientId: string): Promise<BaseClient> {
@@ -52,5 +44,17 @@ export default class BaseClientService {
     const baseClientApiClient = this.baseClientApiClientFactory(token)
     const request = mapUpdateBaseClientDeploymentRequest(baseClient)
     return baseClientApiClient.updateBaseClientDeployment(baseClient.baseClientId, request)
+  }
+
+  async addClientInstance(token: string, baseClient: BaseClient): Promise<ClientSecrets> {
+    const baseClientApiClient = this.baseClientApiClientFactory(token)
+    const response = await baseClientApiClient.addClientInstance(baseClient.baseClientId)
+    return mapClientSecrets(response)
+  }
+
+  async listClientInstances(token: string, baseClient: BaseClient): Promise<Client[]> {
+    const baseClientApiClient = this.baseClientApiClientFactory(token)
+    const response = await baseClientApiClient.listClientInstances(baseClient.baseClientId)
+    return mapListClientInstancesResponse(baseClient, response)
   }
 }

@@ -30,3 +30,14 @@ export interface ClientSecretsResponse {
   base64ClientId: string
   base64ClientSecret: string
 }
+
+export interface ListClientInstancesResponseItem {
+  clientId: string
+  created: string
+  lastAccessed?: string
+}
+
+export interface ListClientInstancesResponse {
+  clients: ListClientInstancesResponseItem[]
+  grantType: string
+}

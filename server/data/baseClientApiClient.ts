@@ -4,6 +4,7 @@ import {
   GetBaseClientResponse,
   ListBaseClientsResponse,
   ClientSecretsResponse,
+  ListClientInstancesResponse,
 } from '../interfaces/baseClientApi/baseClientResponse'
 import {
   AddBaseClientRequest,
@@ -45,10 +46,14 @@ export default class BaseClientApiClient extends RestClient {
     }) as Promise<Response>
   }
 
-  //
-  // addClientInstance(baseClientId: string): Promise<Client> {
-  //   return this.post({ path: `/base-client/${baseClientId}/clients` }) as Promise<Client>
-  // }
+  addClientInstance(baseClientId: string): Promise<ClientSecretsResponse> {
+    return this.post({ path: `/base-clients/${baseClientId}/clients` }) as Promise<ClientSecretsResponse>
+  }
+
+  listClientInstances(baseClientId: string): Promise<ListClientInstancesResponse> {
+    return this.get({ path: `/base-clients/${baseClientId}/clients` }) as Promise<ListClientInstancesResponse>
+  }
+
   //
   // async deleteClientInstance(baseClientId: string, clientId: string): Promise<void> {
   //   return Promise.resolve(undefined)

@@ -4,6 +4,7 @@ import {
   clientSecretsResponseFactory,
   getBaseClientResponseFactory,
   listBaseClientResponseFactory,
+  listClientInstancesResponseFactory,
   updateBaseClientDeploymentFactory,
 } from '../testutils/factories'
 import BaseClientApiClient from './baseClientApiClient'
@@ -87,6 +88,21 @@ describe('baseClientApiClient', () => {
     })
   })
 
+  describe('addClientInstance', () => {
+    it('Should return data from the API', async () => {
+      // Given the network is mocked to return a response
+      const testResponse = clientSecretsResponseFactory.build()
+      mockSuccessfulBaseClientRestApiPostCall(`/base-clients/base-client-id/clients`, testResponse)
+
+      // When we call the API client
+      const promise = baseClientApiClient.addClientInstance('base-client-id')
+      const output = await promise
+
+      // Then it returns the mocked response
+      expect(output).toEqual(testResponse)
+    })
+  })
+
   describe('updateBaseClient', () => {
     it('Should return a success response from the API', async () => {
       // Given the network is mocked to return a response
@@ -142,6 +158,21 @@ describe('baseClientApiClient', () => {
         return
       }
       fail('Should have thrown an error')
+    })
+  })
+
+  describe('listClientInstances', () => {
+    it('Should return data from the API', async () => {
+      // Given the network is mocked to return a response
+      const testResponse = listClientInstancesResponseFactory.build()
+      mockSuccessfulBaseClientRestApiCall(`/base-clients/base-client-id/clients`, testResponse)
+
+      // When we call the API client
+      const promise = baseClientApiClient.listClientInstances('base-client-id')
+      const output = await promise
+
+      // Then it returns the mocked response
+      expect(output).toEqual(testResponse)
     })
   })
 })
