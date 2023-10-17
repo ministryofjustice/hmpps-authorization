@@ -5,6 +5,7 @@ import mapListBaseClientsResponse from './baseClientApi/listBaseClients'
 import mapAddBaseClientRequest from './baseClientApi/addBaseClient'
 import mapClientSecrets from './baseClientApi/clientSecrets'
 import mapUpdateBaseClientRequest from './baseClientApi/updateBaseClient'
+import mapUpdateBaseClientDeploymentRequest from './baseClientApi/updateBaseClientDeployment'
 
 export {
   mapGetBaseClientResponse,
@@ -12,4 +13,5 @@ export {
   mapAddBaseClientRequest,
   mapClientSecrets,
   mapUpdateBaseClientRequest,
+  mapUpdateBaseClientDeploymentRequest,
 }

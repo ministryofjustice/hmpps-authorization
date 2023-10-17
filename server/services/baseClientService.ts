@@ -6,6 +6,7 @@ import {
   mapClientSecrets,
   mapGetBaseClientResponse,
   mapListBaseClientsResponse,
+  mapUpdateBaseClientDeploymentRequest,
   mapUpdateBaseClientRequest,
 } from '../mappers'
 
@@ -45,5 +46,11 @@ export default class BaseClientService {
     const baseClientApiClient = this.baseClientApiClientFactory(token)
     const request = mapUpdateBaseClientRequest(baseClient)
     return baseClientApiClient.updateBaseClient(baseClient.baseClientId, request)
+  }
+
+  async updateBaseClientDeployment(token: string, baseClient: BaseClient): Promise<Response> {
+    const baseClientApiClient = this.baseClientApiClientFactory(token)
+    const request = mapUpdateBaseClientDeploymentRequest(baseClient)
+    return baseClientApiClient.updateBaseClientDeployment(baseClient.baseClientId, request)
   }
 }

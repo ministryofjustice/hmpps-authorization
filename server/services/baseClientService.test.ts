@@ -12,6 +12,7 @@ import {
   mapAddBaseClientRequest,
   mapClientSecrets,
   mapGetBaseClientResponse,
+  mapUpdateBaseClientDeploymentRequest,
   mapUpdateBaseClientRequest,
 } from '../mappers'
 
@@ -135,6 +136,24 @@ describe('BaseClientService', () => {
 
       // And calls the addBaseClient method
       expect(baseClientApiClient.updateBaseClient).toHaveBeenCalledWith(baseClient.baseClientId, request)
+    })
+  })
+
+  describe('updateBaseClientDeployment', () => {
+    it('calls the updateBaseClientDeployment method of the base client', async () => {
+      // Given the baseClientApiClient is mocked to return a response
+      const baseClient = baseClientFactory.build()
+      const request = mapUpdateBaseClientDeploymentRequest(baseClient)
+      baseClientApiClient.updateBaseClientDeployment.mockResolvedValue(new Response())
+
+      // When we call the service
+      await service.updateBaseClientDeployment(token, baseClient)
+
+      // The service builds a baseClientApiClient with the token
+      expect(baseClientApiClientFactory).toHaveBeenCalledWith(token)
+
+      // And calls the addBaseClient method
+      expect(baseClientApiClient.updateBaseClientDeployment).toHaveBeenCalledWith(baseClient.baseClientId, request)
     })
   })
 })

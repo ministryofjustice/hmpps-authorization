@@ -5,7 +5,11 @@ import {
   ListBaseClientsResponse,
   ClientSecretsResponse,
 } from '../interfaces/baseClientApi/baseClientResponse'
-import { AddBaseClientRequest, UpdateBaseClientRequest } from '../interfaces/baseClientApi/baseClientRequestBody'
+import {
+  AddBaseClientRequest,
+  UpdateBaseClientDeploymentRequest,
+  UpdateBaseClientRequest,
+} from '../interfaces/baseClientApi/baseClientRequestBody'
 
 export default class BaseClientApiClient extends RestClient {
   constructor(token: string) {
@@ -30,6 +34,13 @@ export default class BaseClientApiClient extends RestClient {
   updateBaseClient(baseClientId: string, request: UpdateBaseClientRequest): Promise<Response> {
     return this.put({
       path: `/base-clients/${baseClientId}`,
+      data: request as unknown as Record<string, unknown>,
+    }) as Promise<Response>
+  }
+
+  updateBaseClientDeployment(baseClientId: string, request: UpdateBaseClientDeploymentRequest): Promise<Response> {
+    return this.put({
+      path: `/base-clients/${baseClientId}/deployment`,
       data: request as unknown as Record<string, unknown>,
     }) as Promise<Response>
   }

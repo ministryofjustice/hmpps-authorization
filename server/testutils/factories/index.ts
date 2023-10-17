@@ -6,6 +6,7 @@ import getBaseClientResponseFactory from './responses/getBaseClientResponse'
 import addBaseClientRequestFactory from './requests/addBaseClientRequest'
 import clientSecretsResponseFactory from './responses/clientSecretsResponse'
 import updateBaseClientRequestFactory from './requests/updateBaseClientRequest'
+import updateBaseClientDeploymentFactory from './requests/updateBaseClientDeploymentRequest'
 
 export {
   baseClientFactory,
@@ -14,4 +15,5 @@ export {
   clientSecretsResponseFactory,
   addBaseClientRequestFactory,
   updateBaseClientRequestFactory,
+  updateBaseClientDeploymentFactory,
 }

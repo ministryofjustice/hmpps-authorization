@@ -4,6 +4,7 @@ import {
   clientSecretsResponseFactory,
   getBaseClientResponseFactory,
   listBaseClientResponseFactory,
+  updateBaseClientDeploymentFactory,
 } from '../testutils/factories'
 import BaseClientApiClient from './baseClientApiClient'
 import addBaseClientRequest from '../testutils/factories/requests/addBaseClientRequest'
@@ -101,13 +102,42 @@ describe('baseClientApiClient', () => {
     })
 
     it('Errors if unsuccessful', async () => {
-      // Given the network is mocked to return a response
+      // Given the network is mocked to return an error status code
       const testRequest = updateBaseClientRequest.build()
       mockBaseClientRestApiPutCall(`/base-clients/base_client_id`, 400, null)
 
       // When we call the API client
       try {
         await baseClientApiClient.updateBaseClient('base_client_id', testRequest)
+      } catch (e) {
+        return
+      }
+      fail('Should have thrown an error')
+    })
+  })
+
+  describe('updateBaseClientDeployment', () => {
+    it('Should return a success response from the API', async () => {
+      // Given the network is mocked to return a response
+      const testRequest = updateBaseClientDeploymentFactory.build()
+      mockBaseClientRestApiPutCall(`/base-clients/base_client_id/deployment`, 200, null)
+
+      // When we call the API client
+      try {
+        await baseClientApiClient.updateBaseClientDeployment('base_client_id', testRequest)
+      } catch {
+        fail('Should not throw an error')
+      }
+    })
+
+    it('Errors if unsuccessful', async () => {
+      // Given the network is mocked to return an error status code
+      const testRequest = updateBaseClientDeploymentFactory.build()
+      mockBaseClientRestApiPutCall(`/base-clients/base_client_id/deployment`, 400, null)
+
+      // When we call the API client
+      try {
+        await baseClientApiClient.updateBaseClientDeployment('base_client_id', testRequest)
       } catch (e) {
         return
       }

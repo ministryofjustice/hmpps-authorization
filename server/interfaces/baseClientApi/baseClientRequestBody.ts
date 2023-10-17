@@ -18,3 +18,17 @@ export interface UpdateBaseClientRequest {
   validDays?: number
   accessTokenValidityMinutes?: number
 }
+
+export interface UpdateBaseClientDeploymentRequest {
+  clientType?: string
+  team?: string
+  teamContact?: string
+  teamSlack?: string
+  hosting?: string
+  namespace?: string
+  deployment?: string
+  secretName?: string
+  clientIdKey?: string
+  secretKey?: string
+  deploymentInfo?: string
+}
