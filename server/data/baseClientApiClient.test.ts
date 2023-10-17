@@ -40,6 +40,9 @@ describe('baseClientApiClient', () => {
   const mockBaseClientRestApiPutCall = <TReturnData>(url: string, status: number, returnData: TReturnData) => {
     baseClientApi.put(url).matchHeader('authorization', `Bearer ${token.access_token}`).reply(status, returnData)
   }
+  const mockBaseClientRestApiDeleteCall = <TReturnData>(url: string, status: number, returnData: TReturnData) => {
+    baseClientApi.delete(url).matchHeader('authorization', `Bearer ${token.access_token}`).reply(status, returnData)
+  }
 
   describe('listBaseClients', () => {
     it('Should return data from the API', async () => {
@@ -173,6 +176,33 @@ describe('baseClientApiClient', () => {
 
       // Then it returns the mocked response
       expect(output).toEqual(testResponse)
+    })
+  })
+
+  describe('deleteClientInstance', () => {
+    it('Should return a success response from the API', async () => {
+      // Given the network is mocked to return a success response
+      mockBaseClientRestApiDeleteCall(`/base-clients/base-client-id/clients/client-id`, 200, null)
+
+      // When we call the API client
+      try {
+        await baseClientApiClient.deleteClientInstance('base-client-id', 'client-id')
+      } catch {
+        fail('Should not throw an error')
+      }
+    })
+
+    it('Errors if unsuccessful', async () => {
+      // Given the network is mocked to return an error status code
+      mockBaseClientRestApiDeleteCall(`/base-clients/base-client-id/clients/client-id`, 400, null)
+
+      // When we call the API client
+      try {
+        await baseClientApiClient.deleteClientInstance('base-client-id', 'client-id')
+      } catch (e) {
+        return
+      }
+      fail('Should have thrown an error')
     })
   })
 })

@@ -4,6 +4,7 @@ import {
   listBaseClientResponseFactory,
   clientSecretsResponseFactory,
   listClientInstancesResponseFactory,
+  clientFactory,
 } from '../testutils/factories'
 
 import BaseClientApiClient from '../data/baseClientApiClient'
@@ -220,6 +221,23 @@ describe('BaseClientService', () => {
       // Then it maps the response to the mapped version
       const expected = mapListClientInstancesResponse(baseClient, response)
       expect(output).toEqual(expected)
+    })
+  })
+
+  describe('deleteClientInstance', () => {
+    it('calls the deleteClientInstance method of the base client api', async () => {
+      // Given the baseClientApiClient is mocked to return a response
+      const client = clientFactory.build()
+      baseClientApiClient.deleteClientInstance.mockResolvedValue(new Response())
+
+      // When we call the service
+      await service.deleteClientInstance(token, client)
+
+      // The service builds a baseClientApiClient with the token
+      expect(baseClientApiClientFactory).toHaveBeenCalledWith(token)
+
+      // And calls the addBaseClient method
+      expect(baseClientApiClient.deleteClientInstance).toHaveBeenCalledWith(client.baseClientId, client.clientId)
     })
   })
 })

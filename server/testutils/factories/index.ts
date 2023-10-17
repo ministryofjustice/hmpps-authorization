@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 import baseClientFactory from './baseClient'
+import clientFactory from './client'
 import listBaseClientResponseFactory from './responses/listBaseClientResponse'
 import getBaseClientResponseFactory from './responses/getBaseClientResponse'
 import addBaseClientRequestFactory from './requests/addBaseClientRequest'
@@ -11,6 +12,7 @@ import listClientInstancesResponseFactory from './responses/listClientInstancesR
 
 export {
   baseClientFactory,
+  clientFactory,
   listBaseClientResponseFactory,
   getBaseClientResponseFactory,
   clientSecretsResponseFactory,

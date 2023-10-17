@@ -50,6 +50,10 @@ export default class BaseClientApiClient extends RestClient {
     return this.post({ path: `/base-clients/${baseClientId}/clients` }) as Promise<ClientSecretsResponse>
   }
 
+  deleteClientInstance(baseClientId: string, clientId: string): Promise<Response> {
+    return this.delete({ path: `/base-clients/${baseClientId}/clients/${clientId}` }) as Promise<Response>
+  }
+
   listClientInstances(baseClientId: string): Promise<ListClientInstancesResponse> {
     return this.get({ path: `/base-clients/${baseClientId}/clients` }) as Promise<ListClientInstancesResponse>
   }

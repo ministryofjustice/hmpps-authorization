@@ -57,4 +57,9 @@ export default class BaseClientService {
     const response = await baseClientApiClient.listClientInstances(baseClient.baseClientId)
     return mapListClientInstancesResponse(baseClient, response)
   }
+
+  async deleteClientInstance(token: string, client: Client): Promise<Response> {
+    const baseClientApiClient = this.baseClientApiClientFactory(token)
+    return baseClientApiClient.deleteClientInstance(client.baseClientId, client.clientId)
+  }
 }
