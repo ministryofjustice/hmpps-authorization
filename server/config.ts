@@ -61,6 +61,18 @@ export default {
       systemClientId: get('SYSTEM_CLIENT_ID', 'clientid', requiredInProduction),
       systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
     },
+    hmppsAuthorizationServer: {
+      url: get('HMPPS_AUTHORIZATION_SERVER_URL', 'http://localhost:8089', requiredInProduction),
+      externalUrl: get(
+        'HMPPS_AUTHORIZATION_SERVER_EXTERNAL_URL',
+        get('HMPPS_AUTHORIZATION_SERVER_URL', 'http://localhost:8089'),
+      ),
+      timeout: {
+        response: Number(get('HMPPS_AUTHORIZATION_SERVER_RESPONSE', 10000)),
+        deadline: Number(get('HMPPS_AUTHORIZATION_SERVER_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('HMPPS_AUTHORIZATION_SERVER_RESPONSE', 10000))),
+    },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
       timeout: {

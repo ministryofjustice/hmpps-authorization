@@ -21,3 +21,16 @@ export const initialiseName = (fullName?: string): string | null => {
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
+
+export const multiSeparatorSplit = (str: string, separators: string[]): string[] => {
+  if (!str) {
+    return []
+  }
+
+  let value = str
+  const firstSeparator = separators[0]
+  for (let i = 1; i < separators.length; i += 1) {
+    value = value.split(separators[i]).join(firstSeparator)
+  }
+  return value.split(firstSeparator)
+}

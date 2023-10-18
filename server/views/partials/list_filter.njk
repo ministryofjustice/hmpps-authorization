@@ -1,0 +1,83 @@
+{% call govukFieldset({
+    legend: {
+        text: "Filter clients",
+        classes: "govuk-fieldset__legend--l",
+        isPageHeading: false
+    }
+}) %}
+
+    <div class="govuk-grid-row" style="width: 100%">
+        <div class="govuk-grid-column-one-quarter">
+            {{ govukInput({
+                label: {
+                    text: "Role"
+                },
+                id: "filter-role",
+                name: "filterRole"
+            }) }}
+        </div>
+
+        <div class="govuk-grid-column-one-quarter">
+            {{ govukSelect({
+                id: "filter-grant-type",
+                name: "filterGrantType",
+                label: {
+                    text: "Grant type"
+                },
+                items: [
+                    {
+                        value: "all",
+                        text: "All",
+                        selected: "true"
+                    },
+                    {
+                        value: "client-credentials",
+                        text: "Client creds"
+                    },
+                    {
+                        value: "authorization-code",
+                        text: "Auth code"
+                    }
+                ]
+            }) }}
+
+        </div>
+
+        <div class="govuk-grid-column-one-quarter">
+            {{ govukSelect({
+                id: "filter-client-type",
+                name: "filterClientType",
+                label: {
+                    text: "Client type"
+                },
+                items: [
+                    {
+                        value: "all",
+                        text: "All",
+                        selected: "true"
+                    },
+                    {
+                        value: "service",
+                        text: "Service"
+                    },
+                    {
+                        value: "personal",
+                        text: "Personal"
+                    }
+                ]
+            }) }}
+        </div>
+
+
+        <div class="govuk-grid-column-one-quarter">
+            {{ govukLabel({
+                text: "."
+            }) }}
+            {{ govukButton({
+                text: "Search"
+            }) }}
+        </div>
+
+    </div>
+
+{% endcall %}
