@@ -72,8 +72,6 @@ export default {
         deadline: Number(get('HMPPS_AUTHORIZATION_SERVER_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('HMPPS_AUTHORIZATION_SERVER_RESPONSE', 10000))),
-      apiClientId: get('API_CLIENT_ID', 'test-client', requiredInProduction),
-      apiClientSecret: get('API_CLIENT_SECRET', 'test-secret', requiredInProduction),
     },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
