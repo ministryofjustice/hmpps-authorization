@@ -51,8 +51,7 @@ describe('baseClientApiClient', () => {
       mockSuccessfulBaseClientRestApiCall(`/base-clients`, testResponse)
 
       // When we call the API client
-      const promise = baseClientApiClient.listBaseClients()
-      const output = await promise
+      const output = await baseClientApiClient.listBaseClients()
 
       // Then it returns the mocked response
       expect(output).toEqual(testResponse)
@@ -66,8 +65,7 @@ describe('baseClientApiClient', () => {
       mockSuccessfulBaseClientRestApiCall(`/base-clients/base_client_id`, testResponse)
 
       // When we call the API client
-      const promise = baseClientApiClient.getBaseClient('base_client_id')
-      const output = await promise
+      const output = await baseClientApiClient.getBaseClient('base_client_id')
 
       // Then it returns the mocked response
       expect(output).toEqual(testResponse)
@@ -83,8 +81,7 @@ describe('baseClientApiClient', () => {
       mockSuccessfulBaseClientRestApiPostCall(`/base-clients`, testResponse)
 
       // When we call the API client
-      const promise = baseClientApiClient.addBaseClient(testRequest)
-      const output = await promise
+      const output = await baseClientApiClient.addBaseClient(testRequest)
 
       // Then it returns the mocked response
       expect(output).toEqual(testResponse)
@@ -97,9 +94,7 @@ describe('baseClientApiClient', () => {
       const testResponse = clientSecretsResponseFactory.build()
       mockSuccessfulBaseClientRestApiPostCall(`/base-clients/base-client-id/clients`, testResponse)
 
-      // When we call the API client
-      const promise = baseClientApiClient.addClientInstance('base-client-id')
-      const output = await promise
+      const output = await baseClientApiClient.addClientInstance('base-client-id')
 
       // Then it returns the mocked response
       expect(output).toEqual(testResponse)
@@ -171,8 +166,7 @@ describe('baseClientApiClient', () => {
       mockSuccessfulBaseClientRestApiCall(`/base-clients/base-client-id/clients`, testResponse)
 
       // When we call the API client
-      const promise = baseClientApiClient.listClientInstances('base-client-id')
-      const output = await promise
+      const output = await baseClientApiClient.listClientInstances('base-client-id')
 
       // Then it returns the mocked response
       expect(output).toEqual(testResponse)
