@@ -10,6 +10,7 @@ generic-service:
   env:
     INGRESS_URL: "https://hmpps-authorization-preprod.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
+    HMPPS_AUTHORIZATION_SERVER_URL: "https://authorization-preprod.hmpps.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
     ENVIRONMENT_NAME: PRE-PRODUCTION
 
