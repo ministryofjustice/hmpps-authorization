@@ -3,10 +3,39 @@
 {% set pageTitle = applicationName + " - Error" %}
 {% set mainClasses = "app-container govuk-body" %}
 
-{% block content %}
 
-  <h1>{{ message }}</h1>
-  <h2>{{ status }}</h2>
-  <pre>{{ stack }}</pre>
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
+
+      <p>Try again later.</p>
+    </div>
+  </div>
+
+  {% if message or stack %}
+    <details class="govuk-details" data-module="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Error details
+        </span>
+      </summary>
+
+      <div class="govuk-details__text">
+        {% if message %}
+          <p class="govuk-body-l">{{ message }}</p>
+        {% endif %}
+        <p>Status: {{ status }}</p>
+        {% if stack %}
+          <pre class="app-error-stack">
+            {{- stack -}}
+          </pre>
+        {% endif %}
+      </div>
+    </details>
+  {% endif %}
 
 {% endblock %}
+
+
