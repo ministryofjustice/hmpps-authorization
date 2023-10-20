@@ -172,13 +172,13 @@
                             {
                                 text: "Registered redirect URIs"
                             },{
-                                text: presenter.web_server_redirect_uri
+                                text: toLinesHtml(baseClient.authorisationCode.registeredRedirectURIs)
                             }
                         ],[
                             {
                                 text: "JWT Fields Configuration"
                             },{
-                                text: baseClient.additional_information.jwtFields
+                                text: baseClient.authorisationCode.jwtFields
                             }
                         ],[
                             {
@@ -224,7 +224,7 @@
                         <h2 class="govuk-heading-l">Service details</h2>
                     </div>
                     <div class="govuk-grid-column-one-third">
-                        <a class="govuk-link" href="/clients/{{ baseClient.base_client_id }}/edit-service-details">Change
+                        <a class="govuk-link" href="/clients/{{ baseClient.baseClientId }}/edit-service-details">Change
                             service details</a>
                     </div>
                 </div>
@@ -377,7 +377,7 @@
                         {
                             text: "Deployment info"
                         },{
-                        text: baseClient.deployment.deployment_info
+                        text: baseClient.deployment.deploymentInfo
                     }
                     ]
 
@@ -389,8 +389,3 @@
     </div>
 
 {% endblock %}
-
-  {% block pageScripts %}
-      <script src="/assets/js/jquery.min.js"></script>
-      <script src="/assets/js/initMOJFilterPage.js"></script>
-  {% endblock %}
