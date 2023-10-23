@@ -1,0 +1,56 @@
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Add base client" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set pageName="Home" %}
+
+{% block header %}
+  {% include "partials/header.njk" %}
+{% endblock %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/label/macro.njk" import govukLabel %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <form class="govuk-grid-column-two-thirds" action="/base-clients/new" method="GET">
+
+      {{ govukRadios({
+        name: "grant",
+        value: "client-credentials",
+        fieldset: {
+          legend: {
+            text: "Select a grant type",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          {
+            value: "client-credentials",
+            text: "Client credentials"
+          },
+          {
+            value: "authorization-code",
+            text: "Authorization code",
+            disabled: false
+          }
+        ]
+      }) }}
+
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue",
+          type: "submit",
+          preventDoubleClick: true
+        }) }}
+        <a href="/" role="button" class="govuk-button govuk-button--secondary">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+
+{% endblock %}

@@ -79,4 +79,50 @@ describe('BaseClientController', () => {
       expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
     })
   })
+
+  describe('create base client', () => {
+    it('if grant is not specified as parameter renders the select grant screen', async () => {
+      // GIVEN a request without grant parameter
+      request = createMock<Request>({ query: {} })
+
+      // WHEN the create base client page is requested
+      await baseClientController.displayNewBaseClient()(request, response, next)
+
+      // THEN the view base client page is rendered
+      expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk')
+    })
+
+    it('if grant is specified with client-credentials renders the details screen', async () => {
+      // GIVEN a request with grant="client-credentials" parameter
+      request = createMock<Request>({ query: { grant: 'client-credentials' } })
+
+      // WHEN the create base client page is requested
+      await baseClientController.displayNewBaseClient()(request, response, next)
+
+      // THEN the view base client page is rendered
+      expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', { grant: 'client-credentials' })
+    })
+
+    it('if grant is specified with authorization-code renders the details screen', async () => {
+      // GIVEN a request with grant="client-credentials" parameter
+      request = createMock<Request>({ query: { grant: 'authorization-code' } })
+
+      // WHEN the create base client page is requested
+      await baseClientController.displayNewBaseClient()(request, response, next)
+
+      // THEN the view base client page is rendered
+      expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', { grant: 'authorization-code' })
+    })
+
+    it('if grant is specified as random parameter renders the select grant screen', async () => {
+      // GIVEN a request without grant parameter
+      request = createMock<Request>({ query: { grant: 'xxxyyy' } })
+
+      // WHEN the create base client page is requested
+      await baseClientController.displayNewBaseClient()(request, response, next)
+
+      // THEN the view base client page is rendered
+      expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk')
+    })
+  })
 })

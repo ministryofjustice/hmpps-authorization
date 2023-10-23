@@ -35,4 +35,15 @@ export default class BaseClientController {
       })
     }
   }
+
+  public displayNewBaseClient(): RequestHandler {
+    return async (req, res) => {
+      const { grant } = req.query
+      if (!(grant === 'client-credentials' || grant === 'authorization-code')) {
+        res.render('pages/new-base-client-grant.njk')
+        return
+      }
+      res.render('pages/new-base-client-details.njk', { grant })
+    }
+  }
 }
