@@ -21,6 +21,7 @@ export default function baseClientRouter(services: Services): Router {
   const baseClientController = new BaseClientController(services.baseClientService)
 
   get('/', baseClientController.displayBaseClients())
+  get('/base-clients/:baseClientId', baseClientController.displayBaseClient())
 
   return router
 }

@@ -72,7 +72,7 @@ const indexTableHead = () => {
 const indexTableRows = (data: BaseClient[]) => {
   return data.map(item => [
     {
-      html: `<a href="/clients/${item.baseClientId}">${item.baseClientId}</a>`,
+      html: `<a href="/base-clients/${item.baseClientId}">${item.baseClientId}</a>`,
     },
     {
       html: item.count > 1 ? `<span class="moj-badge">${item.count}</span>` : '',

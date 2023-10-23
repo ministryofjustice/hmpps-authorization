@@ -1,0 +1,391 @@
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set pageName="Home" %}
+{% set bodyClasses = "extra-wide" %}
+
+{% block header %}
+    {% include "partials/header.njk" %}
+{% endblock %}
+
+{%- from "moj/components/header/macro.njk" import mojHeader -%}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/label/macro.njk" import govukLabel %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{%- from "govuk/components/table/macro.njk" import govukTable -%}
+
+{% block content %}
+    {{ govukBackLink({
+        text: "Back",
+        href: "/"
+    }) }}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-xl">
+                Client: {{ baseClient.baseClientId }}
+            </h1>
+
+            {{ govukTable({
+                firstCellIsHeader: false,
+                head: [
+                    {
+                        text: "Client ID"
+                    },{
+                        text: "Created"
+                    },{
+                        text: "Last accessed"
+                    },{
+                        text: ""
+                    }
+                ],
+                rows: presenter.clientsTable
+            }) }}
+
+            <form class="govuk-grid-row" action="/clients/{{ baseClient.baseClientId }}/instances" method="POST">
+                <div class="govuk-grid-column-one-quarter">
+                    {{ govukButton({
+                        text: "Add new client"
+                    }) }}
+                </div>
+            </form>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-l">Base client details</h2>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    <a class="govuk-link" href="/baseClient/{{ baseClient.baseClientId }}/edit">Change
+                        client details</a>
+                </div>
+            </div>
+
+            {{ govukTable({
+                firstCellIsHeader: false,
+                head: [
+                    {
+                        text: "Base client"
+                    },{
+                        text: baseClient.baseClientId
+                    }],
+                rows: [
+                    [
+                        {
+                            text: "Client type"
+                        },{
+                            text: capitalize(baseClient.clientType)
+                        }
+                    ],
+                    [
+                        {
+                            text: "Access token validity"
+                        },{
+                        text: baseClient.accessTokenValidity
+                    }
+                    ],[
+                        {
+                            text: "Approved scopes"
+                        },{
+                            html: toLinesHtml(baseClient.scopes)
+                        }
+                    ]
+                ]
+            }) }}
+
+            {{ govukTable({
+                firstCellIsHeader: false,
+                head: [
+                    {
+                        text: "Audit trail"
+                    },{
+                        text: ""
+                    }],
+                rows: [
+                    [{
+                        text: "Details"
+                    },{
+                        text: baseClient.audit
+                    }]
+                ]
+            }) }}
+
+
+
+            {% if baseClient.grantType == "client_credentials" %}
+                {{ govukTable({
+                    firstCellIsHeader: false,
+                    head: [
+                        {
+                            text: "Grant details"
+                        },{
+                            text: ""
+                        }],
+                    rows: [
+                        [
+                            {
+                                text: "Grant type"
+                            },{
+                            text: "Client credentials"
+                        }
+                        ],[
+                            {
+                                text: "Roles"
+                            },{
+                                html: toLinesHtml(baseClient.clientCredentials.authorities)
+                            }
+                        ],[
+                            {
+                                text: "Database username"
+                            },{
+                                text: baseClient.clientCredentials.databaseUserName
+                            }
+                        ]
+                    ]
+                }) }}
+            {% endif %}
+
+            {% if baseClient.grantType == "authorization_code" %}
+                {{ govukTable({
+                    firstCellIsHeader: false,
+                    head: [
+                        {
+                            text: "Grant details"
+                        },{
+                            text: ""
+                        }],
+                    rows: [
+                        [
+                            {
+                                text: "Grant type"
+                            },{
+                            text: "Authorization code"
+                        }
+                        ],[
+                            {
+                                text: "Registered redirect URIs"
+                            },{
+                                text: toLinesHtml(baseClient.authorisationCode.registeredRedirectURIs)
+                            }
+                        ],[
+                            {
+                                text: "JWT Fields Configuration"
+                            },{
+                                text: baseClient.authorisationCode.jwtFields
+                            }
+                        ],[
+                            {
+                                text: "Azure Ad login flow"
+                            },{
+                                text: presenter.skipToAzureField
+                            }
+                        ]
+                    ]
+                }) }}
+            {% endif %}
+
+
+            {{ govukTable({
+                firstCellIsHeader: false,
+                head: [
+                    {
+                        text: "Config"
+                    },{
+                        text: ""
+                    }],
+                rows: [
+                    [
+                        {
+                            text: "Allow client to expire"
+                        },{
+                        text: presenter.expiry
+                    }
+                    ],[
+                        {
+                            text: "Allowed IPs"
+                        },{
+                            text: toLinesHtml(baseClient.config.allowedIPs)
+                        }
+                    ]
+                ]
+            }) }}
+
+
+            {% if baseClient.grantType == "authorization_code" %}
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        <h2 class="govuk-heading-l">Service details</h2>
+                    </div>
+                    <div class="govuk-grid-column-one-third">
+                        <a class="govuk-link" href="/clients/{{ baseClient.baseClientId }}/edit-service-details">Change
+                            service details</a>
+                    </div>
+                </div>
+
+                {{ govukTable({
+                    firstCellIsHeader: false,
+                    head: [
+                        {
+                            text: "Service details"
+                        },{
+                            text: ""
+                        }],
+                    rows: [
+                        [
+                            {
+                                text: "Name"
+                            },{
+                            text: baseClient.serviceDetails.serviceName
+                        }
+                        ],[
+                            {
+                                text: "Description"
+                            },{
+                                text: baseClient.serviceDetails.serviceDescription
+                            }
+                        ],[
+                            {
+                                text: "Authorised roles"
+                            },{
+                                text: baseClient.serviceDetails.serviceAuthorisedRoles.join('</br>')
+                            }
+                        ],[
+                            {
+                                text: "URL"
+                            },{
+                                text: baseClient.serviceDetails.serviceURL
+                            }
+                        ],[
+                            {
+                                text: "Contact URL/email"
+                            },{
+                                text: baseClient.serviceDetails.contactUsURL
+                            }
+                        ],[
+                            {
+                                text: "Status"
+                            },{
+                                text: presenter.serviceEnabledLabel
+                            }
+                        ]
+                    ]
+                }) }}
+            {% endif %}
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-l">Deployment details</h2>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    <a class="govuk-link" href="/clients/{{ baseClient.baseClientId }}/edit-deployment-details">Change
+                        deployment details</a>
+                </div>
+            </div>
+
+            {{ govukTable({
+                firstCellIsHeader: false,
+                head: [
+                    {
+                        text: "Contact"
+                    },{
+                        text: ""
+                    }],
+                rows: [
+                    [
+                        {
+                            text: "Team"
+                        },{
+                        text: baseClient.deployment.team
+                    }
+                    ],
+                    [
+                        {
+                            text: "Team contact"
+                        },{
+                        text: baseClient.deployment.teamContact
+                    }
+                    ],
+                    [
+                        {
+                            text: "Team slack"
+                        },{
+                        text: baseClient.deployment.teamSlack
+                    }
+                    ]
+                ]
+            }) }}
+
+            {{ govukTable({
+                firstCellIsHeader: false,
+                head: [
+                    {
+                        text: "Platform"
+                    },{
+                        text: ""
+                    }],
+                rows: [
+                    [
+                        {
+                            text: "Hosting"
+                        },{
+                        text: baseClient.deployment.hosting
+                    }
+                    ],
+                    [
+                        {
+                            text: "Namespace"
+                        },{
+                        text: baseClient.deployment.namespace
+                    }
+                    ],
+                    [
+                        {
+                            text: "Deployment"
+                        },{
+                        text: baseClient.deployment.deployment
+                    }
+                    ],
+                    [
+                        {
+                            text: "Secret name"
+                        },{
+                        text: baseClient.deployment.secretName
+                    }
+                    ],
+                    [
+                        {
+                            text: "Client id key"
+                        },{
+                        text: baseClient.deployment.clientIdKey
+                    }
+                    ],
+                    [
+                        {
+                            text: "Secret key"
+                        },{
+                        text: baseClient.deployment.secretKey
+                    }
+                    ],
+                    [
+                        {
+                            text: "Deployment info"
+                        },{
+                        text: baseClient.deployment.deploymentInfo
+                    }
+                    ]
+
+                ]
+            }) }}
+
+        </div>
+
+    </div>
+
+{% endblock %}
