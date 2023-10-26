@@ -13,6 +13,10 @@ const getAccessTokenValidityDropdown = (accessTokenValidity: number) => {
   if ([1200, 3600, 43200].includes(accessTokenValidity)) {
     return `${accessTokenValidity}`
   }
+  if (!accessTokenValidity) {
+    return null
+  }
+
   return 'custom'
 }
 
