@@ -9,10 +9,12 @@ import clientSecretsResponseFactory from './responses/clientSecretsResponse'
 import updateBaseClientRequestFactory from './requests/updateBaseClientRequest'
 import updateBaseClientDeploymentFactory from './requests/updateBaseClientDeploymentRequest'
 import listClientInstancesResponseFactory from './responses/listClientInstancesResponse'
+import clientSecretsFactory from './secrets'
 
 export {
   baseClientFactory,
   clientFactory,
+  clientSecretsFactory,
   listBaseClientResponseFactory,
   getBaseClientResponseFactory,
   clientSecretsResponseFactory,
