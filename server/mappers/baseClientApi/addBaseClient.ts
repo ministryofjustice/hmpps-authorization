@@ -7,9 +7,9 @@ export default (baseClient: BaseClient): AddBaseClientRequest => {
 
   return {
     clientId: baseClient.baseClientId,
-    scopes: ['read', 'write'],
-    authorities: ['ROLE_CLIENT_CREDENTIALS'],
-    ips: [],
+    scopes: baseClient.scopes,
+    authorities: baseClient.clientCredentials.authorities,
+    ips: baseClient.config.allowedIPs,
     jiraNumber: baseClient.audit,
     databaseUserName: baseClient.clientCredentials.databaseUserName,
     validDays: expiryDate ? Math.ceil(expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24) : null,

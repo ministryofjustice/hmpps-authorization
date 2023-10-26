@@ -100,7 +100,10 @@ describe('BaseClientController', () => {
       await baseClientController.displayNewBaseClient()(request, response, next)
 
       // THEN the view base client page is rendered
-      expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', { grant: 'client-credentials' })
+      expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
+        grant: 'client-credentials',
+        ...nunjucksUtils,
+      })
     })
 
     it('if grant is specified with authorization-code renders the details screen', async () => {
@@ -111,7 +114,10 @@ describe('BaseClientController', () => {
       await baseClientController.displayNewBaseClient()(request, response, next)
 
       // THEN the view base client page is rendered
-      expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', { grant: 'authorization-code' })
+      expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
+        grant: 'authorization-code',
+        ...nunjucksUtils,
+      })
     })
 
     it('if grant is specified as random parameter renders the select grant screen', async () => {
