@@ -72,7 +72,7 @@ describe('editBaseClientPresenter', () => {
       expect(presenter.daysRemaining).toEqual(0)
     })
 
-    it('sets expiry to true and days to 0 if expiry date is in the future', () => {
+    it('sets expiry to true and days greater than 0 if expiry date is in the future', () => {
       const dateTomorrow = new Date()
       dateTomorrow.setDate(dateTomorrow.getDate() + 1)
       const expiryDate: string = dateTomorrow.toISOString()
@@ -83,6 +83,17 @@ describe('editBaseClientPresenter', () => {
 
       expect(presenter.expiry).toBeTruthy()
       expect(presenter.daysRemaining).toEqual(1)
+    })
+
+    it('sets expiry to true and days equal to 0 if expiry date is today', () => {
+      const expiryDate: string = new Date().toISOString()
+
+      const baseClient = baseClientFactory.build({ config: { expiryDate } })
+
+      const presenter = editBaseClientPresenter(baseClient)
+
+      expect(presenter.expiry).toBeTruthy()
+      expect(presenter.daysRemaining).toEqual(0)
     })
   })
 })
