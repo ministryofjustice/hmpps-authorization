@@ -94,4 +94,19 @@ export default class BaseClientController {
       return ''
     }
   }
+
+  public displayEditBaseClient(): RequestHandler {
+    return async (req, res) => {
+      const userToken = res.locals.user.token
+      const { baseClientId } = req.params
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+
+      const presenter = editBaseClientPresenter(baseClient)
+      res.render('pages/edit-base-client-details.njk', {
+        baseClient,
+        presenter,
+        ...nunjucksUtils,
+      })
+    }
+  }
 }
