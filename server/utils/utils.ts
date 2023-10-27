@@ -34,3 +34,29 @@ export const multiSeparatorSplit = (str: string, separators: string[]): string[]
   }
   return value.split(firstSeparator)
 }
+
+export const dayDiff = (fromDate: Date, toDate: Date) => {
+  const diff = toDate.getTime() - fromDate.getTime()
+  return Math.floor(diff / (1000 * 60 * 60 * 24))
+}
+
+export const daysRemaining = (expiryDate?: string) => {
+  if (!expiryDate) {
+    return 0
+  }
+  const datePart = expiryDate.split('T')[0]
+  const dateToday = new Date().toISOString().split('T')[0]
+
+  const diff = dayDiff(new Date(dateToday), new Date(datePart))
+  return diff < 0 ? 0 : diff
+}
+
+export const offsetNow = (days: number) => {
+  return offsetDate(new Date(), days)
+}
+
+export const offsetDate = (date: Date, days: number) => {
+  const newDate = new Date(date)
+  newDate.setDate(newDate.getDate() + days)
+  return newDate
+}

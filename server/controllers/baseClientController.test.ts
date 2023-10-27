@@ -90,7 +90,7 @@ describe('BaseClientController', () => {
         // WHEN the create base client page is requested
         await baseClientController.displayNewBaseClient()(request, response, next)
 
-        // THEN the view base client page is rendered
+        // THEN the choose client type page is rendered
         expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk')
       })
 
@@ -101,7 +101,7 @@ describe('BaseClientController', () => {
         // WHEN the create base client page is requested
         await baseClientController.displayNewBaseClient()(request, response, next)
 
-        // THEN the view base client page is rendered
+        // THEN the enter client details page is rendered with client credentials selected
         expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
           grant: 'client-credentials',
           ...nunjucksUtils,
@@ -115,7 +115,7 @@ describe('BaseClientController', () => {
         // WHEN the create base client page is requested
         await baseClientController.displayNewBaseClient()(request, response, next)
 
-        // THEN the view base client page is rendered
+        // THEN the enter client details page is rendered with authorisation code selected
         expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
           grant: 'authorization-code',
           ...nunjucksUtils,
@@ -129,7 +129,7 @@ describe('BaseClientController', () => {
         // WHEN the create base client page is requested
         await baseClientController.displayNewBaseClient()(request, response, next)
 
-        // THEN the view base client page is rendered
+        // THEN the choose client type page is rendered
         expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk')
       })
 

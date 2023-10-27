@@ -1,5 +1,6 @@
 import { baseClientFactory } from '../../testutils/factories'
 import editBaseClientPresenter from './editBaseClientPresenter'
+import { offsetNow } from '../../utils/utils'
 
 describe('editBaseClientPresenter', () => {
   describe('accessTokenValidity', () => {
@@ -73,10 +74,7 @@ describe('editBaseClientPresenter', () => {
     })
 
     it('sets expiry to true and days greater than 0 if expiry date is in the future', () => {
-      const dateTomorrow = new Date()
-      dateTomorrow.setDate(dateTomorrow.getDate() + 1)
-      const expiryDate: string = dateTomorrow.toISOString()
-
+      const expiryDate: string = offsetNow(1).toISOString()
       const baseClient = baseClientFactory.build({ config: { expiryDate } })
 
       const presenter = editBaseClientPresenter(baseClient)

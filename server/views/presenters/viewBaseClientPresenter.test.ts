@@ -1,5 +1,6 @@
 import { baseClientFactory, clientFactory } from '../../testutils/factories'
 import viewBaseClientPresenter from './viewBaseClientPresenter'
+import { offsetNow } from '../../utils/utils'
 
 describe('viewBaseClientPresenter', () => {
   describe('clientsTable', () => {
@@ -77,9 +78,8 @@ describe('viewBaseClientPresenter', () => {
 
     it('expiryDate is in two days returns "Yes - days remaining 2"', () => {
       // Given a base client with expiry date in two days
-      const expiryDate = new Date()
-      expiryDate.setDate(expiryDate.getDate() + 2)
-      const baseClient = baseClientFactory.build({ config: { expiryDate: expiryDate.toISOString() } })
+      const expiryDate = offsetNow(2).toISOString()
+      const baseClient = baseClientFactory.build({ config: { expiryDate } })
       const clients = clientFactory.buildList(2)
 
       // When we map to a presenter
