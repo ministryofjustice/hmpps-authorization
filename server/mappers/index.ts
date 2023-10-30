@@ -8,6 +8,7 @@ import mapUpdateBaseClientRequest from './baseClientApi/updateBaseClient'
 import mapUpdateBaseClientDeploymentRequest from './baseClientApi/updateBaseClientDeployment'
 import mapListClientInstancesResponse from './baseClientApi/listClientInstances'
 import mapCreateBaseClientForm from './forms/mapCreateBaseClientForm'
+import mapEditBaseClientDetailsForm from './forms/mapEditBaseClientDetailsForm'
 
 export {
   mapGetBaseClientResponse,
@@ -18,4 +19,5 @@ export {
   mapUpdateBaseClientDeploymentRequest,
   mapListClientInstancesResponse,
   mapCreateBaseClientForm,
+  mapEditBaseClientDetailsForm,
 }

@@ -2,8 +2,7 @@ import type { Request } from 'express'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { getAccessTokenValiditySeconds, getDayOfExpiry, multiSeparatorSplit } from '../../utils/utils'
 
-export default (request: Request): BaseClient => {
-  // valid days is calculated from expiry date
+export default (baseClient: BaseClient, request: Request): BaseClient => {
   const data = request.body
 
   const { accessTokenValidity, customAccessTokenValidity } = data
@@ -16,37 +15,19 @@ export default (request: Request): BaseClient => {
     accessTokenValidity: accessTokenValiditySeconds,
     scopes: multiSeparatorSplit(data.approvedScopes, [',', '\r\n', '\n']),
     audit: data.audit,
-    count: 1,
+    count: baseClient.count,
     grantType: data.grant,
     clientCredentials: {
       authorities: multiSeparatorSplit(data.authorities, [',', '\r\n', '\n']),
-      databaseUserName: data.databaseUserName,
+      databaseUserName: data.databaseUsername,
     },
     authorisationCode: {
       registeredRedirectURIs: [],
       jwtFields: '',
       azureAdLoginFlow: false,
     },
-    service: {
-      serviceName: '',
-      description: '',
-      authorisedRoles: [],
-      url: '',
-      contact: '',
-      status: '',
-    },
-    deployment: {
-      team: '',
-      teamContact: '',
-      teamSlack: '',
-      hosting: '',
-      namespace: '',
-      deployment: '',
-      secretName: '',
-      clientIdKey: '',
-      secretKey: '',
-      deploymentInfo: '',
-    },
+    service: baseClient.service,
+    deployment: baseClient.deployment,
     config: {
       allowedIPs: multiSeparatorSplit(data.allowedIPs, [',', '\r\n', '\n']),
       expiryDate: dayOfExpiry,

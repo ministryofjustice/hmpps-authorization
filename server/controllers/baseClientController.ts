@@ -3,7 +3,7 @@ import { BaseClientService } from '../services'
 import listBaseClientsPresenter from '../views/presenters/listBaseClientsPresenter'
 import viewBaseClientPresenter from '../views/presenters/viewBaseClientPresenter'
 import nunjucksUtils from '../views/helpers/nunjucksUtils'
-import { mapCreateBaseClientForm } from '../mappers'
+import { mapCreateBaseClientForm, mapEditBaseClientDetailsForm } from '../mappers'
 import { BaseClient } from '../interfaces/baseClientApi/baseClient'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
 
@@ -107,6 +107,25 @@ export default class BaseClientController {
         presenter,
         ...nunjucksUtils,
       })
+    }
+  }
+
+  public updateBaseClientDetails(): RequestHandler {
+    return async (req, res, next) => {
+      const userToken = res.locals.user.token
+      const { baseClientId } = req.params
+
+      // get current values
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+
+      // map form values to updated base client
+      const updatedClient = mapEditBaseClientDetailsForm(baseClient, req)
+
+      // update base client
+      await this.baseClientService.updateBaseClient(userToken, updatedClient)
+
+      // return to view base client page
+      res.redirect(`/base-clients/${baseClientId}`)
     }
   }
 }

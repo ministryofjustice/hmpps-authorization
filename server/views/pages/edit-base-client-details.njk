@@ -28,8 +28,9 @@
   }) }}
 
   <div class="govuk-grid-row">
-    <form class="govuk-grid-column-two-thirds" action="/base-clients/{{baseClient.base_client_id}}/edit" method="POST">
+    <form class="govuk-grid-column-two-thirds" action="/base-clients/{{baseClient.baseClientId}}/edit" method="POST">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <input type="hidden" name="baseClientId" value="{{ baseClient.baseClientId }}">
 
       <h1 class="govuk-heading-xl">
         Edit base client details
@@ -42,7 +43,6 @@
         },
         classes: "govuk-!-width-two-thirds",
         id: "base-client-id",
-        name: "baseClientId",
         value: baseClient.baseClientId,
         disabled: true
       }) }}
@@ -142,7 +142,7 @@
 
       <h2 class="govuk-heading-l">Grant details</h2>
 
-      {% if baseClient.grantType == "client-credentials" %}
+      {% if baseClient.grantType == "client_credentials" %}
         {{ govukInput({
           label: {
             text: "Grant type"
@@ -175,7 +175,7 @@
         }) }}
       {% endif %}
 
-      {% if baseClient.grantType == "authorization-code" %}
+      {% if baseClient.grantType == "authorization_code" %}
         {{ govukInput({
           label: {
             text: "Grant type"

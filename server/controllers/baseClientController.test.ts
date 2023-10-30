@@ -9,6 +9,7 @@ import listBaseClientsPresenter from '../views/presenters/listBaseClientsPresent
 import createUserToken from '../testutils/createUserToken'
 import viewBaseClientPresenter from '../views/presenters/viewBaseClientPresenter'
 import nunjucksUtils from '../views/helpers/nunjucksUtils'
+import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
 
 describe('BaseClientController', () => {
   const token = createUserToken(['ADMIN'])
@@ -109,7 +110,7 @@ describe('BaseClientController', () => {
       })
 
       it('if grant is specified with authorization-code renders the details screen', async () => {
-        // GIVEN a request with grant="client-credentials" parameter
+        // GIVEN a request with grant="authorization-code" parameter
         request = createMock<Request>({ query: { grant: 'authorization-code' } })
 
         // WHEN the create base client page is requested
@@ -181,6 +182,47 @@ describe('BaseClientController', () => {
           'pages/new-base-client-success.njk',
           expect.objectContaining({ secrets }),
         )
+      })
+    })
+  })
+
+  describe('update base client details', () => {
+    describe('journey', () => {
+      it('if grant is not specified as parameter renders the select grant screen', async () => {
+        // GIVEN a request to edit a base client
+        const baseClient = baseClientFactory.build()
+        baseClientService.getBaseClient.mockResolvedValue(baseClient)
+        request = createMock<Request>({ params: { baseClientId: baseClient.baseClientId } })
+
+        // WHEN the edit base client details page is requested
+        await baseClientController.displayEditBaseClient()(request, response, next)
+
+        // THEN the page is rendered
+        const presenter = editBaseClientPresenter(baseClient)
+        expect(response.render).toHaveBeenCalledWith('pages/edit-base-client-details.njk', {
+          baseClient,
+          presenter,
+          ...nunjucksUtils,
+        })
+
+        // AND the base client is retrieved from the base client service
+        expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+      })
+
+      it('if success redirects to view base client screen', async () => {
+        // GIVEN the service returns success and a set of secrets
+        const baseClient = baseClientFactory.build()
+        request = createMock<Request>({
+          params: { baseClientId: baseClient.baseClientId },
+          body: { baseClientId: baseClient.baseClientId },
+        })
+        baseClientService.updateBaseClient.mockResolvedValue(new Response())
+
+        // WHEN it is posted
+        await baseClientController.updateBaseClientDetails()(request, response, next)
+
+        // THEN the new base client success page is rendered
+        expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
       })
     })
   })

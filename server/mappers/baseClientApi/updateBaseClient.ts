@@ -4,9 +4,9 @@ import { daysRemaining } from '../../utils/utils'
 
 export default (baseClient: BaseClient): UpdateBaseClientRequest => {
   return {
-    scopes: ['read', 'write'],
-    authorities: ['ROLE_CLIENT_CREDENTIALS'],
-    ips: [],
+    scopes: baseClient.scopes,
+    authorities: baseClient.clientCredentials.authorities,
+    ips: baseClient.config.allowedIPs,
     jiraNumber: baseClient.audit,
     databaseUserName: baseClient.clientCredentials.databaseUserName,
     validDays: baseClient.config.expiryDate ? daysRemaining(baseClient.config.expiryDate) : null,

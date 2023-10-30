@@ -8,7 +8,7 @@ export default Factory.define<BaseClient>(() => ({
   accessTokenValidity: 3600,
   scopes: ['read', 'write'],
   grantType: 'client_credentials',
-  audit: 'audit notes',
+  audit: faker.lorem.lines(4),
   count: 1,
   clientCredentials: {
     authorities: ['ROLE_CLIENT_CREDENTIALS'],
