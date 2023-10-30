@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName, multiSeparatorSplit } from './utils'
+import { convertToTitleCase, dayDiff, daysRemaining, initialiseName, multiSeparatorSplit, offsetDate } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -40,5 +40,38 @@ describe('multi separator split', () => {
     ['Multiple relevant separators', 'read,write delete', [',', ' '], ['read', 'write', 'delete']],
   ])('%s multiSeparatorSplit', (_: string, a: string, b: string[], expected: string[]) => {
     expect(multiSeparatorSplit(a, b)).toEqual(expected)
+  })
+})
+
+describe('offset date', () => {
+  it.each([
+    ['Zero days', new Date('2020-01-01'), 0, new Date('2020-01-01')],
+    ['One day', new Date('2020-01-01'), 1, new Date('2020-01-02')],
+    ['Negative days', new Date('2020-01-01'), -1, new Date('2019-12-31')],
+  ])('%s offsetDate', (_: string, a: Date, b: number, expected: Date) => {
+    expect(offsetDate(a, b)).toEqual(expected)
+  })
+})
+
+describe('day diff', () => {
+  it.each([
+    ['Zero days', new Date('2020-01-01'), new Date('2020-01-01'), 0],
+    ['One day', new Date('2020-01-01'), new Date('2020-01-02'), 1],
+    ['Negative days', new Date('2020-01-01'), new Date('2019-12-31'), -1],
+  ])('%s dayDiff', (_: string, a: Date, b: Date, expected: number) => {
+    expect(dayDiff(a, b)).toEqual(expected)
+  })
+})
+
+describe('days remaining', () => {
+  it.each([
+    ['Null', null, 0],
+    ['Zero', 0, 0],
+    ['One day', 1, 1],
+    ['Negative days', -1, 0],
+  ])('%s daysRemaining', (_: string, days: number, expected: number) => {
+    const expiryDate = days ? offsetDate(new Date(), days).toISOString() : null
+
+    expect(daysRemaining(expiryDate)).toEqual(expected)
   })
 })

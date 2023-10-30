@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 
 import BaseClientController from './baseClientController'
 import { BaseClientService } from '../services'
-import { baseClientFactory, clientFactory } from '../testutils/factories'
+import { baseClientFactory, clientFactory, clientSecretsFactory } from '../testutils/factories'
 import listBaseClientsPresenter from '../views/presenters/listBaseClientsPresenter'
 import createUserToken from '../testutils/createUserToken'
 import viewBaseClientPresenter from '../views/presenters/viewBaseClientPresenter'
@@ -15,7 +15,7 @@ describe('BaseClientController', () => {
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
-  const baseClientService = createMock<BaseClientService>({})
+  let baseClientService = createMock<BaseClientService>({})
   let baseClientController: BaseClientController
 
   beforeEach(() => {
@@ -32,6 +32,7 @@ describe('BaseClientController', () => {
       redirect: jest.fn(),
     })
 
+    baseClientService = createMock<BaseClientService>({})
     baseClientController = new BaseClientController(baseClientService)
   })
 
@@ -77,6 +78,110 @@ describe('BaseClientController', () => {
 
       // AND the base client is retrieved from the base client service
       expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+    })
+  })
+
+  describe('create base client', () => {
+    describe('journey', () => {
+      it('if grant is not specified as parameter renders the select grant screen', async () => {
+        // GIVEN a request without grant parameter
+        request = createMock<Request>({ query: {} })
+
+        // WHEN the create base client page is requested
+        await baseClientController.displayNewBaseClient()(request, response, next)
+
+        // THEN the choose client type page is rendered
+        expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk')
+      })
+
+      it('if grant is specified with client-credentials renders the details screen', async () => {
+        // GIVEN a request with grant="client-credentials" parameter
+        request = createMock<Request>({ query: { grant: 'client-credentials' } })
+
+        // WHEN the create base client page is requested
+        await baseClientController.displayNewBaseClient()(request, response, next)
+
+        // THEN the enter client details page is rendered with client credentials selected
+        expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
+          grant: 'client-credentials',
+          ...nunjucksUtils,
+        })
+      })
+
+      it('if grant is specified with authorization-code renders the details screen', async () => {
+        // GIVEN a request with grant="client-credentials" parameter
+        request = createMock<Request>({ query: { grant: 'authorization-code' } })
+
+        // WHEN the create base client page is requested
+        await baseClientController.displayNewBaseClient()(request, response, next)
+
+        // THEN the enter client details page is rendered with authorisation code selected
+        expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
+          grant: 'authorization-code',
+          ...nunjucksUtils,
+        })
+      })
+
+      it('if grant is specified as random parameter renders the select grant screen', async () => {
+        // GIVEN a request without grant parameter
+        request = createMock<Request>({ query: { grant: 'xxxyyy' } })
+
+        // WHEN the create base client page is requested
+        await baseClientController.displayNewBaseClient()(request, response, next)
+
+        // THEN the choose client type page is rendered
+        expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk')
+      })
+
+      it('if validation fails because no id specified renders the details screen with error message', async () => {
+        // GIVEN no id is specified
+        request = createMock<Request>({ body: {} })
+
+        // WHEN it is posted
+        await baseClientController.createBaseClient()(request, response, next)
+
+        // THEN the new base client page is rendered with error message
+        const expectedError = 'This field is required'
+        expect(response.render).toHaveBeenCalledWith(
+          'pages/new-base-client-details.njk',
+          expect.objectContaining({ errorMessage: { text: expectedError } }),
+        )
+      })
+
+      it('if validation fails because id exists then render the details screen with error message', async () => {
+        // GIVEN base client with id already exists
+        baseClientService.getBaseClient.mockResolvedValue(baseClientFactory.build())
+        baseClientService.listClientInstances.mockResolvedValue(clientFactory.buildList(3))
+        request = createMock<Request>({ body: { baseClientId: 'abcd' } })
+
+        // WHEN it is posted
+        await baseClientController.createBaseClient()(request, response, next)
+
+        // THEN the new base client page is rendered with error message
+        const expectedError = 'A base client with this ID already exists'
+        expect(response.render).toHaveBeenCalledWith(
+          'pages/new-base-client-details.njk',
+          expect.objectContaining({ errorMessage: { text: expectedError } }),
+        )
+      })
+
+      it('if success renders the secrets screen', async () => {
+        // GIVEN the service returns success and a set of secrets
+        baseClientService.getBaseClient.mockRejectedValue({ status: 404 })
+        request = createMock<Request>({ body: { baseClientId: 'abcd' } })
+
+        const secrets = clientSecretsFactory.build()
+        baseClientService.addBaseClient.mockResolvedValue(secrets)
+
+        // WHEN it is posted
+        await baseClientController.createBaseClient()(request, response, next)
+
+        // THEN the new base client success page is rendered
+        expect(response.render).toHaveBeenCalledWith(
+          'pages/new-base-client-success.njk',
+          expect.objectContaining({ secrets }),
+        )
+      })
     })
   })
 })

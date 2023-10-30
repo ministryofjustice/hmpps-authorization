@@ -12,16 +12,17 @@ export default function baseClientRouter(services: Services): Router {
       handlers.map(handler => asyncMiddleware(handler)),
     )
 
-  // const post = (path: string | string[], ...handlers: RequestHandler[]) =>
-  //   router.post(
-  //     path,
-  //     handlers.map(handler => asyncMiddleware(handler)),
-  //   )
+  const post = (path: string | string[], ...handlers: RequestHandler[]) =>
+    router.post(
+      path,
+      handlers.map(handler => asyncMiddleware(handler)),
+    )
 
   const baseClientController = new BaseClientController(services.baseClientService)
 
   get('/', baseClientController.displayBaseClients())
+  get('/base-clients/new', baseClientController.displayNewBaseClient())
   get('/base-clients/:baseClientId', baseClientController.displayBaseClient())
-
+  post('/base-clients/new', baseClientController.createBaseClient())
   return router
 }

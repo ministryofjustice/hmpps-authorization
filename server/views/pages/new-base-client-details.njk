@@ -1,0 +1,276 @@
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Add base client" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set pageName="Home" %}
+{% set bodyClasses = "extra-wide" %}
+
+{% block header %}
+  {% include "partials/header.njk" %}
+{% endblock %}
+
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/label/macro.njk" import govukLabel %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <form class="govuk-grid-column-two-thirds" action="/base-clients/new" method="POST">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <input type="hidden" value="{{ grant }}" name="grant">
+
+      <h1 class="govuk-heading-xl">
+        Add new client
+      </h1>
+
+      <h2 class="govuk-heading-l">Client details</h2>
+      {{ govukInput({
+        label: {
+          text: "Base client ID"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "base-client-id",
+        name: "baseClientId",
+        value: baseClient.baseClientId,
+        errorMessage: errorMessage
+      }) }}
+
+      {{ govukRadios({
+        classes: "govuk-radios--inline",
+        name: "clientType",
+        fieldset: {
+          legend: {
+            text: "Client type",
+            isPageHeading: false
+          }
+        },
+        items: [
+          {
+            value: "SERVICE",
+            text: "Service"
+          },
+          {
+            value: "PERSONAL",
+            text: "Personal"
+          }
+        ],
+        value: baseClient.clientType
+      }) }}
+
+      {{ govukSelect({
+        id: "access-token-validity",
+        name: "accessTokenValidity",
+        label: {
+          text: "Access token validity"
+        },
+        hint: {
+          text: "Token expiration time in seconds"
+        },
+        classes: "govuk-!-width-one-third",
+        items: [
+          {
+            value: "1200",
+            text: "1200 - 20 minutes"
+          },
+          {
+            value: "3600",
+            text: "3600 - 1 hour",
+            selected: true
+          },
+          {
+            value: "43200",
+            text: "43200 - 12 hours"
+          },
+          {
+            value: "custom",
+            text: "Custom"
+          }
+        ],
+        value: presenter.accessTokenValidityDropdown
+      }) }}
+
+      <div id="custom-access-token-validity-element">
+        {{ govukInput({
+          label: {
+            text: "Custom access token validity in seconds"
+          },
+          classes: "govuk-!-width-one-half",
+          id: "custom-access-token-validity",
+          name: "customAccessTokenValidity",
+          value: presenter.accessTokenValidityText
+        }) }}
+      </div>
+
+      {{ govukInput({
+        label: {
+          text: "Approved scopes"
+        },
+        hint: {
+          text: "read, write ..."
+        },
+        classes: "govuk-!-width-one-third",
+        id: "approved-scopes",
+        name: "approvedScopes",
+        value: toLines(baseClient.scopes)
+      }) }}
+
+      <h2 class="govuk-heading-l">Audit trail</h2>
+      {{ govukTextarea({
+        name: "audit",
+        id: "audit",
+        label: {
+          text: "Details",
+          isPageHeading: false
+        },
+        hint: {
+          text: "jira tickets, slack messages ..."
+        },
+        value: baseClient.audit
+      }) }}
+
+      <h2 class="govuk-heading-l">Grant details</h2>
+
+      {% if grant == "client-credentials" %}
+        {{ govukInput({
+          label: {
+            text: "Grant type"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "grant-type",
+          name: "grantType",
+          value: "Client credentials",
+          disabled: true
+        }) }}
+
+        {{ govukTextarea({
+          name: "authorities",
+          id: "authorities",
+          label: {
+            text: "Authorities",
+            isPageHeading: false
+          },
+          value: toLines(baseClient.clientCredentials.authorities)
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Database username"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "database-username",
+          name: "databaseUsername",
+          value: baseClient.clientCredentials.databaseUsername
+        }) }}
+      {% endif %}
+
+      {% if grant == "authorization-code" %}
+        {{ govukInput({
+          label: {
+            text: "Grant type"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "grant-type",
+          name: "grantType",
+          value: "Authorization code",
+          disabled: true
+        }) }}
+
+        {{ govukTextarea({
+          name: "redirectUris",
+          id: "redirect-uris",
+          label: {
+            text: "Registered redirect URIs",
+            isPageHeading: false
+          },
+          value: toLines(baseClient.authorizationCode.redirectUris)
+        }) }}
+        {{ govukInput({
+          label: {
+            text: "JWT Fields Configuration"
+          },
+          hint: {
+            text: "Comma separated list of fields, prefixed with + to add, - to remove e.g. +name,-user_id"
+          },
+          classes: "govuk-!-width-one-third",
+          id: "jwt-fields",
+          name: "jwtFields",
+          value: baseClient.authorizationCode.jwtFields
+        }) }}
+
+
+        {{ govukCheckboxes({
+          name: "azureAdLoginFlow",
+          fieldset: {
+            legend: {
+              text: "Azure Ad Login Flow",
+              isPageHeading: false
+            },
+            hint: {
+              text: "Customize behaviour of Azure AD login"
+            }
+          },
+          items: [
+            {
+              value: "redirect",
+              text: "Auto redirect",
+              checked: baseClient.authorisationCode.azureAdLoginFlow
+            }
+          ]
+        }) }}
+      {% endif %}
+
+      <h2 class="govuk-heading-l">Config</h2>
+      {{ govukCheckboxes({
+        name: "expiry",
+        items: [
+          {
+            value: "expire",
+            text: "allow client to expire",
+            checked: presenter.expiry,
+            conditional: {
+            html: "<label class=\"govuk-label\" for=\"expiry-days\">Number of days client is valid for</label><input class=\"govuk-input govuk-!-width-one-quarter\" id=\"expiry-days\" name=\"expiryDays\" type=\"text\" value=\"" + presenter.daysRemaining +"\">"
+          }
+          }
+        ]
+      }) }}
+
+      {{ govukTextarea({
+        name: "allowedIPs",
+        id: "allowed-ips",
+        label: {
+          text: "Allowed IPs",
+          isPageHeading: false
+        },
+        hint: {
+          html: "One IP address/CIDR notation per line</br>81.134.202.29/32 - mojvpn</br>35.176.93.186/32 - global-protect</br>35.178.209.113/32 - cloudplatform-1</br>3.8.51.207/32 - cloudplatform-2</br>35.177.252.54/32 - cloudplatform-3"
+        },
+        value: toLines(baseClient.config.allowedIPs)
+      }) }}
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Save",
+          type: "submit",
+          preventDoubleClick: true
+        }) }}
+        <a href="/" role="button" class="govuk-button govuk-button--secondary">Cancel</a>
+      </div>
+
+    </form>
+
+  </div>
+
+{% endblock %}
+
+{% block pageScripts %}
+  <script src='/assets/js/application.js'></script>
+{% endblock %}

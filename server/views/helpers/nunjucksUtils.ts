@@ -23,11 +23,17 @@ const capitalize = (word: string): string => {
 }
 
 const toLinesHtml = (str?: string[]): string | null => {
+  if (str === undefined) {
+    return ''
+  }
   return str.join('<br>')
 }
 
 const toLines = (str?: string[]): string | null => {
-  return str.join('/n')
+  if (str === undefined) {
+    return ''
+  }
+  return str.join('\n')
 }
 
 export default {
