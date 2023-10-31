@@ -197,20 +197,20 @@ describe('BaseClientController', () => {
         // WHEN the edit base client details page is requested
         await baseClientController.displayEditBaseClient()(request, response, next)
 
-        // THEN the page is rendered
+        // THEN the base client is retrieved from the base client service
+        expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+
+        // AND the page is rendered
         const presenter = editBaseClientPresenter(baseClient)
         expect(response.render).toHaveBeenCalledWith('pages/edit-base-client-details.njk', {
           baseClient,
           presenter,
           ...nunjucksUtils,
         })
-
-        // AND the base client is retrieved from the base client service
-        expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
       })
 
       it('if success redirects to view base client screen', async () => {
-        // GIVEN the service returns success and a set of secrets
+        // GIVEN the service will return without an error
         const baseClient = baseClientFactory.build()
         request = createMock<Request>({
           params: { baseClientId: baseClient.baseClientId },
@@ -221,7 +221,7 @@ describe('BaseClientController', () => {
         // WHEN it is posted
         await baseClientController.updateBaseClientDetails()(request, response, next)
 
-        // THEN the new base client success page is rendered
+        // THEN the user is redirected to the view base client page
         expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
       })
     })
