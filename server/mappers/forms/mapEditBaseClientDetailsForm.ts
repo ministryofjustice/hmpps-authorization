@@ -10,24 +10,16 @@ export default (baseClient: BaseClient, request: Request): BaseClient => {
   const dayOfExpiry = data.expiry ? getDayOfExpiry(data.expiryDays) : null
 
   return {
-    baseClientId: data.baseClientId,
+    ...baseClient,
     clientType: data.clientType,
     accessTokenValidity: accessTokenValiditySeconds,
     scopes: multiSeparatorSplit(data.approvedScopes, [',', '\r\n', '\n']),
     audit: data.audit,
-    count: baseClient.count,
     grantType: data.grant,
     clientCredentials: {
       authorities: multiSeparatorSplit(data.authorities, [',', '\r\n', '\n']),
       databaseUserName: data.databaseUsername,
     },
-    authorisationCode: {
-      registeredRedirectURIs: [],
-      jwtFields: '',
-      azureAdLoginFlow: false,
-    },
-    service: baseClient.service,
-    deployment: baseClient.deployment,
     config: {
       allowedIPs: multiSeparatorSplit(data.allowedIPs, [',', '\r\n', '\n']),
       expiryDate: dayOfExpiry,

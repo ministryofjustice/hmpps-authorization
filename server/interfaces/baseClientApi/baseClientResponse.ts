@@ -22,6 +22,18 @@ export interface GetBaseClientResponse {
   databaseUserName?: string
   validDays?: number
   accessTokenValidityMinutes?: number
+  deployment: {
+    team: string
+    teamContact: string
+    teamSlack: string
+    hosting: string
+    namespace: string
+    deployment: string
+    secretName: string
+    clientIdKey: string
+    secretKey: string
+    deploymentInfo: string
+  }
 }
 
 export interface ClientSecretsResponse {

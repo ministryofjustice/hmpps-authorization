@@ -26,7 +26,7 @@
   }) }}
 
   <div class="govuk-grid-row">
-    <form class="govuk-grid-column-two-thirds" action="/base-clients/{{ baseClient.baseClientId }}/edit" method="POST">
+    <form class="govuk-grid-column-two-thirds" action="/base-clients/{{ baseClient.baseClientId }}/deployment" method="POST">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       <input type="hidden" name="baseClientId" value="{{ baseClient.baseClientId }}">
 

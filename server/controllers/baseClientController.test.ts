@@ -246,5 +246,24 @@ describe('BaseClientController', () => {
         baseClient,
       })
     })
+
+    it('updates and redirects to view base client screen', async () => {
+      // GIVEN the service will return without an error
+      const baseClient = baseClientFactory.build()
+      request = createMock<Request>({
+        params: { baseClientId: baseClient.baseClientId },
+        body: { baseClientId: baseClient.baseClientId },
+      })
+      baseClientService.updateBaseClientDeployment.mockResolvedValue(new Response())
+
+      // WHEN it is posted
+      await baseClientController.updateBaseClientDeployment()(request, response, next)
+
+      // THEN the base client service is updated
+      expect(baseClientService.updateBaseClientDeployment).toHaveBeenCalled()
+
+      // AND the user is redirected to the view base client page
+      expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
+    })
   })
 })
