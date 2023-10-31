@@ -22,6 +22,7 @@ export default function baseClientRouter(services: Services): Router {
 
   get('/', baseClientController.displayBaseClients())
   get('/base-clients/new', baseClientController.displayNewBaseClient())
+  get('/base-clients/:baseClientId/deployment', baseClientController.displayEditBaseClientDeployment())
   get('/base-clients/:baseClientId/edit', baseClientController.displayEditBaseClient())
   get('/base-clients/:baseClientId', baseClientController.displayBaseClient())
   post('/base-clients/new', baseClientController.createBaseClient())

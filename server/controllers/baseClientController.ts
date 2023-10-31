@@ -128,4 +128,16 @@ export default class BaseClientController {
       res.redirect(`/base-clients/${baseClientId}`)
     }
   }
+
+  public displayEditBaseClientDeployment(): RequestHandler {
+    return async (req, res) => {
+      const userToken = res.locals.user.token
+      const { baseClientId } = req.params
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+
+      res.render('pages/edit-base-client-deployment.njk', {
+        baseClient,
+      })
+    }
+  }
 }

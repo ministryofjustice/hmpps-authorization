@@ -187,42 +187,63 @@ describe('BaseClientController', () => {
   })
 
   describe('update base client details', () => {
-    describe('journey', () => {
-      it('if grant is not specified as parameter renders the select grant screen', async () => {
-        // GIVEN a request to edit a base client
-        const baseClient = baseClientFactory.build()
-        baseClientService.getBaseClient.mockResolvedValue(baseClient)
-        request = createMock<Request>({ params: { baseClientId: baseClient.baseClientId } })
+    it('displays update base client details screen', async () => {
+      // GIVEN a request to edit a base client
+      const baseClient = baseClientFactory.build()
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      request = createMock<Request>({ params: { baseClientId: baseClient.baseClientId } })
 
-        // WHEN the edit base client details page is requested
-        await baseClientController.displayEditBaseClient()(request, response, next)
+      // WHEN the edit base client details page is requested
+      await baseClientController.displayEditBaseClient()(request, response, next)
 
-        // THEN the base client is retrieved from the base client service
-        expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+      // THEN the base client is retrieved from the base client service
+      expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
 
-        // AND the page is rendered
-        const presenter = editBaseClientPresenter(baseClient)
-        expect(response.render).toHaveBeenCalledWith('pages/edit-base-client-details.njk', {
-          baseClient,
-          presenter,
-          ...nunjucksUtils,
-        })
+      // AND the page is rendered
+      const presenter = editBaseClientPresenter(baseClient)
+      expect(response.render).toHaveBeenCalledWith('pages/edit-base-client-details.njk', {
+        baseClient,
+        presenter,
+        ...nunjucksUtils,
       })
+    })
 
-      it('if success redirects to view base client screen', async () => {
-        // GIVEN the service will return without an error
-        const baseClient = baseClientFactory.build()
-        request = createMock<Request>({
-          params: { baseClientId: baseClient.baseClientId },
-          body: { baseClientId: baseClient.baseClientId },
-        })
-        baseClientService.updateBaseClient.mockResolvedValue(new Response())
+    it('updates and redirects to view base client screen', async () => {
+      // GIVEN the service will return without an error
+      const baseClient = baseClientFactory.build()
+      request = createMock<Request>({
+        params: { baseClientId: baseClient.baseClientId },
+        body: { baseClientId: baseClient.baseClientId },
+      })
+      baseClientService.updateBaseClient.mockResolvedValue(new Response())
 
-        // WHEN it is posted
-        await baseClientController.updateBaseClientDetails()(request, response, next)
+      // WHEN it is posted
+      await baseClientController.updateBaseClientDetails()(request, response, next)
 
-        // THEN the user is redirected to the view base client page
-        expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
+      // THEN the base client service is updated
+      expect(baseClientService.updateBaseClient).toHaveBeenCalled()
+
+      // AND the user is redirected to the view base client page
+      expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
+    })
+  })
+
+  describe('update base client deployment', () => {
+    it('displays update base client deployment screen', async () => {
+      // GIVEN a request to edit base client deployment
+      const baseClient = baseClientFactory.build()
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      request = createMock<Request>({ params: { baseClientId: baseClient.baseClientId } })
+
+      // WHEN the edit base client details page is requested
+      await baseClientController.displayEditBaseClientDeployment()(request, response, next)
+
+      // THEN the base client is retrieved from the base client service
+      expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+
+      // AND the page is rendered
+      expect(response.render).toHaveBeenCalledWith('pages/edit-base-client-deployment.njk', {
+        baseClient,
       })
     })
   })
