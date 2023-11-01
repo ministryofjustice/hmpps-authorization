@@ -1,6 +1,6 @@
 # Change log
 
-**October 6th 2023** - Integrated updates from the `hmpps-typescript-template`
+November 1st 2023** - Integrated updates from the `hmpps-typescript-template`
 
 ----------
 

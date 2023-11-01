@@ -10,6 +10,7 @@ context('SignIn', () => {
     cy.task('stubAuthUser')
     cy.task('stubListBaseClients')
     cy.task('stubGetBaseClient')
+    cy.task('stubManageUser')
   })
 
   it('Unauthenticated user directed to auth', () => {
@@ -60,21 +61,17 @@ context('SignIn', () => {
   })
 
   it('Token verification failure clears user session', () => {
-    // sign in as one user
     cy.signIn()
     const indexPage = Page.verifyOnPage(IndexPage)
-
-    // invalidate the token
     cy.task('stubVerifyToken', false)
-    // and check they are sent to sign in - can't do a visit here as cypress requires only one domain
+
+    // can't do a visit here as cypress requires only one domain
     cy.request('/').its('body').should('contain', 'Sign in')
 
-    // sign back in as a different person
     cy.task('stubVerifyToken', true)
-    cy.task('stubAuthUser', 'bobby brown')
+    cy.task('stubManageUser', 'bobby brown')
     cy.signIn()
 
-    // check the new user is signed in
     indexPage.headerUserName().contains('B. Brown')
   })
 })
