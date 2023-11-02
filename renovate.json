@@ -21,6 +21,7 @@
     },
     {
       "matchManagers": ["npm"],
+      "matchDatasources": ["docker"],
       "matchPackageNames": ["@types/node"],
       "matchUpdateTypes": ["major"],
       "enabled": false
