@@ -20,7 +20,7 @@ The app requires:
 
 To start the main services excluding the example typescript template app: 
 
-`docker-compose up --scale=app=0`
+`docker compose up --scale=app=0`
 
 Install dependencies using `npm install`, ensuring you are using `node v18.x` and `npm v9.x`
 
@@ -42,7 +42,7 @@ And then, to build the assets and start the app with nodemon:
 
 For local running, start a test db, redis, and wiremock instance by:
 
-`docker-compose -f docker-compose-test.yml up`
+`docker compose -f docker-compose-test.yml up`
 
 Then run the server in test mode by:
 
@@ -56,6 +56,10 @@ Or run tests with the cypress UI:
 
 `npm run int-test-ui`
 
+
+## Change log
+
+A changelog for the service is available [here](./CHANGELOG.md)
 
 ## Dependency Checks
 

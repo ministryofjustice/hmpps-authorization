@@ -18,7 +18,7 @@ parameters:
 
   node-version:
     type: string
-    default: 18.18-browsers
+    default: 20.8-browsers
 
 jobs:
   build:
@@ -157,6 +157,7 @@ workflows:
 #          context:
 #            - hmpps-common-vars
 #            - hmpps-authorization-preprod
+#            - hmpps-template-typescript-preprod
 #          requires:
 #            - request-preprod-approval
 #          helm_timeout: 5m

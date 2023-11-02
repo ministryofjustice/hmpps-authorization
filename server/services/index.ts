@@ -3,9 +3,9 @@ import BaseClientService from './baseClientService'
 import UserService from './userService'
 
 export const services = () => {
-  const { hmppsAuthClient, baseClientApiClientBuilder, applicationInfo } = dataAccess()
+  const { baseClientApiClientBuilder, manageUsersApiClient, applicationInfo } = dataAccess()
 
-  const userService = new UserService(hmppsAuthClient)
+  const userService = new UserService(manageUsersApiClient)
   const baseClientService = new BaseClientService(baseClientApiClientBuilder)
 
   return {
