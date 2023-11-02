@@ -266,4 +266,25 @@ describe('BaseClientController', () => {
       expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
     })
   })
+
+  describe('create client instance', () => {
+    it('if success renders the secrets screen', async () => {
+      // GIVEN the service returns success and a set of secrets
+      const baseClient = baseClientFactory.build()
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      request = createMock<Request>({ body: { baseClientId: baseClient.baseClientId } })
+
+      const secrets = clientSecretsFactory.build()
+      baseClientService.addClientInstance.mockResolvedValue(secrets)
+
+      // WHEN it is posted
+      await baseClientController.createClientInstance()(request, response, next)
+
+      // THEN the new base client success page is rendered
+      expect(response.render).toHaveBeenCalledWith(
+        'pages/new-base-client-success.njk',
+        expect.objectContaining({ secrets }),
+      )
+    })
+  })
 })

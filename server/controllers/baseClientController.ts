@@ -159,4 +159,24 @@ export default class BaseClientController {
       res.redirect(`/base-clients/${baseClientId}`)
     }
   }
+
+  public createClientInstance(): RequestHandler {
+    return async (req, res, next) => {
+      const userToken = res.locals.user.token
+      const { baseClientId } = req.params
+
+      // get base client
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+
+      // Create base client
+      const secrets = await this.baseClientService.addClientInstance(userToken, baseClient)
+
+      // Display success page
+      res.render('pages/new-base-client-success.njk', {
+        title: `Client has been added`,
+        baseClientId: baseClient.baseClientId,
+        secrets,
+      })
+    }
+  }
 }
