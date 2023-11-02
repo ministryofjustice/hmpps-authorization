@@ -63,7 +63,7 @@
                     <h2 class="govuk-heading-l">Base client details</h2>
                 </div>
                 <div class="govuk-grid-column-one-third">
-                    <a class="govuk-link" href="/baseClient/{{ baseClient.baseClientId }}/edit">Change
+                    <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/edit">Change
                         client details</a>
                 </div>
             </div>
@@ -211,7 +211,7 @@
                         {
                             text: "Allowed IPs"
                         },{
-                            text: toLinesHtml(baseClient.config.allowedIPs)
+                            html: toLinesHtml(baseClient.config.allowedIPs)
                         }
                     ]
                 ]
@@ -284,7 +284,7 @@
                     <h2 class="govuk-heading-l">Deployment details</h2>
                 </div>
                 <div class="govuk-grid-column-one-third">
-                    <a class="govuk-link" href="/clients/{{ baseClient.baseClientId }}/edit-deployment-details">Change
+                    <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/deployment">Change
                         deployment details</a>
                 </div>
             </div>

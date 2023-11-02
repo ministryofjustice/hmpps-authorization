@@ -27,16 +27,7 @@ export default (response: GetBaseClientResponse): BaseClient => {
       contact: '',
       status: '',
     },
-    deployment: {
-      team: '',
-      teamContact: '',
-      teamSlack: '',
-      hosting: '',
-      namespace: '',
-      deployment: '',
-      secretName: '',
-      clientIdKey: '',
-    },
+    deployment: response.deployment,
     config: {
       allowedIPs: response.ips ? response.ips : [],
       expiryDate: response.validDays

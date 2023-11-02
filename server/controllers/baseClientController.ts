@@ -3,7 +3,7 @@ import { BaseClientService } from '../services'
 import listBaseClientsPresenter from '../views/presenters/listBaseClientsPresenter'
 import viewBaseClientPresenter from '../views/presenters/viewBaseClientPresenter'
 import nunjucksUtils from '../views/helpers/nunjucksUtils'
-import { mapCreateBaseClientForm } from '../mappers'
+import { mapCreateBaseClientForm, mapEditBaseClientDeploymentForm, mapEditBaseClientDetailsForm } from '../mappers'
 import { BaseClient } from '../interfaces/baseClientApi/baseClient'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
 
@@ -92,6 +92,71 @@ export default class BaseClientController {
       return 'A base client with this ID already exists'
     } catch (e) {
       return ''
+    }
+  }
+
+  public displayEditBaseClient(): RequestHandler {
+    return async (req, res) => {
+      const userToken = res.locals.user.token
+      const { baseClientId } = req.params
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+
+      const presenter = editBaseClientPresenter(baseClient)
+      res.render('pages/edit-base-client-details.njk', {
+        baseClient,
+        presenter,
+        ...nunjucksUtils,
+      })
+    }
+  }
+
+  public updateBaseClientDetails(): RequestHandler {
+    return async (req, res, next) => {
+      const userToken = res.locals.user.token
+      const { baseClientId } = req.params
+
+      // get current values
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+
+      // map form values to updated base client
+      const updatedClient = mapEditBaseClientDetailsForm(baseClient, req)
+
+      // update base client
+      await this.baseClientService.updateBaseClient(userToken, updatedClient)
+
+      // return to view base client page
+      res.redirect(`/base-clients/${baseClientId}`)
+    }
+  }
+
+  public displayEditBaseClientDeployment(): RequestHandler {
+    return async (req, res) => {
+      const userToken = res.locals.user.token
+      const { baseClientId } = req.params
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+
+      res.render('pages/edit-base-client-deployment.njk', {
+        baseClient,
+      })
+    }
+  }
+
+  public updateBaseClientDeployment(): RequestHandler {
+    return async (req, res, next) => {
+      const userToken = res.locals.user.token
+      const { baseClientId } = req.params
+
+      // get current values
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+
+      // map form values to updated base client
+      const updatedClient = mapEditBaseClientDeploymentForm(baseClient, req)
+
+      // update base client
+      await this.baseClientService.updateBaseClientDeployment(userToken, updatedClient)
+
+      // return to view base client page
+      res.redirect(`/base-clients/${baseClientId}`)
     }
   }
 }

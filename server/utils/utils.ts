@@ -57,6 +57,27 @@ export const offsetNow = (days: number) => {
 
 export const offsetDate = (date: Date, days: number) => {
   const newDate = new Date(date)
-  newDate.setDate(newDate.getDate() + days)
+  newDate.setDate(date.getDate() + days)
   return newDate
+}
+
+export const parseIntWithDefault = (value: string, defaultValue: number) => {
+  const parsed = parseInt(value, 10)
+  return Number.isNaN(parsed) ? defaultValue : parsed
+}
+
+export const getDayOfExpiry = (daysLeft: string) => {
+  const daysRemainingInt = parseIntWithDefault(daysLeft, 0)
+  return offsetNow(daysRemainingInt).toISOString().split('T')[0]
+}
+
+export const dateISOString = (date: Date) => {
+  return date.toISOString().split('T')[0]
+}
+
+export const getAccessTokenValiditySeconds = (accessTokenValidity: string, customAccessTokenValidity?: string) => {
+  if (accessTokenValidity === 'custom' && customAccessTokenValidity) {
+    return parseIntWithDefault(customAccessTokenValidity, 0)
+  }
+  return parseIntWithDefault(accessTokenValidity, 0)
 }

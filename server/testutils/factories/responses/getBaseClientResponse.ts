@@ -11,4 +11,16 @@ export default Factory.define<GetBaseClientResponse>(() => ({
   databaseUserName: 'databaseUserName',
   validDays: 1,
   accessTokenValidityMinutes: 60,
+  deployment: {
+    team: 'deployment team',
+    teamContact: 'deployment team contact',
+    teamSlack: 'deployment team slack',
+    hosting: 'deployment hosting',
+    namespace: 'deployment namespace',
+    deployment: 'deployment deployment',
+    secretName: 'deployment secret name',
+    clientIdKey: 'deployment client id key',
+    secretKey: 'deployment secret key',
+    deploymentInfo: 'deployment deployment info',
+  },
 }))
