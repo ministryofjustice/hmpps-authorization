@@ -35,6 +35,7 @@
 
 
         <form action="/base-clients/{{ baseClient.baseClientId }}/clients/{{ clientId }}/delete" method="POST">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
           {{ govukInput({
             label: {
               text: "Confirmation"
@@ -42,7 +43,9 @@
             hint: {
               html: "Type <em><strong>\"" + clientId + "\"</strong></em> to confirm"
             },
-            errorMessage: error,
+            errorMessage: {
+              text: error
+            },
             classes: "govuk-!-width-two-thirds",
             id: "confirm",
             name: "confirm"

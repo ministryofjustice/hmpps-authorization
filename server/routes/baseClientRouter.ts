@@ -30,5 +30,6 @@ export default function baseClientRouter(services: Services): Router {
   post('/base-clients/:baseClientId/deployment', baseClientController.updateBaseClientDeployment())
   post('/base-clients/:baseClientId/edit', baseClientController.updateBaseClientDetails())
   post('/base-clients/:baseClientId/clients', baseClientController.createClientInstance())
+  post('/base-clients/:baseClientId/clients/:clientId/delete', baseClientController.deleteClientInstance())
   return router
 }

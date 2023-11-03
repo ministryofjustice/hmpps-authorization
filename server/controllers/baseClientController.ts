@@ -184,6 +184,7 @@ export default class BaseClientController {
     return async (req, res, next) => {
       const userToken = res.locals.user.token
       const { baseClientId, clientId } = req.params
+      const error = req.query.error === 'clientIdMismatch' ? 'Client ID does not match' : null
 
       // get base client
       const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
@@ -194,7 +195,42 @@ export default class BaseClientController {
         baseClient,
         clientId,
         isLastClient: clients.length === 1,
+        error,
       })
+    }
+  }
+
+  public deleteClientInstance(): RequestHandler {
+    return async (req, res, next) => {
+      const userToken = res.locals.user.token
+      const { baseClientId, clientId } = req.params
+
+      // check client id matches
+      if (req.body.confirm !== clientId) {
+        res.redirect(`/base-clients/${baseClientId}/clients/${clientId}/delete?error=clientIdMismatch`)
+        return
+      }
+
+      // get base client
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+      const clients = await this.baseClientService.listClientInstances(userToken, baseClient)
+      const client = clients.find(c => c.clientId === clientId)
+
+      // check client exists
+      if (!client) {
+        res.redirect(`/base-clients/${baseClientId}/clients/${clientId}/delete?error=clientNotFound`)
+        return
+      }
+
+      // delete client
+      await this.baseClientService.deleteClientInstance(userToken, client)
+
+      // return to view base client screen (or home screen if last client deleted)
+      if (clients.length === 1) {
+        res.redirect(`/`)
+      } else {
+        res.redirect(`/base-clients/${baseClientId}`)
+      }
     }
   }
 }
