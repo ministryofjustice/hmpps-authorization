@@ -179,4 +179,22 @@ export default class BaseClientController {
       })
     }
   }
+
+  public displayDeleteClientInstance(): RequestHandler {
+    return async (req, res, next) => {
+      const userToken = res.locals.user.token
+      const { baseClientId, clientId } = req.params
+
+      // get base client
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+      const clients = await this.baseClientService.listClientInstances(userToken, baseClient)
+
+      // Display delete confirmation page
+      res.render('pages/delete-client-instance.njk', {
+        baseClient,
+        clientId,
+        isLastClient: clients.length === 1,
+      })
+    }
+  }
 }

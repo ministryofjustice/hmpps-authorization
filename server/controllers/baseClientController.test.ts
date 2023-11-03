@@ -287,4 +287,35 @@ describe('BaseClientController', () => {
       )
     })
   })
+
+  describe('delete client instance', () => {
+    it.each([
+      ['one client instance', 1, true],
+      ['multiple client instances', 3, false],
+    ])(`if %s renders the page with isLastClient %s`, async (_, clientCount, isLastClient) => {
+      // GIVEN a base client
+      const baseClient = baseClientFactory.build()
+      const clients = clientFactory.buildList(clientCount)
+      const client = clients[0]
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.listClientInstances.mockResolvedValue(clients)
+
+      // WHEN the index page is requested
+      request = createMock<Request>({ params: { baseClientId: baseClient.baseClientId, clientId: client.clientId } })
+      await baseClientController.displayDeleteClientInstance()(request, response, next)
+
+      // THEN the view base client page is rendered with isLastClient true
+      expect(response.render).toHaveBeenCalledWith('pages/delete-client-instance.njk', {
+        baseClient,
+        clientId: client.clientId,
+        isLastClient,
+      })
+
+      // AND the base client is retrieved from the base client service
+      expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+
+      // AND the clients are retrieved from the base client service
+      expect(baseClientService.listClientInstances).toHaveBeenCalledWith(token, baseClient)
+    })
+  })
 })
