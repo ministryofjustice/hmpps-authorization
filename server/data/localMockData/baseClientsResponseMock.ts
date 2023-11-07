@@ -1,4 +1,8 @@
-import { GetBaseClientResponse, ListBaseClientsResponse } from '../../interfaces/baseClientApi/baseClientResponse'
+import {
+  GetBaseClientResponse,
+  ListBaseClientsResponse,
+  ListClientInstancesResponse,
+} from '../../interfaces/baseClientApi/baseClientResponse'
 
 export const listBaseClientsResponseMock: ListBaseClientsResponse = {
   clients: [
@@ -27,7 +31,7 @@ export const listBaseClientsResponseMock: ListBaseClientsResponse = {
 }
 
 export const getBaseClientResponseMock: GetBaseClientResponse = {
-  clientId: 'baseClientId1',
+  clientId: 'base_client_id_1',
   scopes: ['read', 'write'],
   authorities: ['ROLE_CLIENT_CREDENTIALS'],
   ips: [],
@@ -47,4 +51,22 @@ export const getBaseClientResponseMock: GetBaseClientResponse = {
     secretKey: 'deployment secret key',
     deploymentInfo: 'deployment deployment info',
   },
+}
+
+export const getListClientInstancesResponseMock: ListClientInstancesResponse = {
+  clients: [
+    {
+      clientId: 'base_client_id_1_01',
+      created: '2020-01-01T00:00:00.000',
+    },
+    {
+      clientId: 'base_client_id_1_02',
+      created: '2020-01-01T00:00:00.000',
+    },
+    {
+      clientId: 'base_client_id_1_03',
+      created: '2020-01-01T00:00:00.000',
+    },
+  ],
+  grantType: 'client_credentials',
 }
