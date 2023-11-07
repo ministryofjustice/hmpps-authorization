@@ -6,6 +6,7 @@ import nunjucksUtils from '../views/helpers/nunjucksUtils'
 import { mapCreateBaseClientForm, mapEditBaseClientDeploymentForm, mapEditBaseClientDetailsForm } from '../mappers'
 import { BaseClient } from '../interfaces/baseClientApi/baseClient'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
+import mapFilterForm from '../mappers/forms/mapFilterForm'
 
 export default class BaseClientController {
   constructor(private readonly baseClientService: BaseClientService) {}
@@ -16,6 +17,21 @@ export default class BaseClientController {
       const baseClients = await this.baseClientService.listBaseClients(userToken)
 
       const presenter = listBaseClientsPresenter(baseClients)
+
+      res.render('pages/base-clients.njk', {
+        presenter,
+      })
+    }
+  }
+
+  public filterBaseClients(): RequestHandler {
+    return async (req, res) => {
+      const userToken = res.locals.user.token
+      const filter = mapFilterForm(req)
+
+      const baseClients = await this.baseClientService.listBaseClients(userToken)
+
+      const presenter = listBaseClientsPresenter(baseClients, filter)
 
       res.render('pages/base-clients.njk', {
         presenter,

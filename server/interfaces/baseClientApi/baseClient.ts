@@ -56,3 +56,12 @@ export interface ClientSecrets {
   base64ClientId: string
   base64ClientSecret: string
 }
+
+export interface BaseClientListFilter {
+  roleSearch: string
+  clientCredentials: boolean
+  authorisationCode: boolean
+  serviceClientType: boolean
+  personalClientType: boolean
+  blankClientType: boolean
+}
