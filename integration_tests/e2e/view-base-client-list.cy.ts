@@ -28,7 +28,7 @@ context('Homepage - list base-clients', () => {
   })
 
   it('User can click through to base-client', () => {
-    listBaseClientsPage.baseClientList().first().get('a').click()
+    listBaseClientsPage.baseClientList().first().children('a').click()
     Page.verifyOnPage(ViewBaseClientPage)
   })
 
