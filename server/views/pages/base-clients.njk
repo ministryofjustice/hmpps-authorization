@@ -33,6 +33,9 @@
       text: 'Role',
       classes: 'govuk-label--m'
     },
+    attributes: {
+      'data-qa': 'roleFilterInputBox'
+    },
     value: presenter.filter.roleSearch
   }) }}
 
@@ -127,7 +130,10 @@
           items: [{
             text: 'Add new client',
             href:"/base-clients/new",
-            classes: 'govuk-button--primary'
+            classes: 'govuk-button--primary',
+            attributes: {
+              'data-qa': 'addNewBaseClientButton'
+            }
           }]
         }) }}
       </div>

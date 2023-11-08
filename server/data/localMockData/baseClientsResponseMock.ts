@@ -11,6 +11,7 @@ export const listBaseClientsResponseMock: ListBaseClientsResponse = {
       clientType: 'SERVICE',
       teamName: null,
       grantType: 'client_credentials',
+      roles: 'ROLE_ONE, ROLE_TWO',
       count: 1,
     },
     {
@@ -25,6 +26,7 @@ export const listBaseClientsResponseMock: ListBaseClientsResponse = {
       clientType: 'SERVICE',
       teamName: 'Team 2',
       grantType: 'client_credentials',
+      roles: 'ROLE_TWO, ROLE_THREE',
       count: 1,
     },
   ],
