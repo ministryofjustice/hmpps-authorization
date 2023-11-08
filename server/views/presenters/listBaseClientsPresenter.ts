@@ -1,4 +1,4 @@
-import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
+import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
 import { convertToTitleCase } from '../../utils/utils'
 
 const indexTableHead = () => {
@@ -69,13 +69,15 @@ const indexTableHead = () => {
   ]
 }
 
-const indexTableRows = (data: BaseClient[]) => {
-  return data.map(item => [
+const indexTableRows = (data: BaseClient[], filter?: BaseClientListFilter) => {
+  const dataItems = filterItems(data, filter)
+
+  return dataItems.map(item => [
     {
-      html: `<a href="/base-clients/${item.baseClientId}">${item.baseClientId}</a>`,
+      html: `<a href='/base-clients/${item.baseClientId}'>${item.baseClientId}</a>`,
     },
     {
-      html: item.count > 1 ? `<span class="moj-badge">${item.count}</span>` : '',
+      html: item.count > 1 ? `<span class='moj-badge'>${item.count}</span>` : '',
     },
     {
       text: item.clientType ? convertToTitleCase(item.clientType) : '',
@@ -101,9 +103,47 @@ const indexTableRows = (data: BaseClient[]) => {
   ])
 }
 
-export default (data: BaseClient[]) => {
+const filterItems = (data: BaseClient[], filter?: BaseClientListFilter) => {
+  return filter ? data.filter(item => filterBaseClient(item, filter)) : data
+}
+
+export const filterBaseClient = (baseClient: BaseClient, filter: BaseClientListFilter) => {
+  if (filter.roleSearch) {
+    const roles = baseClient.clientCredentials.authorities.join(' ').toLowerCase()
+    const roleSearch = filter.roleSearch.toLowerCase().trim()
+    if (roles.includes(roleSearch) === false) {
+      return false
+    }
+  }
+
+  if (baseClient.grantType === 'client_credentials' && !filter.clientCredentials) {
+    return false
+  }
+
+  if (baseClient.grantType === 'authorisation_code' && !filter.authorisationCode) {
+    return false
+  }
+
+  if (baseClient.clientType === 'PERSONAL' && !filter.personalClientType) {
+    return false
+  }
+  if (baseClient.clientType === 'SERVICE' && !filter.serviceClientType) {
+    return false
+  }
+  return filter.blankClientType
+}
+
+export default (data: BaseClient[], filter?: BaseClientListFilter) => {
   return {
     tableHead: indexTableHead(),
-    tableRows: indexTableRows(data),
+    tableRows: indexTableRows(data, filter),
+    filter: filter || {
+      roleSearch: '',
+      clientCredentials: true,
+      authorisationCode: true,
+      serviceClientType: true,
+      personalClientType: true,
+      blankClientType: true,
+    },
   }
 }

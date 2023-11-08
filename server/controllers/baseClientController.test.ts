@@ -266,4 +266,132 @@ describe('BaseClientController', () => {
       expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
     })
   })
+
+  describe('create client instance', () => {
+    it('if success renders the secrets screen', async () => {
+      // GIVEN the service returns success and a set of secrets
+      const baseClient = baseClientFactory.build()
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      request = createMock<Request>({ body: { baseClientId: baseClient.baseClientId } })
+
+      const secrets = clientSecretsFactory.build()
+      baseClientService.addClientInstance.mockResolvedValue(secrets)
+
+      // WHEN it is posted
+      await baseClientController.createClientInstance()(request, response, next)
+
+      // THEN the new base client success page is rendered
+      expect(response.render).toHaveBeenCalledWith(
+        'pages/new-base-client-success.njk',
+        expect.objectContaining({ secrets }),
+      )
+    })
+  })
+
+  describe('delete client instance', () => {
+    it.each([
+      ['renders one client instance', 1, true],
+      ['renders multiple client instances', 3, false],
+    ])(`if %s renders the page with isLastClient %s`, async (_, clientCount, isLastClient) => {
+      // GIVEN a base client
+      const baseClient = baseClientFactory.build()
+      const clients = clientFactory.buildList(clientCount)
+      const client = clients[0]
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.listClientInstances.mockResolvedValue(clients)
+
+      // WHEN the index page is requested
+      request = createMock<Request>({ params: { baseClientId: baseClient.baseClientId, clientId: client.clientId } })
+      await baseClientController.displayDeleteClientInstance()(request, response, next)
+
+      // THEN the view base client page is rendered with isLastClient true
+      expect(response.render).toHaveBeenCalledWith('pages/delete-client-instance.njk', {
+        baseClient,
+        clientId: client.clientId,
+        isLastClient,
+        error: null,
+      })
+
+      // AND the base client is retrieved from the base client service
+      expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+
+      // AND the clients are retrieved from the base client service
+      expect(baseClientService.listClientInstances).toHaveBeenCalledWith(token, baseClient)
+    })
+
+    it(`renders the page with error`, async () => {
+      // GIVEN a base client
+      const baseClient = baseClientFactory.build()
+      const clients = clientFactory.buildList(3)
+      const client = clients[0]
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.listClientInstances.mockResolvedValue(clients)
+      const errorCode = 'clientIdMismatch'
+
+      // WHEN the index page is requested
+      request = createMock<Request>({
+        params: { baseClientId: baseClient.baseClientId, clientId: client.clientId },
+        query: { error: errorCode },
+      })
+      await baseClientController.displayDeleteClientInstance()(request, response, next)
+
+      // THEN the view base client page is rendered with error
+      const expectedError = 'Client ID does not match'
+      expect(response.render).toHaveBeenCalledWith('pages/delete-client-instance.njk', {
+        baseClient,
+        clientId: client.clientId,
+        isLastClient: false,
+        error: expectedError,
+      })
+    })
+
+    describe(`delete the client instance`, () => {
+      it.each([
+        ['one client instance exists', '/', 1],
+        ['multiple client instances', '/base-clients/abcd', 3],
+      ])(`if delete successful and %s, redirects to %s`, async (_, redirectURL, clientCount) => {
+        // GIVEN a base client
+        const baseClient = baseClientFactory.build({ baseClientId: 'abcd' })
+        const clients = clientFactory.buildList(clientCount)
+        const client = clients[0]
+        baseClientService.getBaseClient.mockResolvedValue(baseClient)
+        baseClientService.listClientInstances.mockResolvedValue(clients)
+
+        // WHEN a delete request is made
+        request = createMock<Request>({
+          params: { baseClientId: baseClient.baseClientId, clientId: client.clientId },
+          query: { error: null },
+          body: { confirm: client.clientId },
+        })
+        await baseClientController.deleteClientInstance()(request, response, next)
+
+        // THEN the client instance is deleted
+        expect(baseClientService.deleteClientInstance).toHaveBeenCalledWith(token, client)
+
+        // AND the user is redirected
+        expect(response.redirect).toHaveBeenCalledWith(redirectURL)
+      })
+
+      it(`if client does not match, redirects with error`, async () => {
+        // GIVEN a base client
+        const baseClient = baseClientFactory.build({ baseClientId: 'abcd' })
+        const clients = clientFactory.buildList(3)
+        const client = clients[0]
+        baseClientService.getBaseClient.mockResolvedValue(baseClient)
+        baseClientService.listClientInstances.mockResolvedValue(clients)
+
+        // WHEN a delete request is made
+        request = createMock<Request>({
+          params: { baseClientId: baseClient.baseClientId, clientId: client.clientId },
+          query: { error: null },
+          body: { confirm: 'something incorrect' },
+        })
+        await baseClientController.deleteClientInstance()(request, response, next)
+
+        // THEN the user is redirected with error
+        const expectedURL = `/base-clients/${baseClient.baseClientId}/clients/${client.clientId}/delete?error=clientIdMismatch`
+        expect(response.redirect).toHaveBeenCalledWith(expectedURL)
+      })
+    })
+  })
 })

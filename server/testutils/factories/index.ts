@@ -10,6 +10,7 @@ import updateBaseClientRequestFactory from './requests/updateBaseClientRequest'
 import updateBaseClientDeploymentFactory from './requests/updateBaseClientDeploymentRequest'
 import listClientInstancesResponseFactory from './responses/listClientInstancesResponse'
 import clientSecretsFactory from './secrets'
+import filterFactory from './filter'
 
 export {
   baseClientFactory,
@@ -22,4 +23,5 @@ export {
   updateBaseClientRequestFactory,
   updateBaseClientDeploymentFactory,
   listClientInstancesResponseFactory,
+  filterFactory,
 }

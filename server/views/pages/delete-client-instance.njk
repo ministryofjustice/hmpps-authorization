@@ -1,0 +1,68 @@
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set pageName="Delete client?" %}
+
+{% block header %}
+  {% include "partials/header.njk" %}
+{% endblock %}
+
+{%- from "moj/components/header/macro.njk" import mojHeader -%}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <h1 class="govuk-heading-xl">Delete client?</h1>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if isLastClient %}
+          {{ govukWarningText({
+            text: "Deleting this client will also delete base-client '" + baseClient.baseClientId + "'.",
+            iconFallbackText: "Warning"
+          }) }}
+        {% endif %}
+        {{ govukWarningText({
+          text: "Deleted clients cannot be restored!",
+          iconFallbackText: "Warning"
+        }) }}
+
+
+        <form action="/base-clients/{{ baseClient.baseClientId }}/clients/{{ clientId }}/delete" method="POST">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          {{ govukInput({
+            label: {
+              text: "Confirmation"
+            },
+            hint: {
+              html: "Type <em><strong>\"" + clientId + "\"</strong></em> to confirm"
+            },
+            errorMessage: {
+              text: error
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "confirm",
+            name: "confirm"
+          }) }}
+
+          {{ govukButton({
+            text: "Delete client instance",
+            type: "submit",
+            classes: "govuk-button--warning"
+          }) }}
+          {{ govukButton({
+            text: "Cancel",
+            href: "/base-clients/" + baseClient.baseClientId
+          }) }}
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

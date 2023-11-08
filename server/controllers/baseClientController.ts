@@ -6,6 +6,7 @@ import nunjucksUtils from '../views/helpers/nunjucksUtils'
 import { mapCreateBaseClientForm, mapEditBaseClientDeploymentForm, mapEditBaseClientDetailsForm } from '../mappers'
 import { BaseClient } from '../interfaces/baseClientApi/baseClient'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
+import mapFilterForm from '../mappers/forms/mapFilterForm'
 
 export default class BaseClientController {
   constructor(private readonly baseClientService: BaseClientService) {}
@@ -16,6 +17,21 @@ export default class BaseClientController {
       const baseClients = await this.baseClientService.listBaseClients(userToken)
 
       const presenter = listBaseClientsPresenter(baseClients)
+
+      res.render('pages/base-clients.njk', {
+        presenter,
+      })
+    }
+  }
+
+  public filterBaseClients(): RequestHandler {
+    return async (req, res) => {
+      const userToken = res.locals.user.token
+      const filter = mapFilterForm(req)
+
+      const baseClients = await this.baseClientService.listBaseClients(userToken)
+
+      const presenter = listBaseClientsPresenter(baseClients, filter)
 
       res.render('pages/base-clients.njk', {
         presenter,
@@ -157,6 +173,80 @@ export default class BaseClientController {
 
       // return to view base client page
       res.redirect(`/base-clients/${baseClientId}`)
+    }
+  }
+
+  public createClientInstance(): RequestHandler {
+    return async (req, res, next) => {
+      const userToken = res.locals.user.token
+      const { baseClientId } = req.params
+
+      // get base client
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+
+      // Create base client
+      const secrets = await this.baseClientService.addClientInstance(userToken, baseClient)
+
+      // Display success page
+      res.render('pages/new-base-client-success.njk', {
+        title: `Client has been added`,
+        baseClientId: baseClient.baseClientId,
+        secrets,
+      })
+    }
+  }
+
+  public displayDeleteClientInstance(): RequestHandler {
+    return async (req, res, next) => {
+      const userToken = res.locals.user.token
+      const { baseClientId, clientId } = req.params
+      const error = req.query.error === 'clientIdMismatch' ? 'Client ID does not match' : null
+
+      // get base client
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+      const clients = await this.baseClientService.listClientInstances(userToken, baseClient)
+
+      // Display delete confirmation page
+      res.render('pages/delete-client-instance.njk', {
+        baseClient,
+        clientId,
+        isLastClient: clients.length === 1,
+        error,
+      })
+    }
+  }
+
+  public deleteClientInstance(): RequestHandler {
+    return async (req, res, next) => {
+      const userToken = res.locals.user.token
+      const { baseClientId, clientId } = req.params
+
+      // check client id matches
+      if (req.body.confirm !== clientId) {
+        res.redirect(`/base-clients/${baseClientId}/clients/${clientId}/delete?error=clientIdMismatch`)
+        return
+      }
+
+      // get base client
+      const baseClient = await this.baseClientService.getBaseClient(userToken, baseClientId)
+      const clients = await this.baseClientService.listClientInstances(userToken, baseClient)
+      const client = clients.find(c => c.clientId === clientId)
+
+      // check client exists
+      if (!client) {
+        res.redirect(`/base-clients/${baseClientId}/clients/${clientId}/delete?error=clientNotFound`)
+        return
+      }
+
+      // delete client
+      await this.baseClientService.deleteClientInstance(userToken, client)
+
+      // return to view base client screen (or home screen if last client deleted)
+      if (clients.length === 1) {
+        res.redirect(`/`)
+      } else {
+        res.redirect(`/base-clients/${baseClientId}`)
+      }
     }
   }
 }

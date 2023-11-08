@@ -15,7 +15,7 @@ export default (baseClient: BaseClient, clients: Client[]) => {
         html: item.accessed.toLocaleDateString('en-GB'),
       },
       {
-        html: `<a class="govuk-link" href="/baseClients/${baseClient.baseClientId}/clients/${item.clientId}/delete">delete</a>`,
+        html: `<a class="govuk-link" href="/base-clients/${baseClient.baseClientId}/clients/${item.clientId}/delete">delete</a>`,
       },
     ]),
     expiry: baseClient.config.expiryDate ? `Yes - days remaining ${daysRemaining(baseClient.config.expiryDate)}` : 'No',
