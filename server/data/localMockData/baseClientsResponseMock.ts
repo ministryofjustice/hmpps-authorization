@@ -1,4 +1,5 @@
 import {
+  ClientSecretsResponse,
   GetBaseClientResponse,
   ListBaseClientsResponse,
   ListClientInstancesResponse,
@@ -65,10 +66,13 @@ export const getListClientInstancesResponseMock: ListClientInstancesResponse = {
       clientId: 'base_client_id_1_02',
       created: '2020-01-01T00:00:00.000',
     },
-    {
-      clientId: 'base_client_id_1_03',
-      created: '2020-01-01T00:00:00.000',
-    },
   ],
   grantType: 'client_credentials',
+}
+
+export const getSecretsResponseMock: ClientSecretsResponse = {
+  clientId: 'base_client_id_1_03',
+  clientSecret: 'aaa',
+  base64ClientId: 'bbb',
+  base64ClientSecret: 'ccc',
 }

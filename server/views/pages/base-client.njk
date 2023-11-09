@@ -46,14 +46,20 @@
             text: ""
           }
         ],
-        rows: presenter.clientsTable
+        rows: presenter.clientsTable,
+        attributes: {
+          "data-qa": "client-instance-list"
+        }
       }) }}
 
       <form class="govuk-grid-row" action="/base-clients/{{ baseClient.baseClientId }}/clients" method="POST">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <div class="govuk-grid-column-one-quarter">
           {{ govukButton({
-            text: "Add new client"
+            text: "Add new client",
+            attributes: {
+              "data-qa": "add-new-client-button"
+            }
           }) }}
         </div>
       </form>
@@ -63,7 +69,7 @@
           <h2 class="govuk-heading-l">Base client details</h2>
         </div>
         <div class="govuk-grid-column-one-third">
-          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/edit">Change
+          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/edit" data-qa='change-client-details-link'>Change
             client details</a>
         </div>
       </div>
@@ -97,7 +103,10 @@
               html: toLinesHtml(baseClient.scopes)
             }
           ]
-        ]
+        ],
+        attributes: {
+          "data-qa": "base-client-details-table"
+        }
       }) }}
 
       {{ govukTable({
@@ -114,7 +123,10 @@
           },{
             text: baseClient.audit
           }]
-        ]
+        ],
+        attributes: {
+          "data-qa": "base-client-audit-table"
+        }
       }) }}
 
 
@@ -148,7 +160,10 @@
                 text: baseClient.clientCredentials.databaseUserName
               }
             ]
-          ]
+          ],
+          attributes: {
+            "data-qa": "base-client-client-credentials-table"
+          }
         }) }}
       {% endif %}
 
@@ -187,7 +202,10 @@
                 text: presenter.skipToAzureField
               }
             ]
-          ]
+          ],
+          attributes: {
+            "data-qa": "base-client-authorization-code-table"
+          }
         }) }}
       {% endif %}
 
@@ -214,7 +232,10 @@
               html: toLinesHtml(baseClient.config.allowedIPs)
             }
           ]
-        ]
+        ],
+        attributes: {
+          "data-qa": "base-client-config-table"
+        }
       }) }}
 
 
@@ -275,7 +296,10 @@
                 text: presenter.serviceEnabledLabel
               }
             ]
-          ]
+          ],
+          attributes: {
+            "data-qa": "base-client-service-table"
+          }
         }) }}
       {% endif %}
 
@@ -284,7 +308,7 @@
           <h2 class="govuk-heading-l">Deployment details</h2>
         </div>
         <div class="govuk-grid-column-one-third">
-          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/deployment">Change
+          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/deployment" data-qa='change-deployment-details-link'>Change
             deployment details</a>
         </div>
       </div>
@@ -319,7 +343,10 @@
             text: baseClient.deployment.teamSlack
           }
           ]
-        ]
+        ],
+        attributes: {
+          "data-qa": "base-client-deployment-contact-table"
+        }
       }) }}
 
       {{ govukTable({
@@ -380,8 +407,10 @@
             text: baseClient.deployment.deploymentInfo
           }
           ]
-
-        ]
+        ],
+        attributes: {
+          "data-qa": "base-client-deployment-platform-table"
+        }
       }) }}
 
     </div>
