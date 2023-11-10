@@ -5,7 +5,10 @@ new MOJFrontend.FilterToggleButton({
     container: $('.moj-action-bar__filter'),
     showText: 'Show filter',
     hideText: 'Hide filter',
-    classes: 'govuk-button--secondary',
+    classes: 'govuk-button--secondary toggle-filter-button',
+    attributes: {
+      'data-qa': 'toggle-filter-button',
+    },
   },
   closeButton: {
     container: $('.moj-filter__header-action'),

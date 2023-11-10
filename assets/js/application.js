@@ -8,6 +8,7 @@ function showDiv(divId, element, val) {
 
 document.addEventListener('DOMContentLoaded', function (event) {
   const select = document.getElementById('access-token-validity')
+  if (!select) return
   select.onchange = () => showDiv('custom-access-token-validity-element', select, 'custom')
   showDiv('custom-access-token-validity-element', select, 'custom')
 })
