@@ -44,7 +44,10 @@
             text: baseClient.baseClientId
           }
           }
-        ]
+        ],
+        attributes: {
+          "data-qa": "base-client-summary-list"
+        }
       }) }}
 
 
@@ -59,7 +62,10 @@
             },
             id: "team",
             name: "team",
-            value: baseClient.deployment.team
+            value: baseClient.deployment.team,
+            attributes: {
+              "data-qa": "deployment-team-input"
+            }
           }) }}
 
           {{ govukInput({
@@ -68,7 +74,10 @@
             },
             id: "team-contact",
             name: "teamContact",
-            value: baseClient.deployment.teamContact
+            value: baseClient.deployment.teamContact,
+            attributes: {
+              "data-qa": "deployment-team-contact-input"
+            }
           }) }}
 
           {{ govukInput({
@@ -77,7 +86,10 @@
             },
             id: "team-slack",
             name: "teamSlack",
-            value: baseClient.deployment.teamSlack
+            value: baseClient.deployment.teamSlack,
+            attributes: {
+              "data-qa": "deployment-team-slack-input"
+            }
           }) }}
         </div>
       </div>
@@ -104,7 +116,10 @@
             text: "Other"
           }
         ],
-        value: baseClient.deployment.hosting
+        value: baseClient.deployment.hosting,
+        attributes: {
+          "data-qa": "platform-hosting-radios"
+        }
       }) }}
 
       <div class="govuk-grid-row">
@@ -115,7 +130,10 @@
             },
             id: "namespace",
             name: "namespace",
-            value: baseClient.deployment.namespace
+            value: baseClient.deployment.namespace,
+            attributes: {
+              "data-qa": "platform-namespace-input"
+            }
           }) }}
 
           {{ govukInput({
@@ -124,7 +142,10 @@
             },
             id: "deployment",
             name: "deployment",
-            value: baseClient.deployment.deployment
+            value: baseClient.deployment.deployment,
+            attributes: {
+              "data-qa": "platform-deployment-input"
+            }
           }) }}
 
           {{ govukInput({
@@ -133,7 +154,10 @@
             },
             id: "secret-name",
             name: "secretName",
-            value: baseClient.deployment.secretName
+            value: baseClient.deployment.secretName,
+            attributes: {
+              "data-qa": "platform-secret-name-input"
+            }
           }) }}
 
           {{ govukInput({
@@ -142,7 +166,10 @@
             },
             id: "client-id-key",
             name: "clientIdKey",
-            value: baseClient.deployment.clientIdKey
+            value: baseClient.deployment.clientIdKey,
+            attributes: {
+              "data-qa": "platform-client-id-input"
+            }
           }) }}
 
           {{ govukInput({
@@ -151,7 +178,10 @@
             },
             id: "secret-key",
             name: "secretKey",
-            value: baseClient.deployment.secretKey
+            value: baseClient.deployment.secretKey,
+            attributes: {
+              "data-qa": "platform-secret-key-input"
+            }
           }) }}
 
         </div>
@@ -164,16 +194,22 @@
           text: "Deployment info",
           isPageHeading: false
         },
-        value: baseClient.deployment.deploymentInfo
+        value: baseClient.deployment.deploymentInfo,
+        attributes: {
+          "data-qa": "platform-deployment-info-input"
+        }
       }) }}
 
       <div class="govuk-button-group">
         {{ govukButton({
           text: "Save",
           type: "submit",
-          preventDoubleClick: true
+          preventDoubleClick: true,
+          attributes: {
+            "data-qa": "save-button"
+          }
         }) }}
-        <a href="/base-clients/{{ baseClient.baseClientId }}" role="button" class="govuk-button govuk-button--secondary">Cancel</a>
+        <a href="/base-clients/{{ baseClient.baseClientId }}" role="button" class="govuk-button govuk-button--secondary" data-qa="cancel-link">Cancel</a>
       </div>
 
     </form>
