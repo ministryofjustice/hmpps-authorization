@@ -41,7 +41,10 @@
         id: "base-client-id",
         name: "baseClientId",
         value: baseClient.baseClientId,
-        errorMessage: errorMessage
+        errorMessage: errorMessage,
+        attributes: {
+          "data-qa": "base-client-id-input"
+        }
       }) }}
 
       {{ govukRadios({
@@ -56,14 +59,23 @@
         items: [
           {
             value: "SERVICE",
-            text: "Service"
+            text: "Service",
+            attributes: {
+              "data-qa": "base-client-service-radio"
+            }
           },
           {
             value: "PERSONAL",
-            text: "Personal"
+            text: "Personal",
+            attributes: {
+              "data-qa": "base-client-personal-radio"
+            }
           }
         ],
-        value: baseClient.clientType
+        value: baseClient.clientType,
+        attributes: {
+          "data-qa": "base-client-type-radios"
+        }
       }) }}
 
       {{ govukSelect({
@@ -95,6 +107,9 @@
             text: "Custom"
           }
         ],
+        attributes: {
+          "data-qa": "base-client-access-token-validity-dropdown"
+        },
         value: presenter.accessTokenValidityDropdown
       }) }}
 
@@ -106,7 +121,10 @@
           classes: "govuk-!-width-one-half",
           id: "custom-access-token-validity",
           name: "customAccessTokenValidity",
-          value: presenter.accessTokenValidityText
+          value: presenter.accessTokenValidityText,
+          attributes: {
+            "data-qa": "base-client-access-token-validity-input"
+          }
         }) }}
       </div>
 
@@ -120,7 +138,10 @@
         classes: "govuk-!-width-one-third",
         id: "approved-scopes",
         name: "approvedScopes",
-        value: toLines(baseClient.scopes)
+        value: toLines(baseClient.scopes),
+        attributes: {
+          "data-qa": "base-client-approved-scopes-input"
+        }
       }) }}
 
       <h2 class="govuk-heading-l">Audit trail</h2>
@@ -134,7 +155,10 @@
         hint: {
           text: "jira tickets, slack messages ..."
         },
-        value: baseClient.audit
+        value: baseClient.audit,
+        attributes: {
+          "data-qa": "audit-trail-details-input"
+        }
       }) }}
 
       <h2 class="govuk-heading-l">Grant details</h2>
@@ -148,7 +172,10 @@
           id: "grant-type",
           name: "grantType",
           value: "Client credentials",
-          disabled: true
+          disabled: true,
+          attributes: {
+            "data-qa": "grant-type-input"
+          }
         }) }}
 
         {{ govukTextarea({
@@ -158,7 +185,10 @@
             text: "Authorities",
             isPageHeading: false
           },
-          value: toLines(baseClient.clientCredentials.authorities)
+          value: toLines(baseClient.clientCredentials.authorities),
+          attributes: {
+            "data-qa": "grant-authorities-input"
+          }
         }) }}
 
         {{ govukInput({
@@ -168,7 +198,10 @@
           classes: "govuk-!-width-two-thirds",
           id: "database-username",
           name: "databaseUsername",
-          value: baseClient.clientCredentials.databaseUsername
+          value: baseClient.clientCredentials.databaseUsername,
+          attributes: {
+            "data-qa": "grant-database-username-input"
+          }
         }) }}
       {% endif %}
 
@@ -181,7 +214,10 @@
           id: "grant-type",
           name: "grantType",
           value: "Authorization code",
-          disabled: true
+          disabled: true,
+          attributes: {
+            "data-qa": "grant-type-input"
+          }
         }) }}
 
         {{ govukTextarea({
@@ -191,7 +227,10 @@
             text: "Registered redirect URIs",
             isPageHeading: false
           },
-          value: toLines(baseClient.authorizationCode.redirectUris)
+          value: toLines(baseClient.authorizationCode.redirectUris),
+          attributes: {
+            "data-qa": "grant-redirect-uris-input"
+          }
         }) }}
         {{ govukInput({
           label: {
@@ -203,7 +242,10 @@
           classes: "govuk-!-width-one-third",
           id: "jwt-fields",
           name: "jwtFields",
-          value: baseClient.authorizationCode.jwtFields
+          value: baseClient.authorizationCode.jwtFields,
+          attributes: {
+            "data-qa": "grant-jwt-fields-input"
+          }
         }) }}
 
 
@@ -224,7 +266,10 @@
               text: "Auto redirect",
               checked: baseClient.authorisationCode.azureAdLoginFlow
             }
-          ]
+          ],
+          attributes: {
+            "data-qa": "grant-azure-ad-login-flow-checkboxes"
+          }
         }) }}
       {% endif %}
 
@@ -237,8 +282,11 @@
             text: "allow client to expire",
             checked: presenter.expiry,
             conditional: {
-            html: "<label class=\"govuk-label\" for=\"expiry-days\">Number of days client is valid for</label><input class=\"govuk-input govuk-!-width-one-quarter\" id=\"expiry-days\" name=\"expiryDays\" type=\"text\" value=\"" + presenter.daysRemaining +"\">"
-          }
+              html: "<label class=\"govuk-label\" for=\"expiry-days\">Number of days client is valid for</label><input class=\"govuk-input govuk-!-width-one-quarter\" id=\"expiry-days\" name=\"expiryDays\" type=\"text\" value=\"" + presenter.daysRemaining +"\" data-qa=\"config-expiry-days-input\">"
+            },
+            attributes: {
+              "data-qa": "config-does-expire-checkbox"
+            }
           }
         ]
       }) }}
@@ -253,16 +301,22 @@
         hint: {
           html: "One IP address/CIDR notation per line</br>81.134.202.29/32 - mojvpn</br>35.176.93.186/32 - global-protect</br>35.178.209.113/32 - cloudplatform-1</br>3.8.51.207/32 - cloudplatform-2</br>35.177.252.54/32 - cloudplatform-3"
         },
-        value: toLines(baseClient.config.allowedIPs)
+        value: toLines(baseClient.config.allowedIPs),
+        attributes: {
+          "data-qa": "config-allowed-ips-input"
+        }
       }) }}
 
       <div class="govuk-button-group">
         {{ govukButton({
           text: "Save",
           type: "submit",
-          preventDoubleClick: true
+          preventDoubleClick: true,
+          attributes: {
+            "data-qa": "save-button"
+          }
         }) }}
-        <a href="/" role="button" class="govuk-button govuk-button--secondary">Cancel</a>
+        <a href="/" role="button" class="govuk-button govuk-button--secondary" data-qa="cancel-link">Cancel</a>
       </div>
 
     </form>

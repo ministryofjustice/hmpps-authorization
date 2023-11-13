@@ -30,14 +30,23 @@
         items: [
           {
             value: "client-credentials",
-            text: "Client credentials"
+            text: "Client credentials",
+            attributes: {
+              "data-qa": "client-credentials-radio"
+            }
           },
           {
             value: "authorization-code",
             text: "Authorization code",
-            disabled: false
+            disabled: true,
+            attributes: {
+              "data-qa": "authorization-code-radio"
+            }
           }
-        ]
+        ],
+        attributes: {
+          "data-qa": "grant-type-radio-group"
+        }
       }) }}
 
 
@@ -45,9 +54,12 @@
         {{ govukButton({
           text: "Continue",
           type: "submit",
-          preventDoubleClick: true
+          preventDoubleClick: true,
+          attributes: {
+            "data-qa": "continue-button"
+          }
         }) }}
-        <a href="/" role="button" class="govuk-button govuk-button--secondary">Cancel</a>
+        <a href="/" role="button" class="govuk-button govuk-button--secondary" data-qa='cancel-link'>Cancel</a>
       </div>
 
     </form>
