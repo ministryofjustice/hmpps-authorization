@@ -86,4 +86,19 @@ export default {
       },
     })
   },
+
+  stubDeleteClientInstance: () => {
+    return stubFor({
+      request: {
+        method: 'DELETE',
+        urlPattern: `/baseClientsApi/base-clients/base_client_id_1/clients/base_client_id_1_01`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+      },
+    })
+  },
 }

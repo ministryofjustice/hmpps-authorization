@@ -29,13 +29,19 @@
           [{ text: "new clientSecret" }, { text: secrets.clientSecret}],
           [{ text: "base64 clientId" }, { text: secrets.base64ClientId}],
           [{ text: "base64 clientSecret"}, { text: secrets.base64ClientSecret}]
-        ]
+        ],
+        attributes: {
+          "data-qa": "secrets-table"
+        }
       }) }}
 
       <div class="govuk-button-group">
         {{ govukButton({
           text: "Continue",
-          href: "/base-clients/" + baseClientId
+          href: "/base-clients/" + baseClientId,
+          attributes: {
+            "data-qa": "continue-button"
+          }
         }) }}
       </div>
 

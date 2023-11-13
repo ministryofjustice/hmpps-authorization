@@ -25,17 +25,24 @@
         {% if isLastClient %}
           {{ govukWarningText({
             text: "Deleting this client will also delete base-client '" + baseClient.baseClientId + "'.",
-            iconFallbackText: "Warning"
+            iconFallbackText: "Warning",
+            attributes: {
+              "data-qa": "delete-warning"
+            }
           }) }}
         {% endif %}
         {{ govukWarningText({
           text: "Deleted clients cannot be restored!",
-          iconFallbackText: "Warning"
+          iconFallbackText: "Warning",
+          attributes: {
+            "data-qa": "delete-warning"
+          }
         }) }}
 
 
         <form action="/base-clients/{{ baseClient.baseClientId }}/clients/{{ clientId }}/delete" method="POST">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          {% if error %}
           {{ govukInput({
             label: {
               text: "Confirmation"
@@ -44,21 +51,49 @@
               html: "Type <em><strong>\"" + clientId + "\"</strong></em> to confirm"
             },
             errorMessage: {
-              text: error
+              text: error,
+              attributes: {
+                "data-qa": "error-message"
+              }
             },
             classes: "govuk-!-width-two-thirds",
             id: "confirm",
-            name: "confirm"
+            name: "confirm",
+            attributes: {
+              "data-qa": "confirm-input"
+            }
           }) }}
+          {% else %}
+            {{ govukInput({
+              label: {
+                text: "Confirmation"
+              },
+              hint: {
+                html: "Type <em><strong>\"" + clientId + "\"</strong></em> to confirm"
+              },
+              classes: "govuk-!-width-two-thirds",
+              id: "confirm",
+              name: "confirm",
+              attributes: {
+                "data-qa": "confirm-input"
+              }
+            }) }}
+          {% endif %}
 
           {{ govukButton({
             text: "Delete client instance",
             type: "submit",
-            classes: "govuk-button--warning"
+            classes: "govuk-button--warning",
+            attributes: {
+              "data-qa": "delete-button"
+            }
           }) }}
           {{ govukButton({
             text: "Cancel",
-            href: "/base-clients/" + baseClient.baseClientId
+            href: "/base-clients/" + baseClient.baseClientId,
+            attributes: {
+              "data-qa": "cancel-button"
+            }
           }) }}
         </form>
       </div>
