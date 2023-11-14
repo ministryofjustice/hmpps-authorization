@@ -1,6 +1,7 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
+import { HostingType } from '../../data/enums/hostingTypes'
 
 export default Factory.define<BaseClient>(() => ({
   baseClientId: faker.string.uuid(),
@@ -31,7 +32,7 @@ export default Factory.define<BaseClient>(() => ({
     team: `${faker.word.adjective()} ${faker.word.adverb()} ${faker.word.noun()}`,
     teamContact: `${faker.person.firstName()} ${faker.person.lastName()}`,
     teamSlack: `${faker.internet.url()}`,
-    hosting: 'CLOUD PLATFORM',
+    hosting: HostingType.Cloud,
     namespace: 'namespace',
     deployment: '',
     secretKey: 'secretKey',

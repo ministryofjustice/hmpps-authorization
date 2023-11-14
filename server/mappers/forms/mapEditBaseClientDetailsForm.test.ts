@@ -95,7 +95,7 @@ describe('mapEditBaseClientDetailsForm', () => {
       // and given an edit request with all fields populated
       const request = formRequest({
         baseClientId: detailedBaseClient.baseClientId,
-        clientType: 'request clientType',
+        clientType: 'PERSONAL',
         approvedScopes: 'requestscope1,requestscope2',
         audit: 'request audit',
         grant: 'request grant',
@@ -111,10 +111,10 @@ describe('mapEditBaseClientDetailsForm', () => {
 
       // then the client details are updated
       expect(update.baseClientId).toEqual(detailedBaseClient.baseClientId)
-      expect(update.clientType).toEqual('request clientType')
+      expect(update.clientType).toEqual('personal')
       expect(update.scopes).toEqual(['requestscope1', 'requestscope2'])
       expect(update.audit).toEqual('request audit')
-      expect(update.grantType).toEqual('request grant')
+      expect(update.grantType).toEqual('request_grant')
       expect(update.clientCredentials.authorities).toEqual(['requestauthority1', 'requestauthority2'])
       expect(update.clientCredentials.databaseUserName).toEqual('request databaseUsername')
       expect(update.config.allowedIPs).toEqual(['requestallowedIP1', 'requestallowedIP2'])

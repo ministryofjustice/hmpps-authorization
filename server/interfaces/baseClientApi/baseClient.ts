@@ -32,7 +32,7 @@ interface ServiceDetails {
   contact: string
   status: string
 }
-interface DeploymentDetails {
+export interface DeploymentDetails {
   team: string
   teamContact: string
   teamSlack: string

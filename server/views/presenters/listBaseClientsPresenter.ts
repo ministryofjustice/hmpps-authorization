@@ -1,5 +1,7 @@
 import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
-import { convertToTitleCase } from '../../utils/utils'
+import { convertToTitleCase, snake } from '../../utils/utils'
+import { GrantTypes } from '../../data/enums/grantTypes'
+import { ClientType } from '../../data/enums/clientTypes'
 
 const indexTableHead = () => {
   return [
@@ -119,21 +121,21 @@ export const filterBaseClient = (baseClient: BaseClient, filter: BaseClientListF
     }
   }
 
-  const grantType = baseClient.grantType ? baseClient.grantType.trim().toLowerCase() : ''
-  const clientType = baseClient.clientType ? baseClient.clientType.trim().toLowerCase() : ''
+  const grantType = baseClient.grantType ? snake(baseClient.grantType) : ''
+  const clientType = baseClient.clientType ? snake(baseClient.clientType) : ''
 
-  if (grantType === 'client_credentials' && !filter.clientCredentials) {
+  if (grantType === GrantTypes.ClientCredentials && !filter.clientCredentials) {
     return false
   }
 
-  if (grantType === 'authorisation_code' && !filter.authorisationCode) {
+  if (grantType === GrantTypes.AuthorizationCode && !filter.authorisationCode) {
     return false
   }
 
-  if (clientType === 'personal' && !filter.personalClientType) {
+  if (clientType === ClientType.Personal && !filter.personalClientType) {
     return false
   }
-  if (clientType === 'service' && !filter.serviceClientType) {
+  if (clientType === ClientType.Service && !filter.serviceClientType) {
     return false
   }
 

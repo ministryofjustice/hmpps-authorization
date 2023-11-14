@@ -7,6 +7,8 @@ import { mapCreateBaseClientForm, mapEditBaseClientDeploymentForm, mapEditBaseCl
 import { BaseClient } from '../interfaces/baseClientApi/baseClient'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
 import mapFilterForm from '../mappers/forms/mapFilterForm'
+import { GrantTypes } from '../data/enums/grantTypes'
+import { kebab } from '../utils/utils'
 
 export default class BaseClientController {
   constructor(private readonly baseClientService: BaseClientService) {}
@@ -58,7 +60,7 @@ export default class BaseClientController {
   public displayNewBaseClient(): RequestHandler {
     return async (req, res) => {
       const { grant } = req.query
-      if (!(grant === 'client-credentials' || grant === 'authorization-code')) {
+      if (!(grant === kebab(GrantTypes.ClientCredentials) || grant === kebab(GrantTypes.AuthorizationCode))) {
         res.render('pages/new-base-client-grant.njk')
         return
       }

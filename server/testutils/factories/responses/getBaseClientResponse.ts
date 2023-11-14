@@ -12,6 +12,7 @@ export default Factory.define<GetBaseClientResponse>(() => ({
   validDays: 1,
   accessTokenValidityMinutes: 60,
   deployment: {
+    clientType: 'SERVICE',
     team: 'deployment team',
     teamContact: 'deployment team contact',
     teamSlack: 'deployment team slack',

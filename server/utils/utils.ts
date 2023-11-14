@@ -35,6 +35,19 @@ export const multiSeparatorSplit = (str: string, separators: string[]): string[]
   return value.split(firstSeparator)
 }
 
+export const snake = (str: string): string => {
+  if (!str) return str
+  let value = str.trim().toLowerCase()
+  value = value.replace(/ /g, '_')
+  value = value.replace(/-/g, '_')
+  return value
+}
+
+export const kebab = (str: string): string => {
+  if (!str) return str
+  return snake(str).replace(/_/g, '-')
+}
+
 export const dayDiff = (fromDate: Date, toDate: Date) => {
   const diff = toDate.getTime() - fromDate.getTime()
   return Math.floor(diff / (1000 * 60 * 60 * 24))

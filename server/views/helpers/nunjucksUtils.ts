@@ -1,3 +1,5 @@
+import { kebab, snake } from '../../utils/utils'
+
 const isBlank = (str: string): boolean => {
   return !str || /^\s*$/.test(str)
 }
@@ -42,4 +44,6 @@ export default {
   sentenceCase,
   capitalize,
   capitalCase,
+  snake,
+  kebab,
 }
