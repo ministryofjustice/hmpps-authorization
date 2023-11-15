@@ -8,15 +8,15 @@ export default (request: Request): BaseClientListFilter => {
   // valid days is calculated from expiry date
   const data = request.body
 
-  const grantType = data.grantType ? snake(data.grantType) : ''
-  const clientType = data.clientType ? snake(data.clientType) : ''
+  const grantTypes = data.grantType ? data.grantType.map(snake) : []
+  const clientTypes = data.clientType ? data.clientType.map(snake) : []
 
   return {
     roleSearch: data.role.trim(),
-    clientCredentials: grantType ? grantType.includes(GrantTypes.ClientCredentials) : true,
-    authorisationCode: grantType ? grantType.includes(GrantTypes.AuthorizationCode) : true,
-    serviceClientType: clientType ? clientType.includes(ClientType.Service) : true,
-    personalClientType: clientType ? clientType.includes(ClientType.Personal) : true,
-    blankClientType: clientType ? clientType.includes('blank') : true,
+    clientCredentials: grantTypes.includes(GrantTypes.ClientCredentials),
+    authorisationCode: grantTypes.includes(GrantTypes.AuthorizationCode),
+    serviceClientType: clientTypes.includes(ClientType.Service),
+    personalClientType: clientTypes.includes(ClientType.Personal),
+    blankClientType: clientTypes.includes('blank'),
   }
 }

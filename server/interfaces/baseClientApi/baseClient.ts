@@ -1,6 +1,5 @@
 export interface BaseClient {
   baseClientId: string
-  clientType: string
   accessTokenValidity: number
   scopes: string[]
   grantType: string
@@ -33,6 +32,7 @@ interface ServiceDetails {
   status: string
 }
 export interface DeploymentDetails {
+  clientType: string
   team: string
   teamContact: string
   teamSlack: string

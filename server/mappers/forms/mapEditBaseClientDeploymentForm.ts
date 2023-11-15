@@ -7,6 +7,7 @@ export default (baseClient: BaseClient, request: Request): BaseClient => {
   return {
     ...baseClient,
     deployment: {
+      clientType: snake(data.clientType),
       team: data.team,
       teamContact: data.teamContact,
       teamSlack: data.teamSlack,

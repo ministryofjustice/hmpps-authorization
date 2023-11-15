@@ -8,7 +8,6 @@ import { snake } from '../../utils/utils'
 export default (response: GetBaseClientResponse): BaseClient => {
   return {
     baseClientId: response.clientId,
-    clientType: getClientType(response),
     accessTokenValidity: response.accessTokenValidityMinutes ? response.accessTokenValidityMinutes * 60 : 0,
     scopes: response.scopes ? response.scopes : [],
     grantType: GrantTypes.ClientCredentials,
@@ -73,6 +72,7 @@ const getDeployment = (response: GetBaseClientResponse): DeploymentDetails => {
 
   const { deployment } = response
   deployment.hosting = getHostingType(response)
+  deployment.clientType = getClientType(response)
 
   return deployment
 }

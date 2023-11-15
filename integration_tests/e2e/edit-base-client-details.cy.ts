@@ -22,8 +22,6 @@ context('Edit base client details page', () => {
 
   it('User can see base-client form inputs', () => {
     editBaseClientDetailsPage.baseClientIdInput().should('exist')
-    editBaseClientDetailsPage.baseClientServiceRadioButton().should('exist')
-    editBaseClientDetailsPage.baseClientPersonalRadioButton().should('exist')
     editBaseClientDetailsPage.baseClientAccessTokenValidityDropdown().should('be.visible')
     editBaseClientDetailsPage.baseClientApprovedScopesInput().should('be.visible')
   })

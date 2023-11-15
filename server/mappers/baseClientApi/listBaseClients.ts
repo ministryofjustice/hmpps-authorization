@@ -11,7 +11,6 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
     client =>
       ({
         baseClientId: client.baseClientId,
-        clientType: snake(client.clientType),
         accessTokenValidity: 24000,
         scopes: [],
         grantType: snake(client.grantType),
@@ -35,6 +34,7 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
           status: '',
         },
         deployment: {
+          clientType: snake(client.clientType),
           team: client.teamName || '',
           teamContact: '',
           teamSlack: '',

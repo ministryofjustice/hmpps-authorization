@@ -5,7 +5,6 @@ import { HostingType } from '../../data/enums/hostingTypes'
 
 export default Factory.define<BaseClient>(() => ({
   baseClientId: faker.string.uuid(),
-  clientType: 'SERVICE',
   accessTokenValidity: 3600,
   scopes: ['read', 'write'],
   grantType: 'client_credentials',
@@ -29,6 +28,7 @@ export default Factory.define<BaseClient>(() => ({
     status: 'ACTIVE',
   },
   deployment: {
+    clientType: 'SERVICE',
     team: `${faker.word.adjective()} ${faker.word.adverb()} ${faker.word.noun()}`,
     teamContact: `${faker.person.firstName()} ${faker.person.lastName()}`,
     teamSlack: `${faker.internet.url()}`,

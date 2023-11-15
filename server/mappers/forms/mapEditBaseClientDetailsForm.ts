@@ -11,7 +11,6 @@ export default (baseClient: BaseClient, request: Request): BaseClient => {
 
   return {
     ...baseClient,
-    clientType: snake(data.clientType),
     accessTokenValidity: accessTokenValiditySeconds,
     scopes: multiSeparatorSplit(data.approvedScopes, [',', '\r\n', '\n']),
     audit: data.audit,

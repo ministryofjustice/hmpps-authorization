@@ -12,7 +12,6 @@ export default (request: Request): BaseClient => {
 
   return {
     baseClientId: data.baseClientId,
-    clientType: snake(data.clientType),
     accessTokenValidity: accessTokenValiditySeconds,
     scopes: multiSeparatorSplit(data.approvedScopes, [',', '\r\n', '\n']),
     audit: data.audit,
@@ -36,6 +35,7 @@ export default (request: Request): BaseClient => {
       status: '',
     },
     deployment: {
+      clientType: '',
       team: '',
       teamContact: '',
       teamSlack: '',

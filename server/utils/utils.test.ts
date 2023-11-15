@@ -1,4 +1,14 @@
-import { convertToTitleCase, dayDiff, daysRemaining, initialiseName, multiSeparatorSplit, offsetDate } from './utils'
+import {
+  apiEnum,
+  convertToTitleCase,
+  dayDiff,
+  daysRemaining,
+  initialiseName,
+  kebab,
+  multiSeparatorSplit,
+  offsetDate,
+  snake,
+} from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -73,5 +83,43 @@ describe('days remaining', () => {
     const expiryDate = days ? offsetDate(new Date(), days).toISOString() : null
 
     expect(daysRemaining(expiryDate)).toEqual(expected)
+  })
+})
+
+describe('snake', () => {
+  it.each([
+    ['Null', null, null],
+    ['Empty string', '', ''],
+    ['Spaced', 'one two three', 'one_two_three'],
+    ['Kebab', 'one-two-three', 'one_two_three'],
+    ['Capitalised', 'One Two THREE', 'one_two_three'],
+    ['Extra spaces', '  one two three   ', 'one_two_three'],
+    ['Mixed', 'one-two Three  ', 'one_two_three'],
+  ])('%s snake', (_: string, a: string, expected: string) => {
+    expect(snake(a)).toEqual(expected)
+  })
+})
+
+describe('kebab', () => {
+  it.each([
+    ['Null', null, null],
+    ['Empty string', '', ''],
+    ['Spaced', 'one two three', 'one-two-three'],
+    ['Snake', 'one_two_three', 'one-two-three'],
+    ['Capitalised', 'One Two THREE', 'one-two-three'],
+    ['Extra spaces', '  one two three   ', 'one-two-three'],
+    ['Mixed', 'one_two Three  ', 'one-two-three'],
+  ])('%s kebab', (_: string, a: string, expected: string) => {
+    expect(kebab(a)).toEqual(expected)
+  })
+})
+
+describe('api enum', () => {
+  it.each([
+    ['Null', null, null],
+    ['Mixed case', 'OneTwoThree', 'ONETWOTHREE'],
+    ['Spaced', 'One two three', 'ONE_TWO_THREE'],
+  ])('%s apiEnum', (_: string, a: string, expected: string) => {
+    expect(apiEnum(a)).toEqual(expected)
   })
 })

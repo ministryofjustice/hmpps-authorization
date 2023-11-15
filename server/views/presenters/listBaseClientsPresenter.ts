@@ -85,7 +85,7 @@ const indexTableRows = (data: BaseClient[], filter?: BaseClientListFilter) => {
       html: item.count > 1 ? `<span class='moj-badge'>${item.count}</span>` : '',
     },
     {
-      text: item.clientType ? convertToTitleCase(item.clientType) : '',
+      text: item.deployment && item.deployment.clientType ? convertToTitleCase(item.deployment.clientType) : '',
     },
     {
       text: item.deployment.team,
@@ -122,7 +122,8 @@ export const filterBaseClient = (baseClient: BaseClient, filter: BaseClientListF
   }
 
   const grantType = baseClient.grantType ? snake(baseClient.grantType) : ''
-  const clientType = baseClient.clientType ? snake(baseClient.clientType) : ''
+  const clientType =
+    baseClient.deployment && baseClient.deployment.clientType ? snake(baseClient.deployment.clientType) : ''
 
   if (grantType === GrantTypes.ClientCredentials && !filter.clientCredentials) {
     return false

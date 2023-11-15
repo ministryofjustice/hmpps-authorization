@@ -21,6 +21,7 @@ const sentenceCase = (sentence: string | null): string => {
 }
 
 const capitalize = (word: string): string => {
+  if (!word) return word
   return word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 }
 

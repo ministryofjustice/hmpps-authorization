@@ -48,6 +48,11 @@ export const kebab = (str: string): string => {
   return snake(str).replace(/_/g, '-')
 }
 
+export const apiEnum = (str: string): string => {
+  if (!str) return str
+  return snake(str).toUpperCase()
+}
+
 export const dayDiff = (fromDate: Date, toDate: Date) => {
   const diff = toDate.getTime() - fromDate.getTime()
   return Math.floor(diff / (1000 * 60 * 60 * 24))
