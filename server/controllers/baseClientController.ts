@@ -64,7 +64,11 @@ export default class BaseClientController {
         res.render('pages/new-base-client-grant.njk')
         return
       }
-      res.render('pages/new-base-client-details.njk', { grant, ...nunjucksUtils })
+      res.render('pages/new-base-client-details.njk', {
+        grant,
+        presenter: editBaseClientPresenter(null),
+        ...nunjucksUtils,
+      })
     }
   }
 

@@ -105,6 +105,7 @@ describe('BaseClientController', () => {
         // THEN the enter client details page is rendered with client credentials selected
         expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
           grant: 'client-credentials',
+          presenter: editBaseClientPresenter(null),
           ...nunjucksUtils,
         })
       })
@@ -119,6 +120,7 @@ describe('BaseClientController', () => {
         // THEN the enter client details page is rendered with authorisation code selected
         expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
           grant: 'authorization-code',
+          presenter: editBaseClientPresenter(null),
           ...nunjucksUtils,
         })
       })

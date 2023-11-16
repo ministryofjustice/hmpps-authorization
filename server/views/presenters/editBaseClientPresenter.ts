@@ -2,6 +2,15 @@ import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { daysRemaining } from '../../utils/utils'
 
 export default (baseClient: BaseClient) => {
+  if (!baseClient) {
+    return {
+      accessTokenValidityDropdown: '',
+      accessTokenValidityText: '',
+      daysRemaining: 0,
+      expiry: false,
+    }
+  }
+
   return {
     accessTokenValidityDropdown: getAccessTokenValidityDropdown(baseClient.accessTokenValidity),
     accessTokenValidityText: getAccessTokenValidityTextbox(baseClient.accessTokenValidity),
