@@ -1,4 +1,4 @@
-import { kebab, snake } from '../../utils/utils'
+import { kebab, snake, dateFormat, dateTimeFormat } from '../../utils/utils'
 
 const isBlank = (str: string): boolean => {
   return !str || /^\s*$/.test(str)
@@ -47,4 +47,6 @@ export default {
   capitalCase,
   snake,
   kebab,
+  dateFormat,
+  dateTimeFormat,
 }

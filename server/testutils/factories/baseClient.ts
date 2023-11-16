@@ -9,6 +9,8 @@ export default Factory.define<BaseClient>(() => ({
   scopes: ['read', 'write'],
   grantType: 'client_credentials',
   audit: 'audit notes',
+  lastAccessed: '2021-01-01T00:00:00.000Z',
+  expired: false,
   count: 1,
   clientCredentials: {
     authorities: ['ROLE_CLIENT_CREDENTIALS'],

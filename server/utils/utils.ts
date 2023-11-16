@@ -1,3 +1,6 @@
+import { format } from 'date-fns' // eslint-disable-line import/no-duplicates
+import { enGB } from 'date-fns/locale' // eslint-disable-line import/no-duplicates
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -98,4 +101,35 @@ export const getAccessTokenValiditySeconds = (accessTokenValidity: string, custo
     return parseIntWithDefault(customAccessTokenValidity, 0)
   }
   return parseIntWithDefault(accessTokenValidity, 0)
+}
+
+export const dateFormat = (date: Date): string => {
+  // dd-mm-yyyy
+  return format(date, 'dd-MM-yyyy', { locale: enGB })
+}
+
+export const dateTimeFormat = (date: Date): string => {
+  // dd-mm-yyyy hh:mm
+  return format(date, 'dd-MM-yyyy HH:mm', { locale: enGB })
+}
+
+export const dateFormatFromString = (date: string): string => {
+  // return null if date is null
+  if (!date || Number.isNaN(Date.parse(date))) {
+    return ''
+  }
+
+  // dd-mm-yyyy
+  return format(new Date(date), 'dd-MM-yyyy', { locale: enGB })
+}
+
+export const dateTimeFormatFromString = (date: string): string => {
+  // return null if date is null
+  if (!date || Number.isNaN(Date.parse(date))) {
+    return ''
+  }
+
+  // dd-mm-yyyy hh:mm for GB locale
+
+  return format(new Date(date), 'dd-MM-yyyy HH:mm', { locale: enGB })
 }

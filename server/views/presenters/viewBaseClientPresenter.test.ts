@@ -10,25 +10,25 @@ describe('viewBaseClientPresenter', () => {
       const clients = [
         clientFactory.build({
           clientId: 'clientIdA',
-          created: new Date('2020-01-01'),
-          accessed: new Date('2020-01-02'),
+          created: new Date('2020-01-01T01:02:03.456Z'),
+          accessed: new Date('2020-01-02T01:02:03.456Z'),
         }),
         clientFactory.build({
           clientId: 'clientIdB',
-          created: new Date('2020-02-01'),
-          accessed: new Date('2020-02-02'),
+          created: new Date('2020-02-01T01:02:03.456Z'),
+          accessed: new Date('2020-02-02T01:02:03.456Z'),
         }),
       ]
 
       // When we map to a presenter
       const presenter = viewBaseClientPresenter(baseClient, clients)
 
-      // Then the dates are formatted as DD/MM/YYYY
-      const expectedCreated = ['01/01/2020', '01/02/2020']
+      // Then the dates are formatted as DD-MM-YYYY hh:mm
+      const expectedCreated = ['01-01-2020 01:02', '01-02-2020 01:02']
       const actualCreated = presenter.clientsTable.map(row => row[1].html)
       expect(expectedCreated).toEqual(actualCreated)
 
-      const expectedAccessed = ['02/01/2020', '02/02/2020']
+      const expectedAccessed = ['02-01-2020 01:02', '02-02-2020 01:02']
       const actualAccessed = presenter.clientsTable.map(row => row[2].html)
       expect(expectedAccessed).toEqual(actualAccessed)
     })

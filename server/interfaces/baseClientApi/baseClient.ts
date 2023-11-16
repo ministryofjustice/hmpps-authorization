@@ -5,6 +5,8 @@ export interface BaseClient {
   grantType: string
   audit: string
   count: number
+  lastAccessed: string
+  expired: boolean
   clientCredentials: ClientCredentialsDetails
   authorisationCode: AuthorisationCodeDetails
   service: ServiceDetails

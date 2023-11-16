@@ -1,5 +1,5 @@
 import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
-import { convertToTitleCase, snake } from '../../utils/utils'
+import { convertToTitleCase, dateFormatFromString, snake } from '../../utils/utils'
 import { GrantTypes } from '../../data/enums/grantTypes'
 import { ClientType } from '../../data/enums/clientTypes'
 
@@ -48,13 +48,6 @@ const indexTableHead = () => {
       },
     },
     {
-      text: 'Secret updated',
-      classes: 'app-custom-class',
-      attributes: {
-        'aria-sort': 'none',
-      },
-    },
-    {
       text: 'Last accessed',
       classes: 'app-custom-class',
       attributes: {
@@ -97,13 +90,10 @@ const indexTableRows = (data: BaseClient[], filter?: BaseClientListFilter) => {
       html: item.clientCredentials.authorities.join('<br>'),
     },
     {
-      text: '2023/09/01 12:00:00',
+      text: dateFormatFromString(item.lastAccessed),
     },
     {
-      text: '2023/09/01 12:00:00',
-    },
-    {
-      text: '',
+      html: item.expired ? `<span class='moj-badge moj-badge--grey'>Expired</span>` : '',
     },
   ])
 }

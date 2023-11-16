@@ -16,6 +16,8 @@ export default (request: Request): BaseClient => {
     scopes: multiSeparatorSplit(data.approvedScopes, [',', '\r\n', '\n']),
     audit: data.audit,
     count: 1,
+    lastAccessed: '',
+    expired: false,
     grantType: snake(data.grant),
     clientCredentials: {
       authorities: multiSeparatorSplit(data.authorities, [',', '\r\n', '\n']),

@@ -16,6 +16,8 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
         grantType: snake(client.grantType),
         audit: '',
         count: client.count ? client.count : 0,
+        lastAccessed: client.lastAccessed ? client.lastAccessed : '',
+        expired: client.expired,
         clientCredentials: {
           authorities: multiSeparatorSplit(client.roles, [' ', ',', '\n']),
           databaseUserName: '',

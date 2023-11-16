@@ -8,6 +8,9 @@ import {
   multiSeparatorSplit,
   offsetDate,
   snake,
+  dateTimeFormat,
+  dateFormat,
+  dateTimeFormatFromString,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -121,5 +124,34 @@ describe('api enum', () => {
     ['Spaced', 'One two three', 'ONE_TWO_THREE'],
   ])('%s apiEnum', (_: string, a: string, expected: string) => {
     expect(apiEnum(a)).toEqual(expected)
+  })
+})
+
+describe('dateFormat', () => {
+  it.each([
+    ['a date with single digits', new Date(2020, 0, 1), '01-01-2020'],
+    ['a date', new Date(2020, 11, 31), '31-12-2020'],
+  ])('handles %s: %s -> %s', (_inputType: string, input: Date, expectedOutput: string) => {
+    expect(dateFormat(input)).toEqual(expectedOutput)
+  })
+})
+
+describe('dateTimeFormat', () => {
+  it.each([
+    ['a date time with single digits', new Date(2020, 0, 1, 0, 0), '01-01-2020 00:00'],
+    ['a date in winter', new Date(2020, 11, 31, 23, 59), '31-12-2020 23:59'],
+    ['a date time in British Summer time', new Date(2020, 7, 31, 12, 0), '31-08-2020 12:00'],
+  ])('handles %s: %s -> %s', (_inputType: string, input: Date, expectedOutput: string) => {
+    expect(dateTimeFormat(input)).toEqual(expectedOutput)
+  })
+})
+
+describe('dateTimeStringFormat', () => {
+  it.each([
+    ['a date time with single digits', '2020-01-01T00:00:00.000Z', '01-01-2020 00:00'],
+    ['a zulu date time in winter', '2020-12-31T23:59:00.000Z', '31-12-2020 23:59'],
+    ['a zulu date time during British Summer Time', '2020-08-31T12:00:00.000Z', '31-08-2020 13:00'],
+  ])('handles %s: %s -> %s', (_inputType: string, input: string, expectedOutput: string) => {
+    expect(dateTimeFormatFromString(input)).toEqual(expectedOutput)
   })
 })
