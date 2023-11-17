@@ -75,6 +75,9 @@ const indexTableRows = (data: BaseClient[], filter?: BaseClientListFilter) => {
   return dataItems.map(item => [
     {
       html: `<a href='/base-clients/${item.baseClientId}'>${item.baseClientId}</a>`,
+      attributes: {
+        'data-qa': 'baseClientList',
+      },
     },
     {
       html: item.count > 1 ? `<span class='moj-badge'>${item.count}</span>` : '',
@@ -116,21 +119,29 @@ export const filterBaseClient = (baseClient: BaseClient, filter: BaseClientListF
     }
   }
 
-  if (baseClient.grantType === 'client_credentials' && !filter.clientCredentials) {
+  const grantType = baseClient.grantType ? baseClient.grantType.trim().toLowerCase() : ''
+  const clientType = baseClient.clientType ? baseClient.clientType.trim().toLowerCase() : ''
+
+  if (grantType === 'client_credentials' && !filter.clientCredentials) {
     return false
   }
 
-  if (baseClient.grantType === 'authorisation_code' && !filter.authorisationCode) {
+  if (grantType === 'authorisation_code' && !filter.authorisationCode) {
     return false
   }
 
-  if (baseClient.clientType === 'PERSONAL' && !filter.personalClientType) {
+  if (clientType === 'personal' && !filter.personalClientType) {
     return false
   }
-  if (baseClient.clientType === 'SERVICE' && !filter.serviceClientType) {
+  if (clientType === 'service' && !filter.serviceClientType) {
     return false
   }
-  return filter.blankClientType
+
+  if (clientType === '' && !filter.blankClientType) {
+    return false
+  }
+
+  return true
 }
 
 export default (data: BaseClient[], filter?: BaseClientListFilter) => {

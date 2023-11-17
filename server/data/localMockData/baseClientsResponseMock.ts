@@ -1,4 +1,9 @@
-import { GetBaseClientResponse, ListBaseClientsResponse } from '../../interfaces/baseClientApi/baseClientResponse'
+import {
+  ClientSecretsResponse,
+  GetBaseClientResponse,
+  ListBaseClientsResponse,
+  ListClientInstancesResponse,
+} from '../../interfaces/baseClientApi/baseClientResponse'
 
 export const listBaseClientsResponseMock: ListBaseClientsResponse = {
   clients: [
@@ -7,6 +12,7 @@ export const listBaseClientsResponseMock: ListBaseClientsResponse = {
       clientType: 'SERVICE',
       teamName: null,
       grantType: 'client_credentials',
+      roles: 'ROLE_ONE, ROLE_TWO',
       count: 1,
     },
     {
@@ -21,13 +27,14 @@ export const listBaseClientsResponseMock: ListBaseClientsResponse = {
       clientType: 'SERVICE',
       teamName: 'Team 2',
       grantType: 'client_credentials',
+      roles: 'ROLE_TWO, ROLE_THREE',
       count: 1,
     },
   ],
 }
 
 export const getBaseClientResponseMock: GetBaseClientResponse = {
-  clientId: 'baseClientId1',
+  clientId: 'base_client_id_1',
   scopes: ['read', 'write'],
   authorities: ['ROLE_CLIENT_CREDENTIALS'],
   ips: [],
@@ -47,4 +54,25 @@ export const getBaseClientResponseMock: GetBaseClientResponse = {
     secretKey: 'deployment secret key',
     deploymentInfo: 'deployment deployment info',
   },
+}
+
+export const getListClientInstancesResponseMock: ListClientInstancesResponse = {
+  clients: [
+    {
+      clientId: 'base_client_id_1_01',
+      created: '2020-01-01T00:00:00.000',
+    },
+    {
+      clientId: 'base_client_id_1_02',
+      created: '2020-01-01T00:00:00.000',
+    },
+  ],
+  grantType: 'client_credentials',
+}
+
+export const getSecretsResponseMock: ClientSecretsResponse = {
+  clientId: 'base_client_id_1_03',
+  clientSecret: 'aaa',
+  base64ClientId: 'bbb',
+  base64ClientSecret: 'ccc',
 }
