@@ -91,8 +91,8 @@ describe('BaseClientController', () => {
   })
 
   describe('view base client', () => {
-    it('renders the main view of a base clients', async () => {
-      // GIVEN a list of base clients
+    it('renders the main view of a base client', async () => {
+      // GIVEN a base client
       const baseClient = baseClientFactory.build()
       const clients = clientFactory.buildList(3)
       baseClientService.getBaseClient.mockResolvedValue(baseClient)
@@ -112,6 +112,41 @@ describe('BaseClientController', () => {
 
       // AND the base client is retrieved from the base client service
       expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+    })
+
+    it('audits the view attempt', async () => {
+      // GIVEN a base client
+      const baseClient = baseClientFactory.build()
+      const clients = clientFactory.buildList(3)
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.listClientInstances.mockResolvedValue(clients)
+
+      // WHEN the base client page is requested
+      request = createMock<Request>({ params: { baseClientId: baseClient.baseClientId } })
+      await baseClientController.displayBaseClient()(request, response, next)
+
+      // THEN a view base client audit event is sent
+      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
+        expect.objectContaining({ action: BaseClientEvent.VIEW_BASE_CLIENT, subjectId: baseClient.baseClientId }),
+      )
+    })
+
+    it('audits the view failure', async () => {
+      // GIVEN an error will be thrown
+      const baseClientId = '1234'
+      baseClientService.getBaseClient.mockRejectedValue(404)
+      baseClientService.listClientInstances.mockRejectedValue(404)
+
+      // WHEN the base client page is requested
+      try {
+        request = createMock<Request>({ params: { baseClientId } })
+        await baseClientController.displayBaseClient()(request, response, next)
+      } catch (e) {
+        // THEN a view base clients failure audit event is sent
+        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ action: BaseClientEvent.VIEW_BASE_CLIENT_FAILURE, subjectId: baseClientId }),
+        )
+      }
     })
   })
 
