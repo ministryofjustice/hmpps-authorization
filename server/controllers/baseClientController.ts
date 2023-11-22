@@ -9,35 +9,55 @@ import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter
 import mapFilterForm from '../mappers/forms/mapFilterForm'
 import { GrantTypes } from '../data/enums/grantTypes'
 import { kebab } from '../utils/utils'
+import baseClientAudit from '../audit/baseClientAudit'
+import AuditService from '../services/auditService'
+import { BaseClientEvent } from '../audit/baseClientEvent'
 
 export default class BaseClientController {
-  constructor(private readonly baseClientService: BaseClientService) {}
+  constructor(
+    private readonly baseClientService: BaseClientService,
+    private readonly auditService: AuditService,
+  ) {}
 
   public displayBaseClients(): RequestHandler {
     return async (req, res) => {
-      const userToken = res.locals.user.token
-      const baseClients = await this.baseClientService.listBaseClients(userToken)
+      const { token, username } = res.locals.user
+      const audit = baseClientAudit(username, this.auditService)
+      await audit(BaseClientEvent.LIST_BASE_CLIENTS)
 
-      const presenter = listBaseClientsPresenter(baseClients)
+      try {
+        const baseClients = await this.baseClientService.listBaseClients(token)
+        const presenter = listBaseClientsPresenter(baseClients)
 
-      res.render('pages/base-clients.njk', {
-        presenter,
-      })
+        res.render('pages/base-clients.njk', {
+          presenter,
+        })
+      } catch (e) {
+        await audit(BaseClientEvent.LIST_BASE_CLIENTS_FAILURE)
+        throw e
+      }
     }
   }
 
   public filterBaseClients(): RequestHandler {
     return async (req, res) => {
-      const userToken = res.locals.user.token
+      const { token, username } = res.locals.user
       const filter = mapFilterForm(req)
+      const audit = baseClientAudit(username, this.auditService)
+      await audit(BaseClientEvent.LIST_BASE_CLIENTS)
 
-      const baseClients = await this.baseClientService.listBaseClients(userToken)
+      try {
+        const baseClients = await this.baseClientService.listBaseClients(token)
 
-      const presenter = listBaseClientsPresenter(baseClients, filter)
+        const presenter = listBaseClientsPresenter(baseClients, filter)
 
-      res.render('pages/base-clients.njk', {
-        presenter,
-      })
+        res.render('pages/base-clients.njk', {
+          presenter,
+        })
+      } catch (e) {
+        await audit(BaseClientEvent.LIST_BASE_CLIENTS_FAILURE)
+        throw e
+      }
     }
   }
 

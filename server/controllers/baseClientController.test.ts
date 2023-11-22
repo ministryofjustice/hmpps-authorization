@@ -10,6 +10,8 @@ import createUserToken from '../testutils/createUserToken'
 import viewBaseClientPresenter from '../views/presenters/viewBaseClientPresenter'
 import nunjucksUtils from '../views/helpers/nunjucksUtils'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
+import AuditService from '../services/auditService'
+import { BaseClientEvent } from '../audit/baseClientEvent'
 
 describe('BaseClientController', () => {
   const token = createUserToken(['ADMIN'])
@@ -17,6 +19,7 @@ describe('BaseClientController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
   let baseClientService = createMock<BaseClientService>({})
+  let auditService = createMock<AuditService>({})
   let baseClientController: BaseClientController
 
   beforeEach(() => {
@@ -34,7 +37,8 @@ describe('BaseClientController', () => {
     })
 
     baseClientService = createMock<BaseClientService>({})
-    baseClientController = new BaseClientController(baseClientService)
+    auditService = createMock<AuditService>({})
+    baseClientController = new BaseClientController(baseClientService, auditService)
   })
 
   describe('displayBaseClients', () => {
@@ -54,6 +58,35 @@ describe('BaseClientController', () => {
 
       // AND the list of base clients is retrieved from the base client service
       expect(baseClientService.listBaseClients).toHaveBeenCalledWith(token)
+    })
+
+    it('audits the view attempt', async () => {
+      // GIVEN a list of base clients
+      const baseClients = baseClientFactory.buildList(3)
+      baseClientService.listBaseClients.mockResolvedValue(baseClients)
+
+      // WHEN the index page is requested
+      await baseClientController.displayBaseClients()(request, response, next)
+
+      // THEN a view base clients audit event is sent
+      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
+        expect.objectContaining({ action: BaseClientEvent.LIST_BASE_CLIENTS }),
+      )
+    })
+
+    it('audits the view failure', async () => {
+      // GIVEN an error will be thrown
+      baseClientService.listBaseClients.mockRejectedValue(404)
+
+      // WHEN the index page is requested
+      try {
+        await baseClientController.displayBaseClients()(request, response, next)
+      } catch (e) {
+        // THEN a view base clients failure audit event is sent
+        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ action: BaseClientEvent.LIST_BASE_CLIENTS_FAILURE }),
+        )
+      }
     })
   })
 
