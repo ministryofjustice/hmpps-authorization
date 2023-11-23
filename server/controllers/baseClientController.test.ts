@@ -217,6 +217,11 @@ describe('BaseClientController', () => {
           'pages/new-base-client-details.njk',
           expect.objectContaining({ errorMessage: { text: expectedError } }),
         )
+
+        // AND the fail is audited
+        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ action: BaseClientEvent.CREATE_BASE_CLIENT_FAILURE }),
+        )
       })
 
       it('if validation fails because id exists then render the details screen with error message', async () => {
@@ -233,6 +238,11 @@ describe('BaseClientController', () => {
         expect(response.render).toHaveBeenCalledWith(
           'pages/new-base-client-details.njk',
           expect.objectContaining({ errorMessage: { text: expectedError } }),
+        )
+
+        // AND the fail is audited
+        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ action: BaseClientEvent.CREATE_BASE_CLIENT_FAILURE }),
         )
       })
 
@@ -251,7 +261,63 @@ describe('BaseClientController', () => {
         expect(response.render).toHaveBeenCalledWith(
           'pages/new-base-client-success.njk',
           expect.objectContaining({ secrets }),
+          expect.anything(),
         )
+      })
+
+      it('audits the create attempt', async () => {
+        // GIVEN the service returns success and a set of secrets
+        const secrets = clientSecretsFactory.build()
+        baseClientService.addBaseClient.mockResolvedValue(secrets)
+
+        // WHEN it is posted
+        await baseClientController.createBaseClient()(request, response, next)
+
+        // THEN the attempt is audited
+        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ action: BaseClientEvent.CREATE_BASE_CLIENT }),
+        )
+      })
+
+      it('audits the secrets viewing attempt if successful', async () => {
+        // GIVEN the service returns success and a set of secrets
+        const secrets = clientSecretsFactory.build()
+        // set request body to include baseClientId
+        request = createMock<Request>({ body: { baseClientId: 'abcd' } })
+        baseClientService.addBaseClient.mockResolvedValue(secrets)
+        baseClientService.getBaseClient.mockRejectedValue({ status: 404 })
+
+        // WHEN it is posted
+        await baseClientController.createBaseClient()(request, response, next)
+
+        // THEN the attempt is audited
+        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ action: BaseClientEvent.VIEW_CLIENT_SECRETS }),
+        )
+      })
+
+      it('audits the secrets viewing attempt if fail', async () => {
+        // GIVEN the post is properly set up
+        const secrets = clientSecretsFactory.build()
+        request = createMock<Request>({ body: { baseClientId: 'abcd' } })
+        baseClientService.addBaseClient.mockResolvedValue(secrets)
+        baseClientService.getBaseClient.mockRejectedValue({ status: 404 })
+        // but the render fails
+        response.render.mockImplementation(
+          (view: string, options: object, callback?: (err: Error, html: string) => void) => {
+            callback(new Error('Test error'), '')
+          },
+        )
+
+        // WHEN it is posted
+        try {
+          await baseClientController.createBaseClient()(request, response, next)
+        } catch (e) {
+          // THEN the view attempt is audited
+          expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
+            expect.objectContaining({ action: BaseClientEvent.VIEW_CLIENT_SECRETS_FAILURE }),
+          )
+        }
       })
     })
   })
@@ -354,6 +420,7 @@ describe('BaseClientController', () => {
       expect(response.render).toHaveBeenCalledWith(
         'pages/new-base-client-success.njk',
         expect.objectContaining({ secrets }),
+        expect.anything(),
       )
     })
   })

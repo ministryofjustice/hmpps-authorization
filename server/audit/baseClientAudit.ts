@@ -20,3 +20,9 @@ const baseClientAudit = (username: string, auditService: AuditService) => {
 }
 
 export default baseClientAudit
+
+export type BaseClientAuditFunction = (
+  baseClientEvent: BaseClientEvent,
+  baseClientId?: string,
+  details?: Record<string, unknown>,
+) => Promise<void>

@@ -1,15 +1,15 @@
-import { RequestHandler } from 'express'
+import { RequestHandler, Response } from 'express'
 import { BaseClientService } from '../services'
 import listBaseClientsPresenter from '../views/presenters/listBaseClientsPresenter'
 import viewBaseClientPresenter from '../views/presenters/viewBaseClientPresenter'
 import nunjucksUtils from '../views/helpers/nunjucksUtils'
 import { mapCreateBaseClientForm, mapEditBaseClientDeploymentForm, mapEditBaseClientDetailsForm } from '../mappers'
-import { BaseClient } from '../interfaces/baseClientApi/baseClient'
+import { BaseClient, ClientSecrets } from '../interfaces/baseClientApi/baseClient'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
 import mapFilterForm from '../mappers/forms/mapFilterForm'
 import { GrantTypes } from '../data/enums/grantTypes'
 import { kebab } from '../utils/utils'
-import baseClientAudit from '../audit/baseClientAudit'
+import baseClientAudit, { BaseClientAuditFunction } from '../audit/baseClientAudit'
 import AuditService from '../services/auditService'
 import { BaseClientEvent } from '../audit/baseClientEvent'
 
@@ -104,34 +104,20 @@ export default class BaseClientController {
     return async (req, res, next) => {
       const { token, username } = res.locals.user
       const audit = baseClientAudit(username, this.auditService)
-      await audit(BaseClientEvent.CREATE_BASE_CLIENT)
 
+      await audit(BaseClientEvent.CREATE_BASE_CLIENT)
       try {
         const baseClient = mapCreateBaseClientForm(req)
 
-        // Simple validation
         const error = await this.validateCreateBaseClient(token, baseClient)
         if (error) {
-          await audit(BaseClientEvent.CREATE_BASE_CLIENT_FAILURE)
-          res.render('pages/new-base-client-details.njk', {
-            errorMessage: { text: error },
-            grant: baseClient.grantType,
-            baseClient,
-            presenter: editBaseClientPresenter(baseClient),
-            ...nunjucksUtils,
-          })
+          await audit(BaseClientEvent.CREATE_BASE_CLIENT_FAILURE, '', { error })
+          this.renderCreateBaseClientErrorPage(res, error, baseClient)
           return
         }
 
-        // Create base client
         const secrets = await this.baseClientService.addBaseClient(token, baseClient)
-
-        // Display success page
-        res.render('pages/new-base-client-success.njk', {
-          title: `Client has been added`,
-          baseClientId: baseClient.baseClientId,
-          secrets,
-        })
+        await this.renderSecretsPage(res, baseClient, secrets, audit)
       } catch (e) {
         await audit(BaseClientEvent.CREATE_BASE_CLIENT_FAILURE)
         throw e
@@ -238,21 +224,13 @@ export default class BaseClientController {
       const { token, username } = res.locals.user
       const { baseClientId } = req.params
       const audit = baseClientAudit(username, this.auditService)
-      await audit(BaseClientEvent.CREATE_CLIENT, baseClientId)
 
       try {
-        // get base client
-        const baseClient = await this.baseClientService.getBaseClient(token, baseClientId)
+        await audit(BaseClientEvent.CREATE_CLIENT, baseClientId)
+        const baseClient = await this.getBaseClient(token, baseClientId)
+        const secrets = await this.addClientInstance(token, baseClient)
 
-        // Create base client
-        const secrets = await this.baseClientService.addClientInstance(token, baseClient)
-
-        // Display success page
-        res.render('pages/new-base-client-success.njk', {
-          title: `Client has been added`,
-          baseClientId: baseClient.baseClientId,
-          secrets,
-        })
+        await this.renderSecretsPage(res, baseClient, secrets, audit)
       } catch (e) {
         await audit(BaseClientEvent.CREATE_CLIENT_FAILURE, baseClientId)
         throw e
@@ -320,5 +298,45 @@ export default class BaseClientController {
         throw e
       }
     }
+  }
+
+  private async getBaseClient(token: string, baseClientId: string) {
+    return this.baseClientService.getBaseClient(token, baseClientId)
+  }
+
+  private async addClientInstance(token: string, baseClient: BaseClient) {
+    return this.baseClientService.addClientInstance(token, baseClient)
+  }
+
+  private async renderSecretsPage(
+    res: Response,
+    baseClient: BaseClient,
+    secrets: ClientSecrets,
+    audit: BaseClientAuditFunction,
+  ) {
+    await audit(BaseClientEvent.VIEW_CLIENT_SECRETS, baseClient.baseClientId, { clientId: secrets.clientId })
+    res.render(
+      'pages/new-base-client-success.njk',
+      {
+        title: `Client has been added`,
+        baseClientId: baseClient.baseClientId,
+        secrets,
+      },
+      (err, _html) => {
+        if (err) {
+          audit(BaseClientEvent.VIEW_CLIENT_SECRETS_FAILURE, baseClient.baseClientId, { clientId: secrets.clientId })
+        }
+      },
+    )
+  }
+
+  private renderCreateBaseClientErrorPage(res: Response, error: string, baseClient: BaseClient) {
+    res.render('pages/new-base-client-details.njk', {
+      errorMessage: { text: error },
+      grant: baseClient.grantType,
+      baseClient,
+      presenter: editBaseClientPresenter(baseClient),
+      ...nunjucksUtils,
+    })
   }
 }
