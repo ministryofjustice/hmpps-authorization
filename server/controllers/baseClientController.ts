@@ -276,9 +276,11 @@ export default class BaseClientController {
         baseClientId: baseClient.baseClientId,
         secrets,
       },
-      (err, _html) => {
+      (err, html) => {
         if (err) {
           audit(BaseClientEvent.VIEW_CLIENT_SECRETS_FAILURE, baseClient.baseClientId, { clientId: secrets.clientId })
+        } else {
+          res.send(html)
         }
       },
     )
