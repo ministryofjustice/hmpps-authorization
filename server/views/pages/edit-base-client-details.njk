@@ -50,37 +50,6 @@
         }
       }) }}
 
-      {{ govukRadios({
-        classes: "govuk-radios--inline",
-        name: "clientType",
-        fieldset: {
-          legend: {
-            text: "Client type",
-            isPageHeading: false
-          }
-        },
-        items: [
-          {
-            value: "SERVICE",
-            text: "Service",
-            attributes: {
-              "data-qa": "base-client-service-radio"
-            }
-          },
-          {
-            value: "PERSONAL",
-            text: "Personal",
-            attributes: {
-              "data-qa": "base-client-personal-radio"
-            }
-          }
-        ],
-        value: baseClient.clientType,
-        attributes: {
-          "data-qa": "base-client-type-radios"
-        }
-      }) }}
-
       {{ govukSelect({
         id: "access-token-validity",
         name: "accessTokenValidity",

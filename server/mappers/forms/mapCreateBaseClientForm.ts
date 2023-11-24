@@ -1,6 +1,6 @@
 import type { Request } from 'express'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
-import { getAccessTokenValiditySeconds, getDayOfExpiry, multiSeparatorSplit } from '../../utils/utils'
+import { getAccessTokenValiditySeconds, getDayOfExpiry, multiSeparatorSplit, snake } from '../../utils/utils'
 
 export default (request: Request): BaseClient => {
   // valid days is calculated from expiry date
@@ -12,12 +12,13 @@ export default (request: Request): BaseClient => {
 
   return {
     baseClientId: data.baseClientId,
-    clientType: data.clientType,
     accessTokenValidity: accessTokenValiditySeconds,
     scopes: multiSeparatorSplit(data.approvedScopes, [',', '\r\n', '\n']),
     audit: data.audit,
     count: 1,
-    grantType: data.grant,
+    lastAccessed: '',
+    expired: false,
+    grantType: snake(data.grant),
     clientCredentials: {
       authorities: multiSeparatorSplit(data.authorities, [',', '\r\n', '\n']),
       databaseUserName: data.databaseUserName,
@@ -36,6 +37,7 @@ export default (request: Request): BaseClient => {
       status: '',
     },
     deployment: {
+      clientType: '',
       team: '',
       teamContact: '',
       teamSlack: '',

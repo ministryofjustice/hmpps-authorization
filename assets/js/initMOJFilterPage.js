@@ -1,3 +1,4 @@
+window.MOJFrontend.initAll()
 new MOJFrontend.FilterToggleButton({
   bigModeMediaQuery: '(min-width: 48.063em)',
   startHidden: true,

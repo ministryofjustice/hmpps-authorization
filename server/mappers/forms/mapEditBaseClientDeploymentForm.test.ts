@@ -2,6 +2,7 @@ import type { Request } from 'express'
 import { createMock } from '@golevelup/ts-jest'
 import { baseClientFactory } from '../../testutils/factories'
 import { mapEditBaseClientDeploymentForm } from '../index'
+import { HostingType } from '../../data/enums/hostingTypes'
 
 const formRequest = (form: Record<string, unknown>) => {
   return createMock<Request>({ body: form })
@@ -26,7 +27,7 @@ describe('mapEditBaseClientDeploymentForm', () => {
         team: 'team',
         teamContact: 'contact',
         teamSlack: 'slack',
-        hosting: 'CLOUDPLATFORM',
+        hosting: HostingType.Cloud,
         namespace: 'b',
         deployment: 'c',
         secretName: 'd',
@@ -42,7 +43,7 @@ describe('mapEditBaseClientDeploymentForm', () => {
       expect(update.deployment.team).toEqual('team')
       expect(update.deployment.teamContact).toEqual('contact')
       expect(update.deployment.teamSlack).toEqual('slack')
-      expect(update.deployment.hosting).toEqual('CLOUDPLATFORM')
+      expect(update.deployment.hosting).toEqual(HostingType.Cloud)
       expect(update.deployment.namespace).toEqual('b')
       expect(update.deployment.deployment).toEqual('c')
       expect(update.deployment.secretName).toEqual('d')

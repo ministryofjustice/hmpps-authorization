@@ -43,10 +43,11 @@ export const getBaseClientResponseMock: GetBaseClientResponse = {
   validDays: 1,
   accessTokenValidityMinutes: 60,
   deployment: {
+    clientType: 'service',
     team: 'deployment team',
     teamContact: 'deployment team contact',
     teamSlack: 'deployment team slack',
-    hosting: 'deployment hosting',
+    hosting: 'other',
     namespace: 'deployment namespace',
     deployment: 'deployment deployment',
     secretName: 'deployment secret name',

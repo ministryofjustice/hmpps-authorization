@@ -60,8 +60,6 @@ context('Add client page', () => {
 
     it('User can see base-client form inputs', () => {
       addBaseClientDetailsPage.baseClientIdInput().should('be.visible')
-      addBaseClientDetailsPage.baseClientServiceRadioButton().should('exist')
-      addBaseClientDetailsPage.baseClientPersonalRadioButton().should('exist')
       addBaseClientDetailsPage.baseClientAccessTokenValidityDropdown().should('be.visible')
       addBaseClientDetailsPage.baseClientApprovedScopesInput().should('be.visible')
     })
