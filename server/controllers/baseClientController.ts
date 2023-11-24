@@ -4,7 +4,7 @@ import listBaseClientsPresenter from '../views/presenters/listBaseClientsPresent
 import viewBaseClientPresenter from '../views/presenters/viewBaseClientPresenter'
 import nunjucksUtils from '../views/helpers/nunjucksUtils'
 import { mapCreateBaseClientForm, mapEditBaseClientDeploymentForm, mapEditBaseClientDetailsForm } from '../mappers'
-import { BaseClient, ClientSecrets } from '../interfaces/baseClientApi/baseClient'
+import { BaseClient, BaseClientListFilter, ClientSecrets } from '../interfaces/baseClientApi/baseClient'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
 import mapFilterForm from '../mappers/forms/mapFilterForm'
 import { GrantTypes } from '../data/enums/grantTypes'
@@ -12,6 +12,7 @@ import { kebab } from '../utils/utils'
 import baseClientAudit, { BaseClientAuditFunction } from '../audit/baseClientAudit'
 import AuditService from '../services/auditService'
 import { BaseClientEvent } from '../audit/baseClientEvent'
+import { Client } from '../interfaces/baseClientApi/client'
 
 export default class BaseClientController {
   constructor(
@@ -27,11 +28,7 @@ export default class BaseClientController {
 
       try {
         const baseClients = await this.baseClientService.listBaseClients(token)
-        const presenter = listBaseClientsPresenter(baseClients)
-
-        res.render('pages/base-clients.njk', {
-          presenter,
-        })
+        this.renderBaseClientsPage(res, baseClients)
       } catch (e) {
         await audit(BaseClientEvent.LIST_BASE_CLIENTS_FAILURE)
         throw e
@@ -48,12 +45,7 @@ export default class BaseClientController {
 
       try {
         const baseClients = await this.baseClientService.listBaseClients(token)
-
-        const presenter = listBaseClientsPresenter(baseClients, filter)
-
-        res.render('pages/base-clients.njk', {
-          presenter,
-        })
+        this.renderBaseClientsPage(res, baseClients, filter)
       } catch (e) {
         await audit(BaseClientEvent.LIST_BASE_CLIENTS_FAILURE)
         throw e
@@ -66,18 +58,12 @@ export default class BaseClientController {
       const { token, username } = res.locals.user
       const { baseClientId } = req.params
       const audit = baseClientAudit(username, this.auditService)
-      await audit(BaseClientEvent.VIEW_BASE_CLIENT, baseClientId)
 
+      await audit(BaseClientEvent.VIEW_BASE_CLIENT, baseClientId)
       try {
         const baseClient = await this.baseClientService.getBaseClient(token, baseClientId)
         const clients = await this.baseClientService.listClientInstances(token, baseClient)
-
-        const presenter = viewBaseClientPresenter(baseClient, clients)
-        res.render('pages/base-client.njk', {
-          baseClient,
-          presenter,
-          ...nunjucksUtils,
-        })
+        this.renderBaseClientPage(res, baseClient, clients)
       } catch (e) {
         await audit(BaseClientEvent.VIEW_BASE_CLIENT_FAILURE, baseClientId)
         throw e
@@ -163,16 +149,9 @@ export default class BaseClientController {
       await audit(BaseClientEvent.UPDATE_BASE_CLIENT, baseClientId)
 
       try {
-        // get current values
         const baseClient = await this.baseClientService.getBaseClient(token, baseClientId)
-
-        // map form values to updated base client
         const updatedClient = mapEditBaseClientDetailsForm(baseClient, req)
-
-        // update base client
         await this.baseClientService.updateBaseClient(token, updatedClient)
-
-        // return to view base client page
         res.redirect(`/base-clients/${baseClientId}`)
       } catch (e) {
         await audit(BaseClientEvent.UPDATE_BASE_CLIENT_FAILURE, baseClientId)
@@ -201,16 +180,9 @@ export default class BaseClientController {
       await audit(BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT, baseClientId)
 
       try {
-        // get current values
         const baseClient = await this.baseClientService.getBaseClient(token, baseClientId)
-
-        // map form values to updated base client
         const updatedClient = mapEditBaseClientDeploymentForm(baseClient, req)
-
-        // update base client
         await this.baseClientService.updateBaseClientDeployment(token, updatedClient)
-
-        // return to view base client page
         res.redirect(`/base-clients/${baseClientId}`)
       } catch (e) {
         await audit(BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT_FAILURE, baseClientId)
@@ -227,8 +199,8 @@ export default class BaseClientController {
 
       try {
         await audit(BaseClientEvent.CREATE_CLIENT, baseClientId)
-        const baseClient = await this.getBaseClient(token, baseClientId)
-        const secrets = await this.addClientInstance(token, baseClient)
+        const baseClient = await this.baseClientService.getBaseClient(token, baseClientId)
+        const secrets = await this.baseClientService.addClientInstance(token, baseClient)
 
         await this.renderSecretsPage(res, baseClient, secrets, audit)
       } catch (e) {
@@ -242,19 +214,12 @@ export default class BaseClientController {
     return async (req, res, next) => {
       const { token } = res.locals.user
       const { baseClientId, clientId } = req.params
-      const error = req.query.error === 'clientIdMismatch' ? 'Client ID does not match' : null
 
-      // get base client
       const baseClient = await this.baseClientService.getBaseClient(token, baseClientId)
       const clients = await this.baseClientService.listClientInstances(token, baseClient)
+      const error = req.query.error === 'clientIdMismatch' ? 'Client ID does not match' : null
 
-      // Display delete confirmation page
-      res.render('pages/delete-client-instance.njk', {
-        baseClient,
-        clientId,
-        isLastClient: clients.length === 1,
-        error,
-      })
+      this.renderDeleteConfirmationPage(res, baseClient, clientId, clients, error)
     }
   }
 
@@ -266,33 +231,23 @@ export default class BaseClientController {
       await audit(BaseClientEvent.DELETE_CLIENT, baseClientId, { clientId })
 
       try {
-        // check client id matches
         if (req.body.confirm !== clientId) {
           await audit(BaseClientEvent.DELETE_CLIENT_FAILURE)
           res.redirect(`/base-clients/${baseClientId}/clients/${clientId}/delete?error=clientIdMismatch`)
           return
         }
 
-        // get base client
         const baseClient = await this.baseClientService.getBaseClient(token, baseClientId)
         const clients = await this.baseClientService.listClientInstances(token, baseClient)
         const client = clients.find(c => c.clientId === clientId)
 
-        // check client exists
         if (!client) {
           res.redirect(`/base-clients/${baseClientId}/clients/${clientId}/delete?error=clientNotFound`)
           return
         }
 
-        // delete client
         await this.baseClientService.deleteClientInstance(token, client)
-
-        // return to view base client screen (or home screen if last client deleted)
-        if (clients.length === 1) {
-          res.redirect(`/`)
-        } else {
-          res.redirect(`/base-clients/${baseClientId}`)
-        }
+        this.redirectAfterDeletion(res, clients, baseClientId)
       } catch (e) {
         await audit(BaseClientEvent.DELETE_CLIENT_FAILURE, baseClientId, { clientId })
         throw e
@@ -300,12 +255,11 @@ export default class BaseClientController {
     }
   }
 
-  private async getBaseClient(token: string, baseClientId: string) {
-    return this.baseClientService.getBaseClient(token, baseClientId)
-  }
-
-  private async addClientInstance(token: string, baseClient: BaseClient) {
-    return this.baseClientService.addClientInstance(token, baseClient)
+  private renderBaseClientsPage(res: Response, baseClients: BaseClient[], filter?: BaseClientListFilter) {
+    const presenter = listBaseClientsPresenter(baseClients, filter)
+    res.render('pages/base-clients.njk', {
+      presenter,
+    })
   }
 
   private async renderSecretsPage(
@@ -338,5 +292,37 @@ export default class BaseClientController {
       presenter: editBaseClientPresenter(baseClient),
       ...nunjucksUtils,
     })
+  }
+
+  private renderBaseClientPage(res: Response, baseClient: BaseClient, clients: Client[]) {
+    const presenter = viewBaseClientPresenter(baseClient, clients)
+    res.render('pages/base-client.njk', {
+      baseClient,
+      presenter,
+      ...nunjucksUtils,
+    })
+  }
+
+  private renderDeleteConfirmationPage(
+    res: Response,
+    baseClient: BaseClient,
+    clientId: string,
+    clients: Client[],
+    error: string | null,
+  ): void {
+    res.render('pages/delete-client-instance.njk', {
+      baseClient,
+      clientId,
+      isLastClient: clients.length === 1,
+      error,
+    })
+  }
+
+  private redirectAfterDeletion(res: Response, clients: Client[], baseClientId: string): void {
+    if (clients.length === 1) {
+      res.redirect(`/`)
+    } else {
+      res.redirect(`/base-clients/${baseClientId}`)
+    }
   }
 }
