@@ -10,20 +10,16 @@ import mapFilterForm from '../mappers/forms/mapFilterForm'
 import { GrantTypes } from '../data/enums/grantTypes'
 import { kebab } from '../utils/utils'
 import baseClientAudit, { BaseClientAuditFunction } from '../audit/baseClientAudit'
-import AuditService from '../services/auditService'
 import { BaseClientEvent } from '../audit/baseClientEvent'
 import { Client } from '../interfaces/baseClientApi/client'
 
 export default class BaseClientController {
-  constructor(
-    private readonly baseClientService: BaseClientService,
-    private readonly auditService: AuditService,
-  ) {}
+  constructor(private readonly baseClientService: BaseClientService) {}
 
   public displayBaseClients(): RequestHandler {
     return async (req, res) => {
       const { token, username } = res.locals.user
-      const audit = baseClientAudit(username, this.auditService)
+      const audit = baseClientAudit(username)
       await audit(BaseClientEvent.LIST_BASE_CLIENTS)
 
       try {
@@ -40,7 +36,7 @@ export default class BaseClientController {
     return async (req, res) => {
       const { token, username } = res.locals.user
       const filter = mapFilterForm(req)
-      const audit = baseClientAudit(username, this.auditService)
+      const audit = baseClientAudit(username)
       await audit(BaseClientEvent.LIST_BASE_CLIENTS)
 
       try {
@@ -57,7 +53,7 @@ export default class BaseClientController {
     return async (req, res) => {
       const { token, username } = res.locals.user
       const { baseClientId } = req.params
-      const audit = baseClientAudit(username, this.auditService)
+      const audit = baseClientAudit(username)
 
       await audit(BaseClientEvent.VIEW_BASE_CLIENT, baseClientId)
       try {
@@ -89,7 +85,7 @@ export default class BaseClientController {
   public createBaseClient(): RequestHandler {
     return async (req, res, next) => {
       const { token, username } = res.locals.user
-      const audit = baseClientAudit(username, this.auditService)
+      const audit = baseClientAudit(username)
 
       await audit(BaseClientEvent.CREATE_BASE_CLIENT)
       try {
@@ -145,7 +141,7 @@ export default class BaseClientController {
     return async (req, res, next) => {
       const { token, username } = res.locals.user
       const { baseClientId } = req.params
-      const audit = baseClientAudit(username, this.auditService)
+      const audit = baseClientAudit(username)
       await audit(BaseClientEvent.UPDATE_BASE_CLIENT, baseClientId)
 
       try {
@@ -176,7 +172,7 @@ export default class BaseClientController {
     return async (req, res, next) => {
       const { token, username } = res.locals.user
       const { baseClientId } = req.params
-      const audit = baseClientAudit(username, this.auditService)
+      const audit = baseClientAudit(username)
       await audit(BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT, baseClientId)
 
       try {
@@ -195,7 +191,7 @@ export default class BaseClientController {
     return async (req, res, next) => {
       const { token, username } = res.locals.user
       const { baseClientId } = req.params
-      const audit = baseClientAudit(username, this.auditService)
+      const audit = baseClientAudit(username)
 
       try {
         await audit(BaseClientEvent.CREATE_CLIENT, baseClientId)
@@ -227,7 +223,7 @@ export default class BaseClientController {
     return async (req, res, next) => {
       const { token, username } = res.locals.user
       const { baseClientId, clientId } = req.params
-      const audit = baseClientAudit(username, this.auditService)
+      const audit = baseClientAudit(username)
       await audit(BaseClientEvent.DELETE_CLIENT, baseClientId, { clientId })
 
       try {

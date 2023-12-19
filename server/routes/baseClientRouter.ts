@@ -18,7 +18,7 @@ export default function baseClientRouter(services: Services): Router {
       handlers.map(handler => asyncMiddleware(handler)),
     )
 
-  const baseClientController = new BaseClientController(services.baseClientService, services.auditService)
+  const baseClientController = new BaseClientController(services.baseClientService)
 
   get('/', baseClientController.displayBaseClients())
   get('/base-clients/new', baseClientController.displayNewBaseClient())

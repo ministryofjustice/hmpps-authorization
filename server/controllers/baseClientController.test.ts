@@ -10,8 +10,8 @@ import createUserToken from '../testutils/createUserToken'
 import viewBaseClientPresenter from '../views/presenters/viewBaseClientPresenter'
 import nunjucksUtils from '../views/helpers/nunjucksUtils'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
-import AuditService from '../services/auditService'
 import { BaseClientEvent } from '../audit/baseClientEvent'
+import * as baseClientAudit from '../audit/baseClientAudit'
 
 describe('BaseClientController', () => {
   const token = createUserToken(['ADMIN'])
@@ -19,10 +19,12 @@ describe('BaseClientController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
   let baseClientService = createMock<BaseClientService>({})
-  let auditService = createMock<AuditService>({})
   let baseClientController: BaseClientController
 
   beforeEach(() => {
+    jest.resetAllMocks()
+    jest.spyOn(baseClientAudit, 'sendBaseClientEvent').mockResolvedValue()
+
     request = createMock<Request>()
     response = createMock<Response>({
       locals: {
@@ -37,8 +39,7 @@ describe('BaseClientController', () => {
     })
 
     baseClientService = createMock<BaseClientService>({})
-    auditService = createMock<AuditService>({})
-    baseClientController = new BaseClientController(baseClientService, auditService)
+    baseClientController = new BaseClientController(baseClientService)
   })
 
   describe('displayBaseClients', () => {
@@ -69,8 +70,12 @@ describe('BaseClientController', () => {
       await baseClientController.displayBaseClients()(request, response, next)
 
       // THEN a view base clients audit event is sent
-      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-        expect.objectContaining({ action: BaseClientEvent.LIST_BASE_CLIENTS }),
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.LIST_BASE_CLIENTS,
+        undefined,
+        undefined,
+        undefined,
+        expect.any(String),
       )
     })
 
@@ -83,8 +88,12 @@ describe('BaseClientController', () => {
         await baseClientController.displayBaseClients()(request, response, next)
       } catch (e) {
         // THEN a view base clients failure audit event is sent
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.LIST_BASE_CLIENTS_FAILURE }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.LIST_BASE_CLIENTS_FAILURE,
+          undefined,
+          undefined,
+          undefined,
+          expect.any(String),
         )
       }
     })
@@ -126,8 +135,12 @@ describe('BaseClientController', () => {
       await baseClientController.displayBaseClient()(request, response, next)
 
       // THEN a view base client audit event is sent
-      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-        expect.objectContaining({ action: BaseClientEvent.VIEW_BASE_CLIENT, subjectId: baseClient.baseClientId }),
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.VIEW_BASE_CLIENT,
+        baseClient.baseClientId,
+        undefined,
+        undefined,
+        expect.any(String),
       )
     })
 
@@ -143,8 +156,12 @@ describe('BaseClientController', () => {
         await baseClientController.displayBaseClient()(request, response, next)
       } catch (e) {
         // THEN a view base clients failure audit event is sent
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.VIEW_BASE_CLIENT_FAILURE, subjectId: baseClientId }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.VIEW_BASE_CLIENT_FAILURE,
+          baseClientId,
+          undefined,
+          undefined,
+          expect.any(String),
         )
       }
     })
@@ -219,8 +236,12 @@ describe('BaseClientController', () => {
         )
 
         // AND the fail is audited
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.CREATE_BASE_CLIENT_FAILURE }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.CREATE_BASE_CLIENT_FAILURE,
+          expect.any(String),
+          expect.objectContaining({ error: expectedError }),
+          undefined,
+          expect.any(String),
         )
       })
 
@@ -241,8 +262,12 @@ describe('BaseClientController', () => {
         )
 
         // AND the fail is audited
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.CREATE_BASE_CLIENT_FAILURE }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.CREATE_BASE_CLIENT_FAILURE,
+          expect.any(String),
+          expect.objectContaining({ error: expectedError }),
+          undefined,
+          expect.any(String),
         )
       })
 
@@ -274,8 +299,12 @@ describe('BaseClientController', () => {
         await baseClientController.createBaseClient()(request, response, next)
 
         // THEN the attempt is audited
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.CREATE_BASE_CLIENT }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.CREATE_BASE_CLIENT,
+          undefined,
+          undefined,
+          undefined,
+          expect.any(String),
         )
       })
 
@@ -291,8 +320,12 @@ describe('BaseClientController', () => {
         await baseClientController.createBaseClient()(request, response, next)
 
         // THEN the attempt is audited
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.VIEW_CLIENT_SECRETS }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.VIEW_CLIENT_SECRETS,
+          expect.any(String),
+          { clientId: expect.any(String) },
+          undefined,
+          expect.any(String),
         )
       })
 
@@ -314,8 +347,12 @@ describe('BaseClientController', () => {
           await baseClientController.createBaseClient()(request, response, next)
         } catch (e) {
           // THEN the view attempt is audited
-          expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-            expect.objectContaining({ action: BaseClientEvent.VIEW_CLIENT_SECRETS_FAILURE }),
+          expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+            BaseClientEvent.VIEW_CLIENT_SECRETS_FAILURE,
+            undefined,
+            undefined,
+            undefined,
+            expect.any(String),
           )
         }
       })
@@ -377,8 +414,12 @@ describe('BaseClientController', () => {
       await baseClientController.updateBaseClientDetails()(request, response, next)
 
       // THEN the attempt is audited
-      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-        expect.objectContaining({ action: BaseClientEvent.UPDATE_BASE_CLIENT }),
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.UPDATE_BASE_CLIENT,
+        baseClient.baseClientId,
+        undefined,
+        undefined,
+        expect.any(String),
       )
     })
 
@@ -397,8 +438,12 @@ describe('BaseClientController', () => {
         await baseClientController.updateBaseClientDetails()(request, response, next)
       } catch (e) {
         // THEN the attempt is audited
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.UPDATE_BASE_CLIENT_FAILURE }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.UPDATE_BASE_CLIENT_FAILURE,
+          baseClient.baseClientId,
+          undefined,
+          undefined,
+          expect.any(String),
         )
       }
     })
@@ -456,8 +501,12 @@ describe('BaseClientController', () => {
       await baseClientController.updateBaseClientDeployment()(request, response, next)
 
       // THEN the attempt is audited
-      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-        expect.objectContaining({ action: BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT }),
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT,
+        baseClient.baseClientId,
+        undefined,
+        undefined,
+        expect.any(String),
       )
     })
 
@@ -476,8 +525,12 @@ describe('BaseClientController', () => {
         await baseClientController.updateBaseClientDeployment()(request, response, next)
       } catch (e) {
         // THEN the attempt is audited
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT_FAILURE }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT_FAILURE,
+          baseClient.baseClientId,
+          undefined,
+          undefined,
+          expect.any(String),
         )
       }
     })
@@ -516,8 +569,12 @@ describe('BaseClientController', () => {
       // WHEN it is posted
       await baseClientController.createClientInstance()(request, response, next)
 
-      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-        expect.objectContaining({ action: BaseClientEvent.CREATE_CLIENT }),
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.CREATE_CLIENT,
+        undefined,
+        undefined,
+        undefined,
+        expect.any(String),
       )
     })
 
@@ -534,8 +591,12 @@ describe('BaseClientController', () => {
         await baseClientController.createClientInstance()(request, response, next)
       } catch (e) {
         // THEN the failed attempt is audited
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.CREATE_CLIENT_FAILURE }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.CREATE_CLIENT_FAILURE,
+          undefined,
+          undefined,
+          undefined,
+          expect.any(String),
         )
       }
     })
@@ -663,8 +724,12 @@ describe('BaseClientController', () => {
         await baseClientController.deleteClientInstance()(request, response, next)
 
         // THEN the delete attempt is audited
-        expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-          expect.objectContaining({ action: BaseClientEvent.DELETE_CLIENT }),
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.DELETE_CLIENT,
+          baseClient.baseClientId,
+          { clientId: client.clientId },
+          undefined,
+          expect.any(String),
         )
       })
 
@@ -687,8 +752,12 @@ describe('BaseClientController', () => {
           await baseClientController.deleteClientInstance()(request, response, next)
         } catch (e) {
           // THEN the failed attempt is audited
-          expect(auditService.sendAuditMessage).toHaveBeenCalledWith(
-            expect.objectContaining({ action: BaseClientEvent.DELETE_CLIENT_FAILURE }),
+          expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+            BaseClientEvent.DELETE_CLIENT_FAILURE,
+            baseClient.baseClientId,
+            { clientId: client.clientId },
+            undefined,
+            expect.any(String),
           )
         }
       })
