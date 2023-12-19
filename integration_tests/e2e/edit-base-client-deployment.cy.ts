@@ -22,6 +22,7 @@ context('Edit base client deployment details page', () => {
 
   it('User can see contact details form inputs', () => {
     editBaseClientDeploymentDetailsPage.baseClientSummaryList().should('be.visible')
+    editBaseClientDeploymentDetailsPage.deploymentTypeRadios().should('be.visible')
     editBaseClientDeploymentDetailsPage.deploymentTeamInput().should('be.visible')
     editBaseClientDeploymentDetailsPage.deploymentTeamContactInput().should('be.visible')
     editBaseClientDeploymentDetailsPage.deploymentTeamSlackInput().should('be.visible')

@@ -1,6 +1,6 @@
 import { ListBaseClientsResponse } from '../../interfaces/baseClientApi/baseClientResponse'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
-import { multiSeparatorSplit } from '../../utils/utils'
+import { multiSeparatorSplit, snake } from '../../utils/utils'
 
 export default (response: ListBaseClientsResponse): BaseClient[] => {
   const { clients } = response
@@ -11,12 +11,13 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
     client =>
       ({
         baseClientId: client.baseClientId,
-        clientType: client.clientType,
         accessTokenValidity: 24000,
         scopes: [],
-        grantType: client.grantType,
+        grantType: snake(client.grantType),
         audit: '',
         count: client.count ? client.count : 0,
+        lastAccessed: client.lastAccessed ? client.lastAccessed : '',
+        expired: client.expired,
         clientCredentials: {
           authorities: multiSeparatorSplit(client.roles, [' ', ',', '\n']),
           databaseUserName: '',
@@ -35,6 +36,7 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
           status: '',
         },
         deployment: {
+          clientType: snake(client.clientType),
           team: client.teamName || '',
           teamContact: '',
           teamSlack: '',

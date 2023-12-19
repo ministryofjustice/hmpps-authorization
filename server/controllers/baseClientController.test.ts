@@ -10,6 +10,8 @@ import createUserToken from '../testutils/createUserToken'
 import viewBaseClientPresenter from '../views/presenters/viewBaseClientPresenter'
 import nunjucksUtils from '../views/helpers/nunjucksUtils'
 import editBaseClientPresenter from '../views/presenters/editBaseClientPresenter'
+import { BaseClientEvent } from '../audit/baseClientEvent'
+import * as baseClientAudit from '../audit/baseClientAudit'
 
 describe('BaseClientController', () => {
   const token = createUserToken(['ADMIN'])
@@ -20,6 +22,9 @@ describe('BaseClientController', () => {
   let baseClientController: BaseClientController
 
   beforeEach(() => {
+    jest.resetAllMocks()
+    jest.spyOn(baseClientAudit, 'sendBaseClientEvent').mockResolvedValue()
+
     request = createMock<Request>()
     response = createMock<Response>({
       locals: {
@@ -55,11 +60,48 @@ describe('BaseClientController', () => {
       // AND the list of base clients is retrieved from the base client service
       expect(baseClientService.listBaseClients).toHaveBeenCalledWith(token)
     })
+
+    it('audits the view attempt', async () => {
+      // GIVEN a list of base clients
+      const baseClients = baseClientFactory.buildList(3)
+      baseClientService.listBaseClients.mockResolvedValue(baseClients)
+
+      // WHEN the index page is requested
+      await baseClientController.displayBaseClients()(request, response, next)
+
+      // THEN a view base clients audit event is sent
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.LIST_BASE_CLIENTS,
+        undefined,
+        undefined,
+        undefined,
+        expect.any(String),
+      )
+    })
+
+    it('audits the view failure', async () => {
+      // GIVEN an error will be thrown
+      baseClientService.listBaseClients.mockRejectedValue(404)
+
+      // WHEN the index page is requested
+      try {
+        await baseClientController.displayBaseClients()(request, response, next)
+      } catch (e) {
+        // THEN a view base clients failure audit event is sent
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.LIST_BASE_CLIENTS_FAILURE,
+          undefined,
+          undefined,
+          undefined,
+          expect.any(String),
+        )
+      }
+    })
   })
 
   describe('view base client', () => {
-    it('renders the main view of a base clients', async () => {
-      // GIVEN a list of base clients
+    it('renders the main view of a base client', async () => {
+      // GIVEN a base client
       const baseClient = baseClientFactory.build()
       const clients = clientFactory.buildList(3)
       baseClientService.getBaseClient.mockResolvedValue(baseClient)
@@ -79,6 +121,49 @@ describe('BaseClientController', () => {
 
       // AND the base client is retrieved from the base client service
       expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+    })
+
+    it('audits the view attempt', async () => {
+      // GIVEN a base client
+      const baseClient = baseClientFactory.build()
+      const clients = clientFactory.buildList(3)
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.listClientInstances.mockResolvedValue(clients)
+
+      // WHEN the base client page is requested
+      request = createMock<Request>({ params: { baseClientId: baseClient.baseClientId } })
+      await baseClientController.displayBaseClient()(request, response, next)
+
+      // THEN a view base client audit event is sent
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.VIEW_BASE_CLIENT,
+        baseClient.baseClientId,
+        undefined,
+        undefined,
+        expect.any(String),
+      )
+    })
+
+    it('audits the view failure', async () => {
+      // GIVEN an error will be thrown
+      const baseClientId = '1234'
+      baseClientService.getBaseClient.mockRejectedValue(404)
+      baseClientService.listClientInstances.mockRejectedValue(404)
+
+      // WHEN the base client page is requested
+      try {
+        request = createMock<Request>({ params: { baseClientId } })
+        await baseClientController.displayBaseClient()(request, response, next)
+      } catch (e) {
+        // THEN a view base clients failure audit event is sent
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.VIEW_BASE_CLIENT_FAILURE,
+          baseClientId,
+          undefined,
+          undefined,
+          expect.any(String),
+        )
+      }
     })
   })
 
@@ -105,6 +190,7 @@ describe('BaseClientController', () => {
         // THEN the enter client details page is rendered with client credentials selected
         expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
           grant: 'client-credentials',
+          presenter: editBaseClientPresenter(null),
           ...nunjucksUtils,
         })
       })
@@ -119,6 +205,7 @@ describe('BaseClientController', () => {
         // THEN the enter client details page is rendered with authorisation code selected
         expect(response.render).toHaveBeenCalledWith('pages/new-base-client-details.njk', {
           grant: 'authorization-code',
+          presenter: editBaseClientPresenter(null),
           ...nunjucksUtils,
         })
       })
@@ -147,6 +234,15 @@ describe('BaseClientController', () => {
           'pages/new-base-client-details.njk',
           expect.objectContaining({ errorMessage: { text: expectedError } }),
         )
+
+        // AND the fail is audited
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.CREATE_BASE_CLIENT_FAILURE,
+          expect.any(String),
+          expect.objectContaining({ error: expectedError }),
+          undefined,
+          expect.any(String),
+        )
       })
 
       it('if validation fails because id exists then render the details screen with error message', async () => {
@@ -163,6 +259,15 @@ describe('BaseClientController', () => {
         expect(response.render).toHaveBeenCalledWith(
           'pages/new-base-client-details.njk',
           expect.objectContaining({ errorMessage: { text: expectedError } }),
+        )
+
+        // AND the fail is audited
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.CREATE_BASE_CLIENT_FAILURE,
+          expect.any(String),
+          expect.objectContaining({ error: expectedError }),
+          undefined,
+          expect.any(String),
         )
       })
 
@@ -181,7 +286,75 @@ describe('BaseClientController', () => {
         expect(response.render).toHaveBeenCalledWith(
           'pages/new-base-client-success.njk',
           expect.objectContaining({ secrets }),
+          expect.anything(),
         )
+      })
+
+      it('audits the create attempt', async () => {
+        // GIVEN the service returns success and a set of secrets
+        const secrets = clientSecretsFactory.build()
+        baseClientService.addBaseClient.mockResolvedValue(secrets)
+
+        // WHEN it is posted
+        await baseClientController.createBaseClient()(request, response, next)
+
+        // THEN the attempt is audited
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.CREATE_BASE_CLIENT,
+          undefined,
+          undefined,
+          undefined,
+          expect.any(String),
+        )
+      })
+
+      it('audits the secrets viewing attempt if successful', async () => {
+        // GIVEN the service returns success and a set of secrets
+        const secrets = clientSecretsFactory.build()
+        // set request body to include baseClientId
+        request = createMock<Request>({ body: { baseClientId: 'abcd' } })
+        baseClientService.addBaseClient.mockResolvedValue(secrets)
+        baseClientService.getBaseClient.mockRejectedValue({ status: 404 })
+
+        // WHEN it is posted
+        await baseClientController.createBaseClient()(request, response, next)
+
+        // THEN the attempt is audited
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.VIEW_CLIENT_SECRETS,
+          expect.any(String),
+          { clientId: expect.any(String) },
+          undefined,
+          expect.any(String),
+        )
+      })
+
+      it('audits the secrets viewing attempt if fail', async () => {
+        // GIVEN the post is properly set up
+        const secrets = clientSecretsFactory.build()
+        request = createMock<Request>({ body: { baseClientId: 'abcd' } })
+        baseClientService.addBaseClient.mockResolvedValue(secrets)
+        baseClientService.getBaseClient.mockRejectedValue({ status: 404 })
+        // but the render fails
+        response.render.mockImplementation(
+          (view: string, options: object, callback?: (err: Error, html: string) => void) => {
+            callback(new Error('Test error'), '')
+          },
+        )
+
+        // WHEN it is posted
+        try {
+          await baseClientController.createBaseClient()(request, response, next)
+        } catch (e) {
+          // THEN the view attempt is audited
+          expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+            BaseClientEvent.VIEW_CLIENT_SECRETS_FAILURE,
+            undefined,
+            undefined,
+            undefined,
+            expect.any(String),
+          )
+        }
       })
     })
   })
@@ -226,6 +399,54 @@ describe('BaseClientController', () => {
       // AND the user is redirected to the view base client page
       expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
     })
+
+    it('audits the update attempt', async () => {
+      // GIVEN the service will return without an error
+      const baseClient = baseClientFactory.build()
+      request = createMock<Request>({
+        params: { baseClientId: baseClient.baseClientId },
+        body: { baseClientId: baseClient.baseClientId },
+      })
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.updateBaseClient.mockResolvedValue(new Response())
+
+      // WHEN it is posted
+      await baseClientController.updateBaseClientDetails()(request, response, next)
+
+      // THEN the attempt is audited
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.UPDATE_BASE_CLIENT,
+        baseClient.baseClientId,
+        undefined,
+        undefined,
+        expect.any(String),
+      )
+    })
+
+    it('audits a failed update attempt', async () => {
+      // GIVEN the service will return without an error
+      const baseClient = baseClientFactory.build()
+      request = createMock<Request>({
+        params: { baseClientId: baseClient.baseClientId },
+        body: { baseClientId: baseClient.baseClientId },
+      })
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.updateBaseClient.mockRejectedValue(404)
+
+      // WHEN it is posted
+      try {
+        await baseClientController.updateBaseClientDetails()(request, response, next)
+      } catch (e) {
+        // THEN the attempt is audited
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.UPDATE_BASE_CLIENT_FAILURE,
+          baseClient.baseClientId,
+          undefined,
+          undefined,
+          expect.any(String),
+        )
+      }
+    })
   })
 
   describe('update base client deployment', () => {
@@ -265,6 +486,54 @@ describe('BaseClientController', () => {
       // AND the user is redirected to the view base client page
       expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
     })
+
+    it('audits the update attempt', async () => {
+      // GIVEN the service will return without an error
+      const baseClient = baseClientFactory.build()
+      request = createMock<Request>({
+        params: { baseClientId: baseClient.baseClientId },
+        body: { baseClientId: baseClient.baseClientId },
+      })
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.updateBaseClientDeployment.mockResolvedValue(new Response())
+
+      // WHEN it is posted
+      await baseClientController.updateBaseClientDeployment()(request, response, next)
+
+      // THEN the attempt is audited
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT,
+        baseClient.baseClientId,
+        undefined,
+        undefined,
+        expect.any(String),
+      )
+    })
+
+    it('audits a failed update attempt', async () => {
+      // GIVEN the service will return without an error
+      const baseClient = baseClientFactory.build()
+      request = createMock<Request>({
+        params: { baseClientId: baseClient.baseClientId },
+        body: { baseClientId: baseClient.baseClientId },
+      })
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.updateBaseClientDeployment.mockRejectedValue(404)
+
+      // WHEN it is posted
+      try {
+        await baseClientController.updateBaseClientDeployment()(request, response, next)
+      } catch (e) {
+        // THEN the attempt is audited
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT_FAILURE,
+          baseClient.baseClientId,
+          undefined,
+          undefined,
+          expect.any(String),
+        )
+      }
+    })
   })
 
   describe('create client instance', () => {
@@ -284,7 +553,52 @@ describe('BaseClientController', () => {
       expect(response.render).toHaveBeenCalledWith(
         'pages/new-base-client-success.njk',
         expect.objectContaining({ secrets }),
+        expect.anything(),
       )
+    })
+
+    it('audits the update attempt', async () => {
+      // GIVEN the service returns success and a set of secrets
+      const baseClient = baseClientFactory.build()
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      request = createMock<Request>({ body: { baseClientId: baseClient.baseClientId } })
+
+      const secrets = clientSecretsFactory.build()
+      baseClientService.addClientInstance.mockResolvedValue(secrets)
+
+      // WHEN it is posted
+      await baseClientController.createClientInstance()(request, response, next)
+
+      expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+        BaseClientEvent.CREATE_CLIENT,
+        undefined,
+        undefined,
+        undefined,
+        expect.any(String),
+      )
+    })
+
+    it('audits a failed update attempt', async () => {
+      // GIVEN the service returns success and a set of secrets
+      const baseClient = baseClientFactory.build()
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      request = createMock<Request>({ body: { baseClientId: baseClient.baseClientId } })
+
+      baseClientService.addClientInstance.mockRejectedValue(400)
+
+      try {
+        // WHEN it is posted
+        await baseClientController.createClientInstance()(request, response, next)
+      } catch (e) {
+        // THEN the failed attempt is audited
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.CREATE_CLIENT_FAILURE,
+          undefined,
+          undefined,
+          undefined,
+          expect.any(String),
+        )
+      }
     })
   })
 
@@ -391,6 +705,61 @@ describe('BaseClientController', () => {
         // THEN the user is redirected with error
         const expectedURL = `/base-clients/${baseClient.baseClientId}/clients/${client.clientId}/delete?error=clientIdMismatch`
         expect(response.redirect).toHaveBeenCalledWith(expectedURL)
+      })
+
+      it('audits the delete attempt', async () => {
+        // GIVEN a base client
+        const baseClient = baseClientFactory.build({ baseClientId: 'abcd' })
+        const clients = clientFactory.buildList(2)
+        const client = clients[0]
+        baseClientService.getBaseClient.mockResolvedValue(baseClient)
+        baseClientService.listClientInstances.mockResolvedValue(clients)
+
+        // WHEN a delete request is made
+        request = createMock<Request>({
+          params: { baseClientId: baseClient.baseClientId, clientId: client.clientId },
+          query: { error: null },
+          body: { confirm: client.clientId },
+        })
+        await baseClientController.deleteClientInstance()(request, response, next)
+
+        // THEN the delete attempt is audited
+        expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+          BaseClientEvent.DELETE_CLIENT,
+          baseClient.baseClientId,
+          { clientId: client.clientId },
+          undefined,
+          expect.any(String),
+        )
+      })
+
+      it('audits a failed update attempt', async () => {
+        // GIVEN a base client
+        const baseClient = baseClientFactory.build({ baseClientId: 'abcd' })
+        const clients = clientFactory.buildList(2)
+        const client = clients[0]
+        baseClientService.getBaseClient.mockResolvedValue(baseClient)
+        baseClientService.listClientInstances.mockResolvedValue(clients)
+        baseClientService.deleteClientInstance.mockRejectedValue(404)
+
+        // WHEN a delete request is made
+        request = createMock<Request>({
+          params: { baseClientId: baseClient.baseClientId, clientId: client.clientId },
+          query: { error: null },
+          body: { confirm: client.clientId },
+        })
+        try {
+          await baseClientController.deleteClientInstance()(request, response, next)
+        } catch (e) {
+          // THEN the failed attempt is audited
+          expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
+            BaseClientEvent.DELETE_CLIENT_FAILURE,
+            baseClient.baseClientId,
+            { clientId: client.clientId },
+            undefined,
+            expect.any(String),
+          )
+        }
       })
     })
   })

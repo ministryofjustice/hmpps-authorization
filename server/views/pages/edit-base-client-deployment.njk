@@ -56,6 +56,37 @@
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
 
+          {{ govukRadios({
+            classes: "govuk-radios--inline",
+            name: "clientType",
+            fieldset: {
+              legend: {
+                text: "Client type",
+                isPageHeading: false
+              }
+            },
+            items: [
+              {
+                value: "SERVICE",
+                text: "Service",
+                attributes: {
+                "data-qa": "deployment-service-radio"
+              }
+              },
+              {
+                value: "PERSONAL",
+                text: "Personal",
+                attributes: {
+                "data-qa": "deployment-personal-radio"
+              }
+              }
+            ],
+            value: baseClient.clientType,
+            attributes: {
+              "data-qa": "deployment-type-radios"
+            }
+          }) }}
+
           {{ govukInput({
             label: {
               text: "Team"
