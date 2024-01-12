@@ -1,5 +1,7 @@
 import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
-import { convertToTitleCase } from '../../utils/utils'
+import { convertToTitleCase, dateFormatFromString, snake } from '../../utils/utils'
+import { GrantTypes } from '../../data/enums/grantTypes'
+import { ClientType } from '../../data/enums/clientTypes'
 
 const indexTableHead = () => {
   return [
@@ -46,13 +48,6 @@ const indexTableHead = () => {
       },
     },
     {
-      text: 'Secret updated',
-      classes: 'app-custom-class',
-      attributes: {
-        'aria-sort': 'none',
-      },
-    },
-    {
       text: 'Last accessed',
       classes: 'app-custom-class',
       attributes: {
@@ -83,7 +78,7 @@ const indexTableRows = (data: BaseClient[], filter?: BaseClientListFilter) => {
       html: item.count > 1 ? `<span class='moj-badge'>${item.count}</span>` : '',
     },
     {
-      text: item.clientType ? convertToTitleCase(item.clientType) : '',
+      text: item.deployment && item.deployment.clientType ? convertToTitleCase(item.deployment.clientType) : '',
     },
     {
       text: item.deployment.team,
@@ -95,13 +90,10 @@ const indexTableRows = (data: BaseClient[], filter?: BaseClientListFilter) => {
       html: item.clientCredentials.authorities.join('<br>'),
     },
     {
-      text: '2023/09/01 12:00:00',
+      text: dateFormatFromString(item.lastAccessed),
     },
     {
-      text: '2023/09/01 12:00:00',
-    },
-    {
-      text: '',
+      html: item.expired ? `<span class='moj-badge moj-badge--grey'>Expired</span>` : '',
     },
   ])
 }
@@ -119,21 +111,22 @@ export const filterBaseClient = (baseClient: BaseClient, filter: BaseClientListF
     }
   }
 
-  const grantType = baseClient.grantType ? baseClient.grantType.trim().toLowerCase() : ''
-  const clientType = baseClient.clientType ? baseClient.clientType.trim().toLowerCase() : ''
+  const grantType = baseClient.grantType ? snake(baseClient.grantType) : ''
+  const clientType =
+    baseClient.deployment && baseClient.deployment.clientType ? snake(baseClient.deployment.clientType) : ''
 
-  if (grantType === 'client_credentials' && !filter.clientCredentials) {
+  if (grantType === GrantTypes.ClientCredentials && !filter.clientCredentials) {
     return false
   }
 
-  if (grantType === 'authorisation_code' && !filter.authorisationCode) {
+  if (grantType === GrantTypes.AuthorizationCode && !filter.authorisationCode) {
     return false
   }
 
-  if (clientType === 'personal' && !filter.personalClientType) {
+  if (clientType === ClientType.Personal && !filter.personalClientType) {
     return false
   }
-  if (clientType === 'service' && !filter.serviceClientType) {
+  if (clientType === ClientType.Service && !filter.serviceClientType) {
     return false
   }
 

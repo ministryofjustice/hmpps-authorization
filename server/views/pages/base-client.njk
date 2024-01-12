@@ -85,13 +85,6 @@
         rows: [
           [
             {
-              text: "Client type"
-            },{
-            text: capitalize(baseClient.clientType)
-          }
-          ],
-          [
-            {
               text: "Access token validity"
             },{
             text: baseClient.accessTokenValidity
@@ -322,6 +315,13 @@
             text: ""
           }],
         rows: [
+          [
+            {
+              text: "Client type"
+            },{
+              text: capitalize(baseClient.deployment.clientType)
+            }
+          ],
           [
             {
               text: "Team"

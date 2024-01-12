@@ -7,12 +7,6 @@ export default class AddBaseClientDetailsPage extends Page {
 
   baseClientIdInput = (): PageElement => cy.get('[data-qa="base-client-id-input"]')
 
-  baseClientServiceRadioButton = (): PageElement => cy.get('[data-qa="base-client-service-radio"]')
-
-  baseClientPersonalRadioButton = (): PageElement => cy.get('[data-qa="base-client-personal-radio"]')
-
-  baseClientTypeRadios = (): PageElement => cy.get('[data-qa="base-client-type-radios"]')
-
   baseClientAccessTokenValidityDropdown = (): PageElement =>
     cy.get('[data-qa="base-client-access-token-validity-dropdown"]')
 

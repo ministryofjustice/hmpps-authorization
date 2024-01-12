@@ -23,6 +23,7 @@ export interface GetBaseClientResponse {
   validDays?: number
   accessTokenValidityMinutes?: number
   deployment: {
+    clientType: string
     team: string
     teamContact: string
     teamSlack: string

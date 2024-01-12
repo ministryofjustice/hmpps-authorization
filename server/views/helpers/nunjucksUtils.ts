@@ -1,3 +1,5 @@
+import { kebab, snake, dateFormat, dateTimeFormat } from '../../utils/utils'
+
 const isBlank = (str: string): boolean => {
   return !str || /^\s*$/.test(str)
 }
@@ -19,6 +21,7 @@ const sentenceCase = (sentence: string | null): string => {
 }
 
 const capitalize = (word: string): string => {
+  if (!word) return word
   return word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 }
 
@@ -42,4 +45,8 @@ export default {
   sentenceCase,
   capitalize,
   capitalCase,
+  snake,
+  kebab,
+  dateFormat,
+  dateTimeFormat,
 }

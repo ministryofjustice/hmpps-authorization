@@ -1,6 +1,6 @@
 import type { Request } from 'express'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
-import { getAccessTokenValiditySeconds, getDayOfExpiry, multiSeparatorSplit } from '../../utils/utils'
+import { getAccessTokenValiditySeconds, getDayOfExpiry, multiSeparatorSplit, snake } from '../../utils/utils'
 
 export default (baseClient: BaseClient, request: Request): BaseClient => {
   const data = request.body
@@ -11,11 +11,10 @@ export default (baseClient: BaseClient, request: Request): BaseClient => {
 
   return {
     ...baseClient,
-    clientType: data.clientType,
     accessTokenValidity: accessTokenValiditySeconds,
     scopes: multiSeparatorSplit(data.approvedScopes, [',', '\r\n', '\n']),
     audit: data.audit,
-    grantType: data.grant,
+    grantType: snake(data.grant),
     clientCredentials: {
       authorities: multiSeparatorSplit(data.authorities, [',', '\r\n', '\n']),
       databaseUserName: data.databaseUsername,

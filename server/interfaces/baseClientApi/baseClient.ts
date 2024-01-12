@@ -1,11 +1,12 @@
 export interface BaseClient {
   baseClientId: string
-  clientType: string
   accessTokenValidity: number
   scopes: string[]
   grantType: string
   audit: string
   count: number
+  lastAccessed: string
+  expired: boolean
   clientCredentials: ClientCredentialsDetails
   authorisationCode: AuthorisationCodeDetails
   service: ServiceDetails
@@ -32,7 +33,8 @@ interface ServiceDetails {
   contact: string
   status: string
 }
-interface DeploymentDetails {
+export interface DeploymentDetails {
+  clientType: string
   team: string
   teamContact: string
   teamSlack: string

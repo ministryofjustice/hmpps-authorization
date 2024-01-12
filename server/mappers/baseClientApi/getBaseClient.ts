@@ -1,13 +1,16 @@
 import { GetBaseClientResponse } from '../../interfaces/baseClientApi/baseClientResponse'
-import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
+import { BaseClient, DeploymentDetails } from '../../interfaces/baseClientApi/baseClient'
+import { GrantTypes } from '../../data/enums/grantTypes'
+import { ClientType } from '../../data/enums/clientTypes'
+import { HostingType } from '../../data/enums/hostingTypes'
+import { snake } from '../../utils/utils'
 
 export default (response: GetBaseClientResponse): BaseClient => {
   return {
     baseClientId: response.clientId,
-    clientType: 'SERVICE',
     accessTokenValidity: response.accessTokenValidityMinutes ? response.accessTokenValidityMinutes * 60 : 0,
     scopes: response.scopes ? response.scopes : [],
-    grantType: 'client_credentials',
+    grantType: GrantTypes.ClientCredentials,
     audit: response.jiraNumber ? response.jiraNumber : '',
     count: 1,
     clientCredentials: {
@@ -27,7 +30,7 @@ export default (response: GetBaseClientResponse): BaseClient => {
       contact: '',
       status: '',
     },
-    deployment: response.deployment,
+    deployment: getDeployment(response),
     config: {
       allowedIPs: response.ips ? response.ips : [],
       expiryDate: response.validDays
@@ -35,4 +38,41 @@ export default (response: GetBaseClientResponse): BaseClient => {
         : null,
     },
   } as BaseClient
+}
+
+const getClientType = (response: GetBaseClientResponse): string => {
+  if (!response.deployment || !response.deployment.clientType) {
+    return ''
+  }
+
+  const clientType = snake(response.deployment.clientType)
+  if (clientType === ClientType.Personal || clientType === ClientType.Service) {
+    return clientType
+  }
+  return ''
+}
+
+const getHostingType = (response: GetBaseClientResponse): string => {
+  if (!response.deployment || !response.deployment.hosting) {
+    return ''
+  }
+
+  const hostingType = snake(response.deployment.hosting)
+  if (hostingType === HostingType.Cloud || hostingType === HostingType.Other) {
+    return hostingType
+  }
+
+  return ''
+}
+
+const getDeployment = (response: GetBaseClientResponse): DeploymentDetails => {
+  if (!response.deployment) {
+    return null
+  }
+
+  const { deployment } = response
+  deployment.hosting = getHostingType(response)
+  deployment.clientType = getClientType(response)
+
+  return deployment
 }

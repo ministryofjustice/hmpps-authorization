@@ -7,6 +7,12 @@ export default class EditBaseClientDeploymentDetailsPage extends Page {
 
   baseClientSummaryList = (): PageElement => cy.get('[data-qa="base-client-summary-list"]')
 
+  deploymentServiceRadioButton = (): PageElement => cy.get('[data-qa="deployment-service-radio"]')
+
+  deploymentPersonalRadioButton = (): PageElement => cy.get('[data-qa="deployment-personal-radio"]')
+
+  deploymentTypeRadios = (): PageElement => cy.get('[data-qa="deployment-type-radios"]')
+
   deploymentTeamInput = (): PageElement => cy.get('[data-qa="deployment-team-input"]')
 
   deploymentTeamContactInput = (): PageElement => cy.get('[data-qa="deployment-team-contact-input"]')
