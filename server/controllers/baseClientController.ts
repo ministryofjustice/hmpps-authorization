@@ -12,6 +12,7 @@ import { kebab } from '../utils/utils'
 import baseClientAudit, { BaseClientAuditFunction } from '../audit/baseClientAudit'
 import { BaseClientEvent } from '../audit/baseClientEvent'
 import { Client } from '../interfaces/baseClientApi/client'
+import { mapFilterToUrlQuery, mapListBaseClientRequest } from '../mappers/baseClientApi/listBaseClients'
 
 export default class BaseClientController {
   constructor(private readonly baseClientService: BaseClientService) {}
@@ -24,7 +25,8 @@ export default class BaseClientController {
 
       try {
         const baseClients = await this.baseClientService.listBaseClients(token)
-        this.renderBaseClientsPage(res, baseClients)
+        const filter = mapListBaseClientRequest(req)
+        this.renderBaseClientsPage(res, baseClients, filter)
       } catch (e) {
         await audit(BaseClientEvent.LIST_BASE_CLIENTS_FAILURE)
         throw e
@@ -34,18 +36,14 @@ export default class BaseClientController {
 
   public filterBaseClients(): RequestHandler {
     return async (req, res) => {
-      const { token, username } = res.locals.user
       const filter = mapFilterForm(req)
-      const audit = baseClientAudit(username)
-      await audit(BaseClientEvent.LIST_BASE_CLIENTS)
+      const urlQuery = mapFilterToUrlQuery(filter)
 
-      try {
-        const baseClients = await this.baseClientService.listBaseClients(token)
-        this.renderBaseClientsPage(res, baseClients, filter)
-      } catch (e) {
-        await audit(BaseClientEvent.LIST_BASE_CLIENTS_FAILURE)
-        throw e
+      if (!urlQuery) {
+        res.redirect('/')
+        return
       }
+      res.redirect(`?${urlQuery}`)
     }
   }
 
