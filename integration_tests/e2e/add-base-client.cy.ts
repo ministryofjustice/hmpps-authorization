@@ -2,9 +2,12 @@ import Page from '../pages/page'
 import AddBaseClientGrantPage from '../pages/addBaseClientGrant'
 import AddBaseClientDetailsPage from '../pages/addBaseClientDetails'
 import ViewBaseClientListPage from '../pages/viewBaseClientList'
+import AuthErrorPage from '../pages/authError'
+import AuthSignInPage from '../pages/authSignIn'
 
-const visitAddBaseClientPage = (): AddBaseClientGrantPage => {
-  cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/new' })
+const visitAddBaseClientPage = (options = { failOnStatusCode: true }): AddBaseClientGrantPage => {
+  const { failOnStatusCode } = options
+  cy.signIn({ failOnStatusCode, redirectPath: '/base-clients/new' })
   return Page.verifyOnPage(AddBaseClientGrantPage)
 }
 
@@ -16,9 +19,35 @@ const visitAddWithClientCredentialsPage = (): AddBaseClientDetailsPage => {
 context('Add client page', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', ['ROLE_OAUTH_ADMIN'])
     cy.task('stubManageUser')
     cy.task('stubListBaseClients')
+  })
+
+  context('Authorisation and authentication', () => {
+    it('Unauthenticated user directed to auth', () => {
+      cy.visit('/base-clients/new')
+      Page.verifyOnPage(AuthSignInPage)
+    })
+
+    it('Unauthenticated user accessing details directed to auth', () => {
+      cy.visit('/base-clients/new?grant=client-credentials')
+      Page.verifyOnPage(AuthSignInPage)
+    })
+
+    it('User without ROLE_OAUTH_ADMIN role denied access to grant screen', () => {
+      cy.task('stubSignIn', ['ROLE_OTHER'])
+      cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/new' })
+
+      Page.verifyOnPage(AuthErrorPage)
+    })
+
+    it('User without ROLE_OAUTH_ADMIN role denied access to details screen', () => {
+      cy.task('stubSignIn', ['ROLE_OTHER'])
+      cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/new?grant=client-credentials' })
+
+      Page.verifyOnPage(AuthErrorPage)
+    })
   })
 
   context('Add base client choose grant screen', () => {
@@ -26,6 +55,13 @@ context('Add client page', () => {
 
     beforeEach(() => {
       addBaseClientGrantPage = visitAddBaseClientPage()
+    })
+
+    it('User without ROLE_OAUTH_ADMIN role denied access', () => {
+      cy.task('stubSignIn', ['ROLE_OTHER'])
+      cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/new' })
+
+      Page.verifyOnPage(AuthErrorPage)
     })
 
     it('User can see select a grant type radio buttons', () => {

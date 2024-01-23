@@ -1,11 +1,36 @@
 import Page from '../pages/page'
 import ViewBaseClientPage from '../pages/viewBaseClient'
 import EditBaseClientDeploymentDetailsPage from '../pages/editBaseClientDeploymentDetails'
+import AuthSignInPage from '../pages/authSignIn'
+import AuthErrorPage from '../pages/authError'
 
 const visitEditBaseClientDeploymentDetailsPage = (): EditBaseClientDeploymentDetailsPage => {
   cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1/deployment' })
   return Page.verifyOnPage(EditBaseClientDeploymentDetailsPage)
 }
+
+context('Edit base client deployment: Auth', () => {
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubManageUser')
+    cy.task('stubListBaseClients')
+    cy.task('stubGetBaseClient')
+    cy.task('stubGetListClientInstancesList')
+  })
+
+  it('Unauthenticated user directed to auth', () => {
+    cy.visit('/base-clients/base_client_id_1/deployment')
+    Page.verifyOnPage(AuthSignInPage)
+  })
+
+  it('User without ROLE_OAUTH_ADMIN role denied access', () => {
+    cy.task('stubSignIn', ['ROLE_OTHER'])
+    cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/base_client_id_1/deployment' })
+
+    Page.verifyOnPage(AuthErrorPage)
+  })
+})
 
 context('Edit base client deployment details page', () => {
   let editBaseClientDeploymentDetailsPage: EditBaseClientDeploymentDetailsPage

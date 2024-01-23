@@ -2,12 +2,37 @@ import Page from '../pages/page'
 import ViewBaseClientListPage from '../pages/viewBaseClientList'
 import ViewBaseClientPage from '../pages/viewBaseClient'
 import NewBaseClientGrantPage from '../pages/newBaseClientGrant'
+import AuthSignInPage from '../pages/authSignIn'
+import AuthErrorPage from '../pages/authError'
 
 const visitBaseClientListPage = (): ViewBaseClientListPage => {
   cy.signIn()
   cy.visit('/')
   return Page.verifyOnPage(ViewBaseClientListPage)
 }
+
+context('Homepage - Auth', () => {
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubListBaseClients')
+    cy.task('stubGetBaseClient')
+    cy.task('stubManageUser')
+    cy.task('stubGetListClientInstancesList')
+  })
+
+  it('Unauthenticated user directed to auth', () => {
+    cy.visit('/')
+    Page.verifyOnPage(AuthSignInPage)
+  })
+
+  it('User without ROLE_OAUTH_ADMIN role denied access', () => {
+    cy.task('stubSignIn', ['ROLE_OTHER'])
+    cy.signIn({ failOnStatusCode: false, redirectPath: '/' })
+
+    Page.verifyOnPage(AuthErrorPage)
+  })
+})
 
 context('Homepage - list base-clients', () => {
   let listBaseClientsPage: ViewBaseClientListPage
