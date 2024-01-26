@@ -24,9 +24,9 @@ export default (request: Request): BaseClient => {
       databaseUserName: data.databaseUserName,
     },
     authorisationCode: {
-      registeredRedirectURIs: [],
-      jwtFields: '',
-      azureAdLoginFlow: false,
+      registeredRedirectURIs: multiSeparatorSplit(data.redirectUris, [',', '\r\n', '\n']),
+      jwtFields: data.jwtFields,
+      azureAdLoginFlow: data.azureAdLoginFlow === 'redirect',
     },
     service: {
       serviceName: '',

@@ -13,6 +13,9 @@ import baseClientAudit, { BaseClientAuditFunction } from '../audit/baseClientAud
 import { BaseClientEvent } from '../audit/baseClientEvent'
 import { Client } from '../interfaces/baseClientApi/client'
 import { mapFilterToUrlQuery, mapListBaseClientRequest } from '../mappers/baseClientApi/listBaseClients'
+import config from '../config'
+
+const { enableAuthorizationCode } = config
 
 export default class BaseClientController {
   constructor(private readonly baseClientService: BaseClientService) {}
@@ -69,7 +72,7 @@ export default class BaseClientController {
     return async (req, res) => {
       const { grant } = req.query
       if (!(grant === kebab(GrantTypes.ClientCredentials) || grant === kebab(GrantTypes.AuthorizationCode))) {
-        res.render('pages/new-base-client-grant.njk')
+        res.render('pages/new-base-client-grant.njk', { enableAuthorizationCode })
         return
       }
       res.render('pages/new-base-client-details.njk', {
