@@ -286,7 +286,7 @@ export default class BaseClientController {
   private renderCreateBaseClientErrorPage(res: Response, error: string, baseClient: BaseClient) {
     res.render('pages/new-base-client-details.njk', {
       errorMessage: { text: error },
-      grant: baseClient.grantType,
+      grant: kebab(baseClient.grantType),
       baseClient,
       presenter: editBaseClientPresenter(baseClient),
       ...nunjucksUtils,
