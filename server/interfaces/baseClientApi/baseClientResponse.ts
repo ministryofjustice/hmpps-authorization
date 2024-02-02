@@ -22,6 +22,11 @@ export interface GetBaseClientResponse {
   databaseUserName?: string
   validDays?: number
   accessTokenValidityMinutes?: number
+  grantType?: string
+  mfa?: string
+  mfaRememberMe?: boolean
+  jwtFields?: string
+  redirectUris?: string[]
   deployment: {
     clientType: string
     team: string

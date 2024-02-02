@@ -10,7 +10,8 @@ export default (response: GetBaseClientResponse): BaseClient => {
     baseClientId: response.clientId,
     accessTokenValidity: response.accessTokenValidityMinutes ? response.accessTokenValidityMinutes * 60 : 0,
     scopes: response.scopes ? response.scopes : [],
-    grantType: GrantTypes.ClientCredentials,
+    grantType:
+      response.grantType === 'CLIENT_CREDENTIALS' ? GrantTypes.ClientCredentials : GrantTypes.AuthorizationCode,
     audit: response.jiraNumber ? response.jiraNumber : '',
     count: 1,
     clientCredentials: {
@@ -18,9 +19,11 @@ export default (response: GetBaseClientResponse): BaseClient => {
       databaseUserName: response.databaseUserName ? response.databaseUserName : '',
     },
     authorisationCode: {
-      registeredRedirectURIs: [],
-      jwtFields: '',
+      registeredRedirectURIs: response.redirectUris,
+      jwtFields: response.jwtFields ? response.jwtFields : '',
       azureAdLoginFlow: false,
+      mfaRememberMe: response.mfaRememberMe ? response.mfaRememberMe : false,
+      mfa: response.mfa ? response.mfa : '',
     },
     service: {
       serviceName: '',
