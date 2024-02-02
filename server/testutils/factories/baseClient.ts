@@ -2,6 +2,7 @@ import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { HostingType } from '../../data/enums/hostingTypes'
+import { MfaType } from '../../data/enums/mfaTypes'
 
 export default Factory.define<BaseClient>(() => ({
   baseClientId: faker.string.uuid(),
@@ -20,6 +21,8 @@ export default Factory.define<BaseClient>(() => ({
     registeredRedirectURIs: ['https://localhost:3000'],
     jwtFields: 'jwt fields',
     azureAdLoginFlow: false,
+    mfaRememberMe: false,
+    mfa: MfaType.None,
   },
   service: {
     serviceName: 'service name',
