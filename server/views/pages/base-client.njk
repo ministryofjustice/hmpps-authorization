@@ -232,7 +232,7 @@
       }) }}
 
 
-      {% if baseClient.grantType == "authorization_code" %}
+      {% if baseClient.grantType == "authorization_code" and presenter.enableServiceDetails %}
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-two-thirds">
             <h2 class="govuk-heading-l">Service details</h2>

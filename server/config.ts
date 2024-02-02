@@ -44,6 +44,7 @@ export default {
     tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
   },
   enableAuthorizationCode: get('ENABLE_AUTHORIZATION_CODE', 'false') === 'true',
+  enableServiceDetails: get('ENABLE_SERVICE_DETAILS', 'false') === 'true',
   session: {
     secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
     expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 120)),
