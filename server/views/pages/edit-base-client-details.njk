@@ -1,6 +1,6 @@
 {% extends "../partials/layout.njk" %}
 
-{% set pageTitle = applicationName + " - Add base client" %}
+{% set pageTitle = applicationName + " - Add client" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% set pageName="Home" %}
@@ -34,13 +34,13 @@
       <input type="hidden" name="grantType" value="{{ baseClient.grantType }}">
 
       <h1 class="govuk-heading-xl">
-        Edit base client details
+        Edit client details
       </h1>
 
       <h2 class="govuk-heading-l">Client details</h2>
       {{ govukInput({
         label: {
-          text: "Base client ID"
+          text: "Client ID"
         },
         classes: "govuk-!-width-two-thirds",
         id: "base-client-id",
