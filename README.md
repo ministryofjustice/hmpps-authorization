@@ -2,6 +2,17 @@
 [![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&style=flat&logo=github&label=MoJ%20Compliant&query=%24.result&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fhmpps-authorization)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-github-repositories.html#hmpps-authorization "Link to report")
 [![CircleCI](https://circleci.com/gh/ministryofjustice/hmpps-authorization/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/hmpps-authorization)
 
+Admin interface for managing clients and users in the new OAuth2 authorization service `hmpps-authorization-server` [here](https://github.com/ministryofjustice/hmpps-authorization-server).
+
+
+### Note on update to authorization and authentication
+
+At time of this README update (Jan 2024) authorization and authentication services are handled by the full stack Kotlin app  `hmpps-auth`. This also includes a Kotlin frontend for managing clients. 
+
+Due to authorization libraries used by `hmpps-auth` being deprecated authorization functionality is being extracted to its own service `hmpps-authorization-server`.
+
+The frontend for managing clients is being extracted to this repo `hmpps-authorization`.
+
 # Instructions
 
 ## Running the app

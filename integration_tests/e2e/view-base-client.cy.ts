@@ -5,11 +5,36 @@ import ConfirmDeleteClientPage from '../pages/confirmDeleteClient'
 import EditBaseClientDetailsPage from '../pages/editBaseClientDetails'
 import EditBaseClientDeploymentDetailsPage from '../pages/editBaseClientDeploymentDetails'
 import { GrantTypes } from '../../server/data/enums/grantTypes'
+import AuthSignInPage from '../pages/authSignIn'
+import AuthErrorPage from '../pages/authError'
 
 const visitBaseClientPage = (): ViewBaseClientPage => {
   cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1' })
   return Page.verifyOnPage(ViewBaseClientPage)
 }
+
+context('Base client page - Auth', () => {
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubGetBaseClient')
+    cy.task('stubManageUser')
+    cy.task('stubGetListClientInstancesList')
+    cy.task('stubAddClientInstance')
+  })
+
+  it('Unauthenticated user directed to auth', () => {
+    cy.visit('/base-clients/base_client_id_1')
+    Page.verifyOnPage(AuthSignInPage)
+  })
+
+  it('User without ROLE_OAUTH_ADMIN role denied access', () => {
+    cy.task('stubSignIn', ['ROLE_OTHER'])
+    cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/base_client_id_1' })
+
+    Page.verifyOnPage(AuthErrorPage)
+  })
+})
 
 context('Base client page - client credentials flow', () => {
   let baseClientsPage: ViewBaseClientPage

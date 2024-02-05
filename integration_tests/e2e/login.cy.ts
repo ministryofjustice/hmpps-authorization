@@ -3,11 +3,12 @@ import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
 import AuthManageDetailsPage from '../pages/authManageDetails'
 import { GrantTypes } from '../../server/data/enums/grantTypes'
+import AuthErrorPage from '../pages/authError'
 
 context('SignIn', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', ['ROLE_OAUTH_ADMIN'])
     cy.task('stubListBaseClients')
     cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
     cy.task('stubManageUser')
@@ -21,6 +22,13 @@ context('SignIn', () => {
   it('Unauthenticated user navigating to sign in page directed to auth', () => {
     cy.visit('/sign-in')
     Page.verifyOnPage(AuthSignInPage)
+  })
+
+  it('User without ROLE_OAUTH_ADMIN role denied access', () => {
+    cy.task('stubSignIn', ['ROLE_OTHER'])
+
+    cy.signIn({ failOnStatusCode: false })
+    Page.verifyOnPage(AuthErrorPage)
   })
 
   it('User name visible in header', () => {

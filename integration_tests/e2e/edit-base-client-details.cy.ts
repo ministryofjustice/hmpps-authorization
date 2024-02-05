@@ -2,11 +2,36 @@ import Page from '../pages/page'
 import EditBaseClientDetailsPage from '../pages/editBaseClientDetails'
 import ViewBaseClientPage from '../pages/viewBaseClient'
 import { GrantTypes } from '../../server/data/enums/grantTypes'
+import AuthSignInPage from '../pages/authSignIn'
+import AuthErrorPage from '../pages/authError'
 
 const visitEditBaseClientDetailsPage = (): EditBaseClientDetailsPage => {
   cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1/edit' })
   return Page.verifyOnPage(EditBaseClientDetailsPage)
 }
+
+context('Edit base client details: Auth', () => {
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubManageUser')
+    cy.task('stubListBaseClients')
+    cy.task('stubGetBaseClient')
+    cy.task('stubGetListClientInstancesList')
+  })
+
+  it('Unauthenticated user directed to auth', () => {
+    cy.visit('/base-clients/base_client_id_1/deployment')
+    Page.verifyOnPage(AuthSignInPage)
+  })
+
+  it('User without ROLE_OAUTH_ADMIN role denied access', () => {
+    cy.task('stubSignIn', ['ROLE_OTHER'])
+    cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/base_client_id_1/edit' })
+
+    Page.verifyOnPage(AuthErrorPage)
+  })
+})
 
 context('Edit base client details page - client-credentials flow', () => {
   let editBaseClientDetailsPage: EditBaseClientDetailsPage
