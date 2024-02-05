@@ -1,13 +1,14 @@
 import Page from '../pages/page'
 import EditBaseClientDetailsPage from '../pages/editBaseClientDetails'
 import ViewBaseClientPage from '../pages/viewBaseClient'
+import { GrantTypes } from '../../server/data/enums/grantTypes'
 
 const visitEditBaseClientDetailsPage = (): EditBaseClientDetailsPage => {
   cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1/edit' })
   return Page.verifyOnPage(EditBaseClientDetailsPage)
 }
 
-context('Edit base client details page', () => {
+context('Edit base client details page - client-credentials flow', () => {
   let editBaseClientDetailsPage: EditBaseClientDetailsPage
 
   beforeEach(() => {
@@ -15,7 +16,7 @@ context('Edit base client details page', () => {
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient')
+    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
     cy.task('stubGetListClientInstancesList')
     editBaseClientDetailsPage = visitEditBaseClientDetailsPage()
   })
@@ -30,10 +31,18 @@ context('Edit base client details page', () => {
     editBaseClientDetailsPage.auditTrailDetailsInput().should('be.visible')
   })
 
-  it('User can see grant details form inputs', () => {
-    editBaseClientDetailsPage.grantTypeInput().should('be.visible')
-    editBaseClientDetailsPage.grantAuthoritiesInput().should('be.visible')
-    editBaseClientDetailsPage.grantDatabaseUsernameInput().should('be.visible')
+  context('Grant section for client-credentials flow', () => {
+    it('User can see client credentials form inputs', () => {
+      editBaseClientDetailsPage.grantTypeInput().should('be.visible')
+      editBaseClientDetailsPage.grantAuthoritiesInput().should('be.visible')
+      editBaseClientDetailsPage.grantDatabaseUsernameInput().should('be.visible')
+    })
+
+    it('User cannot see authorization code form inputs', () => {
+      editBaseClientDetailsPage.grantRedirectUrisInput().should('not.exist')
+      editBaseClientDetailsPage.grantJwtFieldsInput().should('not.exist')
+      editBaseClientDetailsPage.grantAzureAdLoginFlowCheckboxes().should('not.exist')
+    })
   })
 
   it('User can see config form inputs', () => {
@@ -80,5 +89,31 @@ context('Edit base client details page', () => {
     })
 
     editBaseClientDetailsPage.saveButton().click()
+  })
+})
+
+context('Edit base client details page - authorization-code flow', () => {
+  let editBaseClientDetailsPage: EditBaseClientDetailsPage
+
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubManageUser')
+    cy.task('stubListBaseClients')
+    cy.task('stubGetBaseClient', { grantType: GrantTypes.AuthorizationCode })
+    cy.task('stubGetListClientInstancesList')
+    editBaseClientDetailsPage = visitEditBaseClientDetailsPage()
+  })
+
+  it('User cannot see client credentials form inputs', () => {
+    editBaseClientDetailsPage.grantAuthoritiesInput().should('not.exist')
+    editBaseClientDetailsPage.grantDatabaseUsernameInput().should('not.exist')
+  })
+
+  it('User can see authorization code form inputs', () => {
+    editBaseClientDetailsPage.grantTypeInput().should('be.visible')
+    editBaseClientDetailsPage.grantRedirectUrisInput().should('be.visible')
+    editBaseClientDetailsPage.grantJwtFieldsInput().should('be.visible')
+    editBaseClientDetailsPage.grantAzureAdLoginFlowCheckboxes().should('exist')
   })
 })

@@ -4,19 +4,20 @@ import ViewClientSecretsPage from '../pages/viewClientSecrets'
 import ConfirmDeleteClientPage from '../pages/confirmDeleteClient'
 import EditBaseClientDetailsPage from '../pages/editBaseClientDetails'
 import EditBaseClientDeploymentDetailsPage from '../pages/editBaseClientDeploymentDetails'
+import { GrantTypes } from '../../server/data/enums/grantTypes'
 
 const visitBaseClientPage = (): ViewBaseClientPage => {
   cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1' })
   return Page.verifyOnPage(ViewBaseClientPage)
 }
 
-context('Base client page', () => {
+context('Base client page - client credentials flow', () => {
   let baseClientsPage: ViewBaseClientPage
 
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubGetBaseClient')
+    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
     cy.task('stubAddClientInstance')
@@ -53,6 +54,10 @@ context('Base client page', () => {
       baseClientsPage.baseClientClientCredentialsTable().should('be.visible')
     })
 
+    it('User cannot see authorization-code table', () => {
+      baseClientsPage.baseClientAuthorizationCodeTable().should('not.exist')
+    })
+
     it('User can see config table', () => {
       baseClientsPage.baseClientConfigTable().should('be.visible')
     })
@@ -75,6 +80,43 @@ context('Base client page', () => {
     it('User can click Change client details to be taken to edit deployment page', () => {
       baseClientsPage.changeDeploymentDetailsLink().click()
       Page.verifyOnPage(EditBaseClientDeploymentDetailsPage)
+    })
+  })
+})
+
+context('Base client page - authorization-code flow', () => {
+  let baseClientsPage: ViewBaseClientPage
+
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubGetBaseClient', { grantType: GrantTypes.AuthorizationCode })
+    cy.task('stubManageUser')
+    cy.task('stubGetListClientInstancesList')
+    cy.task('stubAddClientInstance')
+
+    baseClientsPage = visitBaseClientPage()
+  })
+
+  context('Base client details', () => {
+    it('User can see base client details table', () => {
+      baseClientsPage.baseClientDetailsTable().should('be.visible')
+    })
+
+    it('User can see audit trail table', () => {
+      baseClientsPage.baseClientAuditTable().should('be.visible')
+    })
+
+    it('User cannot see client credentials table', () => {
+      baseClientsPage.baseClientClientCredentialsTable().should('not.exist')
+    })
+
+    it('User can see authorization-code table', () => {
+      baseClientsPage.baseClientAuthorizationCodeTable().should('be.visible')
+    })
+
+    it('User can see config table', () => {
+      baseClientsPage.baseClientConfigTable().should('be.visible')
     })
   })
 })

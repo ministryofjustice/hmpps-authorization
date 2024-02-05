@@ -4,6 +4,9 @@ import {
   ListBaseClientsResponse,
   ListClientInstancesResponse,
 } from '../../interfaces/baseClientApi/baseClientResponse'
+import { GrantTypes } from '../enums/grantTypes'
+import { MfaType } from '../enums/mfaTypes'
+import { snake } from '../../utils/utils'
 
 export const listBaseClientsResponseMock: ListBaseClientsResponse = {
   clients: [
@@ -33,28 +36,46 @@ export const listBaseClientsResponseMock: ListBaseClientsResponse = {
   ],
 }
 
-export const getBaseClientResponseMock: GetBaseClientResponse = {
-  clientId: 'base_client_id_1',
-  scopes: ['read', 'write'],
-  authorities: ['ROLE_CLIENT_CREDENTIALS'],
-  ips: [],
-  jiraNumber: 'jiraNumber',
-  databaseUserName: 'databaseUserName',
-  validDays: 1,
-  accessTokenValidityMinutes: 60,
-  deployment: {
-    clientType: 'service',
-    team: 'deployment team',
-    teamContact: 'deployment team contact',
-    teamSlack: 'deployment team slack',
-    hosting: 'other',
-    namespace: 'deployment namespace',
-    deployment: 'deployment deployment',
-    secretName: 'deployment secret name',
-    clientIdKey: 'deployment client id key',
-    secretKey: 'deployment secret key',
-    deploymentInfo: 'deployment deployment info',
-  },
+export const getBaseClientResponseMock: (grantType: GrantTypes) => GetBaseClientResponse = (grantType: GrantTypes) => {
+  const response: GetBaseClientResponse = {
+    grantType: 'CLIENT_CREDENTIALS',
+    clientId: 'base_client_id_1',
+    scopes: ['read', 'write'],
+    ips: [],
+    jiraNumber: 'jiraNumber',
+    validDays: 1,
+    accessTokenValidityMinutes: 60,
+    deployment: {
+      clientType: 'service',
+      team: 'deployment team',
+      teamContact: 'deployment team contact',
+      teamSlack: 'deployment team slack',
+      hosting: 'other',
+      namespace: 'deployment namespace',
+      deployment: 'deployment deployment',
+      secretName: 'deployment secret name',
+      clientIdKey: 'deployment client id key',
+      secretKey: 'deployment secret key',
+      deploymentInfo: 'deployment deployment info',
+    },
+  }
+  if (snake(grantType) === GrantTypes.ClientCredentials) {
+    return {
+      ...response,
+      grantType: 'CLIENT_CREDENTIALS',
+      authorities: ['ROLE_CLIENT_CREDENTIALS'],
+      databaseUserName: 'databaseUserName',
+    }
+  }
+
+  return {
+    ...response,
+    grantType: 'AUTHORIZATION_CODE',
+    redirectUris: ['redirectUri1', 'redirectUri2'],
+    jwtFields: '+alpha,-beta',
+    mfa: MfaType.None,
+    mfaRememberMe: false,
+  }
 }
 
 export const getListClientInstancesResponseMock: ListClientInstancesResponse = {
