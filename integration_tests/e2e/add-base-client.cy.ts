@@ -7,12 +7,12 @@ import AuthSignInPage from '../pages/authSignIn'
 
 const visitAddBaseClientPage = (options = { failOnStatusCode: true }): AddBaseClientGrantPage => {
   const { failOnStatusCode } = options
-  cy.signIn({ failOnStatusCode, redirectPath: '/base-clients/new' })
+  cy.signIn({ failOnStatusCode, redirectPath: '/clients/new' })
   return Page.verifyOnPage(AddBaseClientGrantPage)
 }
 
 const visitAddWithClientCredentialsPage = (): AddBaseClientDetailsPage => {
-  cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/new?grant=client-credentials' })
+  cy.signIn({ failOnStatusCode: true, redirectPath: '/clients/new?grant=client-credentials' })
   return Page.verifyOnPage(AddBaseClientDetailsPage)
 }
 
@@ -26,25 +26,25 @@ context('Add client page', () => {
 
   context('Authorisation and authentication', () => {
     it('Unauthenticated user directed to auth', () => {
-      cy.visit('/base-clients/new')
+      cy.visit('/clients/new')
       Page.verifyOnPage(AuthSignInPage)
     })
 
     it('Unauthenticated user accessing details directed to auth', () => {
-      cy.visit('/base-clients/new?grant=client-credentials')
+      cy.visit('/clients/new?grant=client-credentials')
       Page.verifyOnPage(AuthSignInPage)
     })
 
     it('User without ROLE_OAUTH_ADMIN role denied access to grant screen', () => {
       cy.task('stubSignIn', ['ROLE_OTHER'])
-      cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/new' })
+      cy.signIn({ failOnStatusCode: false, redirectPath: '/clients/new' })
 
       Page.verifyOnPage(AuthErrorPage)
     })
 
     it('User without ROLE_OAUTH_ADMIN role denied access to details screen', () => {
       cy.task('stubSignIn', ['ROLE_OTHER'])
-      cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/new?grant=client-credentials' })
+      cy.signIn({ failOnStatusCode: false, redirectPath: '/clients/new?grant=client-credentials' })
 
       Page.verifyOnPage(AuthErrorPage)
     })
@@ -59,7 +59,7 @@ context('Add client page', () => {
 
     it('User without ROLE_OAUTH_ADMIN role denied access', () => {
       cy.task('stubSignIn', ['ROLE_OTHER'])
-      cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/new' })
+      cy.signIn({ failOnStatusCode: false, redirectPath: '/clients/new' })
 
       Page.verifyOnPage(AuthErrorPage)
     })
@@ -148,7 +148,7 @@ context('Add client page', () => {
       addBaseClientDetailsPage.baseClientIdInput().type('new-client-id')
 
       // set up to check the POST request
-      cy.intercept('POST', '/base-clients/new', req => {
+      cy.intercept('POST', '/clients/new', req => {
         const { body } = req
         expect(body).to.contain('baseClientId=new-client-id')
       })

@@ -9,7 +9,7 @@ import AuthSignInPage from '../pages/authSignIn'
 import AuthErrorPage from '../pages/authError'
 
 const visitBaseClientPage = (): ViewBaseClientPage => {
-  cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1' })
+  cy.signIn({ failOnStatusCode: true, redirectPath: '/clients/base_client_id_1' })
   return Page.verifyOnPage(ViewBaseClientPage)
 }
 
@@ -24,13 +24,13 @@ context('Base client page - Auth', () => {
   })
 
   it('Unauthenticated user directed to auth', () => {
-    cy.visit('/base-clients/base_client_id_1')
+    cy.visit('/clients/base_client_id_1')
     Page.verifyOnPage(AuthSignInPage)
   })
 
   it('User without ROLE_OAUTH_ADMIN role denied access', () => {
     cy.task('stubSignIn', ['ROLE_OTHER'])
-    cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/base_client_id_1' })
+    cy.signIn({ failOnStatusCode: false, redirectPath: '/clients/base_client_id_1' })
 
     Page.verifyOnPage(AuthErrorPage)
   })

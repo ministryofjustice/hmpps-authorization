@@ -69,7 +69,7 @@ const indexTableRows = (data: BaseClient[], filter?: BaseClientListFilter) => {
 
   return dataItems.map(item => [
     {
-      html: `<a href='/base-clients/${item.baseClientId}'>${item.baseClientId}</a>`,
+      html: `<a href='/clients/${item.baseClientId}'>${item.baseClientId}</a>`,
       attributes: {
         'data-qa': 'baseClientList',
       },

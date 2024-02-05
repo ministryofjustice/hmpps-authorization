@@ -6,7 +6,7 @@ import AuthSignInPage from '../pages/authSignIn'
 import AuthErrorPage from '../pages/authError'
 
 const visitEditBaseClientDeploymentDetailsPage = (): EditBaseClientDeploymentDetailsPage => {
-  cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1/deployment' })
+  cy.signIn({ failOnStatusCode: true, redirectPath: '/clients/base_client_id_1/deployment' })
   return Page.verifyOnPage(EditBaseClientDeploymentDetailsPage)
 }
 
@@ -21,13 +21,13 @@ context('Edit base client deployment: Auth', () => {
   })
 
   it('Unauthenticated user directed to auth', () => {
-    cy.visit('/base-clients/base_client_id_1/deployment')
+    cy.visit('/clients/base_client_id_1/deployment')
     Page.verifyOnPage(AuthSignInPage)
   })
 
   it('User without ROLE_OAUTH_ADMIN role denied access', () => {
     cy.task('stubSignIn', ['ROLE_OTHER'])
-    cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/base_client_id_1/deployment' })
+    cy.signIn({ failOnStatusCode: false, redirectPath: '/clients/base_client_id_1/deployment' })
 
     Page.verifyOnPage(AuthErrorPage)
   })
@@ -75,7 +75,7 @@ context('Edit base client deployment details page', () => {
     editBaseClientDeploymentDetailsPage.deploymentTeamInput().type('HAHA')
 
     // set up to check the POST request
-    cy.intercept('POST', '/base-clients/base_client_id_1/deployment', req => {
+    cy.intercept('POST', '/clients/base_client_id_1/deployment', req => {
       const { body } = req
       expect(body).to.contain('team=HAHA')
     })

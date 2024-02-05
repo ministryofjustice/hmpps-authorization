@@ -24,7 +24,7 @@
 {% block content %}
 
   <div class="govuk-grid-row">
-    <form class="govuk-grid-column-two-thirds" action="/base-clients/new?grant={{ grant }}" method="POST">
+    <form class="govuk-grid-column-two-thirds" action="/clients/new?grant={{ grant }}" method="POST">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       <input type="hidden" value="{{ grant }}" name="grant">
 

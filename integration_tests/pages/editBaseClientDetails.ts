@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class EditBaseClientDetailsPage extends Page {
   constructor() {
-    super('Edit base client details')
+    super('Edit client details')
   }
 
   baseClientIdInput = (): PageElement => cy.get('[data-qa="base-client-id-input"]')

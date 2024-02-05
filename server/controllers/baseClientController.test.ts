@@ -397,7 +397,7 @@ describe('BaseClientController', () => {
       expect(baseClientService.updateBaseClient).toHaveBeenCalled()
 
       // AND the user is redirected to the view base client page
-      expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
+      expect(response.redirect).toHaveBeenCalledWith(`/clients/${baseClient.baseClientId}`)
     })
 
     it('audits the update attempt', async () => {
@@ -484,7 +484,7 @@ describe('BaseClientController', () => {
       expect(baseClientService.updateBaseClientDeployment).toHaveBeenCalled()
 
       // AND the user is redirected to the view base client page
-      expect(response.redirect).toHaveBeenCalledWith(`/base-clients/${baseClient.baseClientId}`)
+      expect(response.redirect).toHaveBeenCalledWith(`/clients/${baseClient.baseClientId}`)
     })
 
     it('audits the update attempt', async () => {
@@ -662,7 +662,7 @@ describe('BaseClientController', () => {
     describe(`delete the client instance`, () => {
       it.each([
         ['one client instance exists', '/', 1],
-        ['multiple client instances', '/base-clients/abcd', 3],
+        ['multiple client instances', '/clients/abcd', 3],
       ])(`if delete successful and %s, redirects to %s`, async (_, redirectURL, clientCount) => {
         // GIVEN a base client
         const baseClient = baseClientFactory.build({ baseClientId: 'abcd' })
@@ -703,7 +703,7 @@ describe('BaseClientController', () => {
         await baseClientController.deleteClientInstance()(request, response, next)
 
         // THEN the user is redirected with error
-        const expectedURL = `/base-clients/${baseClient.baseClientId}/clients/${client.clientId}/delete?error=clientIdMismatch`
+        const expectedURL = `/clients/${baseClient.baseClientId}/instances/${client.clientId}/delete?error=clientIdMismatch`
         expect(response.redirect).toHaveBeenCalledWith(expectedURL)
       })
 

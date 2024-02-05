@@ -149,7 +149,7 @@ export default class BaseClientController {
         const baseClient = await this.baseClientService.getBaseClient(token, baseClientId)
         const updatedClient = mapEditBaseClientDetailsForm(baseClient, req)
         await this.baseClientService.updateBaseClient(token, updatedClient)
-        res.redirect(`/base-clients/${baseClientId}`)
+        res.redirect(`/clients/${baseClientId}`)
       } catch (e) {
         await audit(BaseClientEvent.UPDATE_BASE_CLIENT_FAILURE, baseClientId)
         throw e
@@ -180,7 +180,7 @@ export default class BaseClientController {
         const baseClient = await this.baseClientService.getBaseClient(token, baseClientId)
         const updatedClient = mapEditBaseClientDeploymentForm(baseClient, req)
         await this.baseClientService.updateBaseClientDeployment(token, updatedClient)
-        res.redirect(`/base-clients/${baseClientId}`)
+        res.redirect(`/clients/${baseClientId}`)
       } catch (e) {
         await audit(BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT_FAILURE, baseClientId)
         throw e
@@ -230,7 +230,7 @@ export default class BaseClientController {
       try {
         if (req.body.confirm !== clientId) {
           await audit(BaseClientEvent.DELETE_CLIENT_FAILURE)
-          res.redirect(`/base-clients/${baseClientId}/clients/${clientId}/delete?error=clientIdMismatch`)
+          res.redirect(`/clients/${baseClientId}/instances/${clientId}/delete?error=clientIdMismatch`)
           return
         }
 
@@ -239,7 +239,7 @@ export default class BaseClientController {
         const client = clients.find(c => c.clientId === clientId)
 
         if (!client) {
-          res.redirect(`/base-clients/${baseClientId}/clients/${clientId}/delete?error=clientNotFound`)
+          res.redirect(`/clients/${baseClientId}/instances/${clientId}/delete?error=clientNotFound`)
           return
         }
 
@@ -321,7 +321,7 @@ export default class BaseClientController {
     if (clients.length === 1) {
       res.redirect(`/`)
     } else {
-      res.redirect(`/base-clients/${baseClientId}`)
+      res.redirect(`/clients/${baseClientId}`)
     }
   }
 }

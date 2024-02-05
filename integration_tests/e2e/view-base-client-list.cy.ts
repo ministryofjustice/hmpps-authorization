@@ -35,7 +35,7 @@ context('Homepage - Auth', () => {
   })
 })
 
-context('Homepage - list base-clients', () => {
+context('Homepage - list clients', () => {
   let listBaseClientsPage: ViewBaseClientListPage
 
   beforeEach(() => {
@@ -49,11 +49,11 @@ context('Homepage - list base-clients', () => {
     listBaseClientsPage = visitBaseClientListPage()
   })
 
-  it('User can see base-client list', () => {
+  it('User can see client list', () => {
     listBaseClientsPage.baseClientList().should('have.length', 3)
   })
 
-  it('User can click through to base-client', () => {
+  it('User can click through to client', () => {
     listBaseClientsPage.baseClientList().first().children('a').click()
     Page.verifyOnPage(ViewBaseClientPage)
   })
@@ -62,7 +62,7 @@ context('Homepage - list base-clients', () => {
     listBaseClientsPage.addNewBaseClient().should('exist')
   })
 
-  it('User can click through to new base-client page', () => {
+  it('User can click through to new client page', () => {
     listBaseClientsPage.addNewBaseClient().click()
     Page.verifyOnPage(NewBaseClientGrantPage)
   })

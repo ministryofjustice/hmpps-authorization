@@ -52,7 +52,7 @@
         }
       }) }}
 
-      <form class="govuk-grid-row" action="/base-clients/{{ baseClient.baseClientId }}/clients" method="POST">
+      <form class="govuk-grid-row" action="/clients/{{ baseClient.baseClientId }}/instances" method="POST">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <div class="govuk-grid-column-one-quarter">
           {{ govukButton({
@@ -69,7 +69,7 @@
           <h2 class="govuk-heading-l">Client details</h2>
         </div>
         <div class="govuk-grid-column-one-third">
-          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/edit" data-qa='change-client-details-link'>Change
+          <a class="govuk-link" href="/clients/{{ baseClient.baseClientId }}/edit" data-qa='change-client-details-link'>Change
             client details</a>
         </div>
       </div>
@@ -324,7 +324,7 @@
           <h2 class="govuk-heading-l">Deployment details</h2>
         </div>
         <div class="govuk-grid-column-one-third">
-          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/deployment" data-qa='change-deployment-details-link'>Change
+          <a class="govuk-link" href="/clients/{{ baseClient.baseClientId }}/deployment" data-qa='change-deployment-details-link'>Change
             deployment details</a>
         </div>
       </div>

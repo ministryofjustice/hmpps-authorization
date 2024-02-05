@@ -5,14 +5,14 @@ import ConfirmDeleteClientPage from '../pages/confirmDeleteClient'
 import { GrantTypes } from '../../server/data/enums/grantTypes'
 
 const visitBaseClientPage = (): ViewBaseClientPage => {
-  cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1' })
+  cy.signIn({ failOnStatusCode: true, redirectPath: '/clients/base_client_id_1' })
   return Page.verifyOnPage(ViewBaseClientPage)
 }
 
 const visitConfirmDeleteClientPage = (): ConfirmDeleteClientPage => {
   cy.signIn({
     failOnStatusCode: true,
-    redirectPath: '/base-clients/base_client_id_1/clients/base_client_id_1_01/delete',
+    redirectPath: '/clients/base_client_id_1/instances/base_client_id_1_01/delete',
   })
   return Page.verifyOnPage(ConfirmDeleteClientPage)
 }
@@ -34,7 +34,7 @@ context('Base client page - client instances', () => {
       baseClientsPage = visitBaseClientPage()
     })
 
-    it('User can click Add on base-client page to create new client instance', () => {
+    it('User can click Add on client page to create new client instance', () => {
       baseClientsPage.addClientInstanceButton().click()
       Page.verifyOnPage(ViewClientSecretsPage)
     })
@@ -74,7 +74,7 @@ context('Base client page - client instances', () => {
       confirmDeleteClientPage.errorMessage().should('not.exist')
     })
 
-    it('User can fill out confirm then click Delete on base-client page to delete client instance', () => {
+    it('User can fill out confirm then click Delete on client page to delete client instance', () => {
       confirmDeleteClientPage.confirmInput().clear()
       confirmDeleteClientPage.confirmInput().type('base_client_id_1_01')
 

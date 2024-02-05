@@ -6,7 +6,7 @@ import AuthSignInPage from '../pages/authSignIn'
 import AuthErrorPage from '../pages/authError'
 
 const visitEditBaseClientDetailsPage = (): EditBaseClientDetailsPage => {
-  cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/base_client_id_1/edit' })
+  cy.signIn({ failOnStatusCode: true, redirectPath: '/clients/base_client_id_1/edit' })
   return Page.verifyOnPage(EditBaseClientDetailsPage)
 }
 
@@ -21,13 +21,13 @@ context('Edit base client details: Auth', () => {
   })
 
   it('Unauthenticated user directed to auth', () => {
-    cy.visit('/base-clients/base_client_id_1/deployment')
+    cy.visit('/clients/base_client_id_1/deployment')
     Page.verifyOnPage(AuthSignInPage)
   })
 
   it('User without ROLE_OAUTH_ADMIN role denied access', () => {
     cy.task('stubSignIn', ['ROLE_OTHER'])
-    cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/base_client_id_1/edit' })
+    cy.signIn({ failOnStatusCode: false, redirectPath: '/clients/base_client_id_1/edit' })
 
     Page.verifyOnPage(AuthErrorPage)
   })
@@ -47,7 +47,7 @@ context('Edit base client details page - client-credentials flow', () => {
     editBaseClientDetailsPage = visitEditBaseClientDetailsPage()
   })
 
-  it('User can see base-client form inputs', () => {
+  it('User can see client form inputs', () => {
     editBaseClientDetailsPage.baseClientIdInput().should('exist')
     editBaseClientDetailsPage.baseClientAccessTokenValidityDropdown().should('be.visible')
     editBaseClientDetailsPage.baseClientApprovedScopesInput().should('be.visible')
@@ -98,18 +98,18 @@ context('Edit base client details page - client-credentials flow', () => {
     })
   })
 
-  it('User clicks cancel to return to base-client screen', () => {
+  it('User clicks cancel to return to client screen', () => {
     editBaseClientDetailsPage.cancelLink().click()
     Page.verifyOnPage(ViewBaseClientPage)
   })
 
-  it('User clicks continue to post new client details screen', () => {
+  it('User clicks continue to post new client instance screen', () => {
     // enter new audit details
     editBaseClientDetailsPage.auditTrailDetailsInput().clear()
     editBaseClientDetailsPage.auditTrailDetailsInput().type('updated')
 
     // set up to check the POST request
-    cy.intercept('POST', '/base-clients/base_client_id_1/edit', req => {
+    cy.intercept('POST', '/clients/base_client_id_1/edit', req => {
       const { body } = req
       expect(body).to.contain('audit=updated')
     })

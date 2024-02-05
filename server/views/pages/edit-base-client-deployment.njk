@@ -22,11 +22,11 @@
 {% block content %}
   {{ govukBackLink({
     text: "Back",
-    href: "/base-clients/" + baseClient.baseClientId
+    href: "/clients/" + baseClient.baseClientId
   }) }}
 
   <div class="govuk-grid-row">
-    <form class="govuk-grid-column-two-thirds" action="/base-clients/{{ baseClient.baseClientId }}/deployment" method="POST">
+    <form class="govuk-grid-column-two-thirds" action="/clients/{{ baseClient.baseClientId }}/deployment" method="POST">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       <input type="hidden" name="baseClientId" value="{{ baseClient.baseClientId }}">
 
@@ -240,7 +240,7 @@
             "data-qa": "save-button"
           }
         }) }}
-        <a href="/base-clients/{{ baseClient.baseClientId }}" role="button" class="govuk-button govuk-button--secondary" data-qa="cancel-link">Cancel</a>
+        <a href="/clients/{{ baseClient.baseClientId }}" role="button" class="govuk-button govuk-button--secondary" data-qa="cancel-link">Cancel</a>
       </div>
 
     </form>

@@ -24,7 +24,7 @@
 
         {% if isLastClient %}
           {{ govukWarningText({
-            text: "Deleting this client will also delete base-client '" + baseClient.baseClientId + "'.",
+            text: "Deleting this instance will also delete client '" + baseClient.baseClientId + "'.",
             iconFallbackText: "Warning",
             attributes: {
               "data-qa": "delete-warning"
@@ -40,7 +40,7 @@
         }) }}
 
 
-        <form action="/base-clients/{{ baseClient.baseClientId }}/clients/{{ clientId }}/delete" method="POST">
+        <form action="/clients/{{ baseClient.baseClientId }}/instances/{{ clientId }}/delete" method="POST">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
           {% if error %}
           {{ govukInput({
@@ -90,7 +90,7 @@
           }) }}
           {{ govukButton({
             text: "Cancel",
-            href: "/base-clients/" + baseClient.baseClientId,
+            href: "/clients/" + baseClient.baseClientId,
             attributes: {
               "data-qa": "cancel-button"
             }

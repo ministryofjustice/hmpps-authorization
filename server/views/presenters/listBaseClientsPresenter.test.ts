@@ -34,8 +34,8 @@ describe('listBaseClientsPresenter', () => {
       const presenter = listBaseClientsPresenter(baseClients, filterFactory.build())
 
       const expected = [
-        "<a href='/base-clients/baseClientIdA'>baseClientIdA</a>",
-        "<a href='/base-clients/baseClientIdB'>baseClientIdB</a>",
+        "<a href='/clients/baseClientIdA'>baseClientIdA</a>",
+        "<a href='/clients/baseClientIdB'>baseClientIdB</a>",
       ]
       const actual = presenter.tableRows.map(row => row[0].html)
       expect(actual).toEqual(expected)

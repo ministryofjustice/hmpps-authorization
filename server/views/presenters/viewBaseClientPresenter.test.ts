@@ -43,8 +43,8 @@ describe('viewBaseClientPresenter', () => {
 
       // Then the dates are formatted as DD/MM/YYYY
       const expected = [
-        '<a class="govuk-link" href="/base-clients/baseClientId/clients/clientIdA/delete" data-qa=\'delete-client-instance-link\'>delete</a>',
-        '<a class="govuk-link" href="/base-clients/baseClientId/clients/clientIdB/delete" data-qa=\'delete-client-instance-link\'>delete</a>',
+        '<a class="govuk-link" href="/clients/baseClientId/instances/clientIdA/delete" data-qa=\'delete-client-instance-link\'>delete</a>',
+        '<a class="govuk-link" href="/clients/baseClientId/instances/clientIdB/delete" data-qa=\'delete-client-instance-link\'>delete</a>',
       ]
       const actual = presenter.clientsTable.map(row => row[3].html)
       expect(expected).toEqual(actual)

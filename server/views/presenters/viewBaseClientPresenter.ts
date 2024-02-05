@@ -16,7 +16,7 @@ export default (baseClient: BaseClient, clients: Client[]) => {
         html: item.accessed ? dateTimeFormat(item.accessed) : '',
       },
       {
-        html: `<a class="govuk-link" href="/base-clients/${baseClient.baseClientId}/clients/${item.clientId}/delete" data-qa='delete-client-instance-link'>delete</a>`,
+        html: `<a class="govuk-link" href="/clients/${baseClient.baseClientId}/instances/${item.clientId}/delete" data-qa='delete-client-instance-link'>delete</a>`,
       },
     ]),
     expiry: baseClient.config.expiryDate ? `Yes - days remaining ${daysRemaining(baseClient.config.expiryDate)}` : 'No',
