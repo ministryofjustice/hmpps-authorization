@@ -17,7 +17,7 @@ context('Homepage - Auth', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient')
+    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
   })

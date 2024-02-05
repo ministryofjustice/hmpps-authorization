@@ -16,7 +16,7 @@ context('Edit base client deployment: Auth', () => {
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient')
+    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
     cy.task('stubGetListClientInstancesList')
   })
 
