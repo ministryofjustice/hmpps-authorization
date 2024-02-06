@@ -78,20 +78,23 @@
         firstCellIsHeader: false,
         head: [
           {
-            text: "Base client"
+            text: "Base client",
+            classes: "govuk-!-width-one-half"
           },{
             text: baseClient.baseClientId
           }],
         rows: [
           [
             {
-              text: "Access token validity"
+              text: "Access token validity",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.accessTokenValidity
           }
           ],[
             {
-              text: "Approved scopes"
+              text: "Approved scopes",
+              classes: "govuk-!-width-one-half"
             },{
               html: toLinesHtml(baseClient.scopes)
             }
@@ -106,13 +109,15 @@
         firstCellIsHeader: false,
         head: [
           {
-            text: "Audit trail"
+            text: "Audit trail",
+            classes: "govuk-!-width-one-half"
           },{
             text: ""
           }],
         rows: [
           [{
-            text: "Details"
+            text: "Details",
+            classes: "govuk-!-width-one-half"
           },{
             text: baseClient.audit
           }]
@@ -129,26 +134,30 @@
           firstCellIsHeader: false,
           head: [
             {
-              text: "Grant details"
+              text: "Grant details",
+              classes: "govuk-!-width-one-half"
             },{
               text: ""
             }],
           rows: [
             [
               {
-                text: "Grant type"
+                text: "Grant type",
+                classes: "govuk-!-width-one-half"
               },{
               text: "Client credentials"
             }
             ],[
               {
-                text: "Roles"
+                text: "Roles",
+                classes: "govuk-!-width-one-half"
               },{
                 html: toLinesHtml(baseClient.clientCredentials.authorities)
               }
             ],[
               {
-                text: "Database username"
+                text: "Database username",
+                classes: "govuk-!-width-one-half"
               },{
                 text: baseClient.clientCredentials.databaseUserName
               }
@@ -165,32 +174,37 @@
           firstCellIsHeader: false,
           head: [
             {
-              text: "Grant details"
+              text: "Grant details",
+              classes: "govuk-!-width-one-half"
             },{
               text: ""
             }],
           rows: [
             [
               {
-                text: "Grant type"
+                text: "Grant type",
+                classes: "govuk-!-width-one-half"
               },{
               text: "Authorization code"
             }
             ],[
               {
-                text: "Registered redirect URIs"
+                text: "Registered redirect URIs",
+                classes: "govuk-!-width-one-half"
               },{
                 text: toLinesHtml(baseClient.authorisationCode.registeredRedirectURIs)
               }
             ],[
               {
-                text: "JWT Fields Configuration"
+                text: "JWT Fields Configuration",
+                classes: "govuk-!-width-one-half"
               },{
                 text: baseClient.authorisationCode.jwtFields
               }
             ],[
               {
-                text: "Azure Ad login flow"
+                text: "Azure Ad login flow",
+                classes: "govuk-!-width-one-half"
               },{
                 text: presenter.skipToAzureField
               }
@@ -207,20 +221,23 @@
         firstCellIsHeader: false,
         head: [
           {
-            text: "Config"
+            text: "Config",
+            classes: "govuk-!-width-one-half"
           },{
             text: ""
           }],
         rows: [
           [
             {
-              text: "Allow client to expire"
+              text: "Allow client to expire",
+              classes: "govuk-!-width-one-half"
             },{
             text: presenter.expiry
           }
           ],[
             {
-              text: "Allowed IPs"
+              text: "Allowed IPs",
+              classes: "govuk-!-width-one-half"
             },{
               html: toLinesHtml(baseClient.config.allowedIPs)
             }
@@ -247,44 +264,51 @@
           firstCellIsHeader: false,
           head: [
             {
-              text: "Service details"
+              text: "Service details",
+              classes: "govuk-!-width-one-half"
             },{
               text: ""
             }],
           rows: [
             [
               {
-                text: "Name"
+                text: "Name",
+                classes: "govuk-!-width-one-half"
               },{
               text: baseClient.serviceDetails.serviceName
             }
             ],[
               {
-                text: "Description"
+                text: "Description",
+                classes: "govuk-!-width-one-half"
               },{
                 text: baseClient.serviceDetails.serviceDescription
               }
             ],[
               {
-                text: "Authorised roles"
+                text: "Authorised roles",
+                classes: "govuk-!-width-one-half"
               },{
                 text: baseClient.serviceDetails.serviceAuthorisedRoles.join('</br>')
               }
             ],[
               {
-                text: "URL"
+                text: "URL",
+                classes: "govuk-!-width-one-half"
               },{
                 text: baseClient.serviceDetails.serviceURL
               }
             ],[
               {
-                text: "Contact URL/email"
+                text: "Contact URL/email",
+                classes: "govuk-!-width-one-half"
               },{
                 text: baseClient.serviceDetails.contactUsURL
               }
             ],[
               {
-                text: "Status"
+                text: "Status",
+                classes: "govuk-!-width-one-half"
               },{
                 text: presenter.serviceEnabledLabel
               }
@@ -310,35 +334,40 @@
         firstCellIsHeader: false,
         head: [
           {
-            text: "Contact"
+            text: "Contact",
+            classes: "govuk-!-width-one-half"
           },{
             text: ""
           }],
         rows: [
           [
             {
-              text: "Client type"
+              text: "Client type",
+              classes: "govuk-!-width-one-half"
             },{
               text: capitalize(baseClient.deployment.clientType)
             }
           ],
           [
             {
-              text: "Team"
+              text: "Team",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.team
           }
           ],
           [
             {
-              text: "Team contact"
+              text: "Team contact",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.teamContact
           }
           ],
           [
             {
-              text: "Team slack"
+              text: "Team slack",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.teamSlack
           }
@@ -353,56 +382,64 @@
         firstCellIsHeader: false,
         head: [
           {
-            text: "Platform"
+            text: "Platform",
+            classes: "govuk-!-width-one-half"
           },{
             text: ""
           }],
         rows: [
           [
             {
-              text: "Hosting"
+              text: "Hosting",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.hosting
           }
           ],
           [
             {
-              text: "Namespace"
+              text: "Namespace",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.namespace
           }
           ],
           [
             {
-              text: "Deployment"
+              text: "Deployment",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.deployment
           }
           ],
           [
             {
-              text: "Secret name"
+              text: "Secret name",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.secretName
           }
           ],
           [
             {
-              text: "Client id key"
+              text: "Client id key",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.clientIdKey
           }
           ],
           [
             {
-              text: "Secret key"
+              text: "Secret key",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.secretKey
           }
           ],
           [
             {
-              text: "Deployment info"
+              text: "Deployment info",
+              classes: "govuk-!-width-one-half"
             },{
             text: baseClient.deployment.deploymentInfo
           }
