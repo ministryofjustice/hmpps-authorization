@@ -1,6 +1,7 @@
 import type { Request } from 'express'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { getAccessTokenValiditySeconds, getDayOfExpiry, multiSeparatorSplit, snake } from '../../utils/utils'
+import { MfaType } from '../../data/enums/mfaTypes'
 
 export default (request: Request): BaseClient => {
   // valid days is calculated from expiry date
@@ -24,9 +25,11 @@ export default (request: Request): BaseClient => {
       databaseUserName: data.databaseUserName,
     },
     authorisationCode: {
-      registeredRedirectURIs: [],
-      jwtFields: '',
-      azureAdLoginFlow: false,
+      registeredRedirectURIs: multiSeparatorSplit(data.redirectUris, [',', '\r\n', '\n']),
+      jwtFields: data.jwtFields,
+      azureAdLoginFlow: data.azureAdLoginFlow === 'redirect',
+      mfa: MfaType.None,
+      mfaRememberMe: false,
     },
     service: {
       serviceName: '',

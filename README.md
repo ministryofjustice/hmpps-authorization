@@ -67,6 +67,13 @@ Or run tests with the cypress UI:
 
 `npm run int-test-ui`
 
+## Environment variables
+
+The following environment variables can be set to run the application:
+
+`ENABLE_AUTHORIZATION_CODE` - set to `true` to enable the authorization code grant type. Default is `false`.
+
+`ENABLE_SERVICE_DETAILS` - set to `true` to enable the service details section. Default is `false`.
 
 ## Change log
 

@@ -3,6 +3,8 @@ import { createMock } from '@golevelup/ts-jest'
 import { baseClientFactory } from '../../testutils/factories'
 import { dateISOString, offsetNow } from '../../utils/utils'
 import { mapEditBaseClientDetailsForm } from '../index'
+import { GrantTypes } from '../../data/enums/grantTypes'
+import { MfaType } from '../../data/enums/mfaTypes'
 
 const formRequest = (form: Record<string, unknown>) => {
   return createMock<Request>({ body: form })
@@ -80,7 +82,7 @@ describe('mapEditBaseClientDetailsForm', () => {
   })
 
   describe('updates details only', () => {
-    it('updates details only', () => {
+    it('updates Client_credentials details', () => {
       // Given a base client with fields populated
       const detailedBaseClient = baseClientFactory.build({
         accessTokenValidity: 3600,
@@ -92,12 +94,12 @@ describe('mapEditBaseClientDetailsForm', () => {
         },
       })
 
-      // and given an edit request with all fields populated
+      // and given an edit request with client credentials fields populated
       const request = formRequest({
         baseClientId: detailedBaseClient.baseClientId,
         approvedScopes: 'requestscope1,requestscope2',
         audit: 'request audit',
-        grant: 'request grant',
+        grantType: GrantTypes.ClientCredentials,
         authorities: 'requestauthority1\r\nrequestauthority2',
         databaseUsername: 'request databaseUsername',
         allowedIPs: 'requestallowedIP1\r\nrequestallowedIP2',
@@ -112,7 +114,7 @@ describe('mapEditBaseClientDetailsForm', () => {
       expect(update.baseClientId).toEqual(detailedBaseClient.baseClientId)
       expect(update.scopes).toEqual(['requestscope1', 'requestscope2'])
       expect(update.audit).toEqual('request audit')
-      expect(update.grantType).toEqual('request_grant')
+      expect(update.grantType).toEqual(GrantTypes.ClientCredentials)
       expect(update.clientCredentials.authorities).toEqual(['requestauthority1', 'requestauthority2'])
       expect(update.clientCredentials.databaseUserName).toEqual('request databaseUsername')
       expect(update.config.allowedIPs).toEqual(['requestallowedIP1', 'requestallowedIP2'])
@@ -120,6 +122,44 @@ describe('mapEditBaseClientDetailsForm', () => {
       // but deployment and service details are not updated
       expect(update.deployment.team).toEqual(detailedBaseClient.deployment.team)
       expect(update.service.serviceName).toEqual(detailedBaseClient.service.serviceName)
+    })
+
+    it('updates Authorization code details', () => {
+      // Given a base client with fields populated
+      const detailedBaseClient = baseClientFactory.build({
+        accessTokenValidity: 3600,
+        deployment: {
+          team: 'deployment team',
+        },
+        service: {
+          serviceName: 'service serviceName',
+        },
+      })
+
+      // and given an edit request with client credentials fields populated
+      const request = formRequest({
+        baseClientId: detailedBaseClient.baseClientId,
+        approvedScopes: 'requestscope1,requestscope2',
+        audit: 'request audit',
+        grantType: GrantTypes.AuthorizationCode,
+        redirectUris: 'requestredirectUri1\r\nrequestredirectUri2',
+        jwtFields: 'request jwtFields',
+        azureAdLoginFlow: 'redirect',
+        mfa: MfaType.None,
+        mfaRememberMe: false,
+        expiry: true,
+        expiryDays: '1',
+      })
+
+      // when the form is mapped
+      const update = mapEditBaseClientDetailsForm(detailedBaseClient, request)
+
+      // then the authorisationCode details are updated
+      expect(update.authorisationCode.registeredRedirectURIs).toEqual(['requestredirectUri1', 'requestredirectUri2'])
+      expect(update.authorisationCode.jwtFields).toEqual('request jwtFields')
+      expect(update.authorisationCode.azureAdLoginFlow).toEqual(true)
+      expect(update.authorisationCode.mfa).toEqual(MfaType.None)
+      expect(update.authorisationCode.mfaRememberMe).toEqual(false)
     })
   })
 })

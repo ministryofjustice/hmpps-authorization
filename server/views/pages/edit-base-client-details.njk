@@ -31,6 +31,7 @@
     <form class="govuk-grid-column-two-thirds" action="/base-clients/{{baseClient.baseClientId}}/edit" method="POST">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       <input type="hidden" name="baseClientId" value="{{ baseClient.baseClientId }}">
+      <input type="hidden" name="grantType" value="{{ baseClient.grantType }}">
 
       <h1 class="govuk-heading-xl">
         Edit base client details
@@ -199,7 +200,7 @@
             text: "Registered redirect URIs",
             isPageHeading: false
           },
-          value: toLines(baseClient.authorizationCode.redirectUris),
+          value: toLines(baseClient.authorisationCode.registeredRedirectURIs),
           attributes: {
             "data-qa": "grant-redirect-uris-input"
           }
@@ -214,7 +215,7 @@
           classes: "govuk-!-width-one-third",
           id: "jwt-fields",
           name: "jwtFields",
-          value: baseClient.authorizationCode.jwtFields,
+          value: baseClient.authorisationCode.jwtFields,
           attributes: {
             "data-qa": "grant-jwt-fields-input"
           }

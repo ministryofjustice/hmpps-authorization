@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import ViewBaseClientPage from '../pages/viewBaseClient'
 import ViewClientSecretsPage from '../pages/viewClientSecrets'
 import ConfirmDeleteClientPage from '../pages/confirmDeleteClient'
+import { GrantTypes } from '../../server/data/enums/grantTypes'
 
 const visitBaseClientPage = (): ViewBaseClientPage => {
   cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1' })
@@ -20,7 +21,7 @@ context('Base client page - client instances', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubGetBaseClient')
+    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
   })

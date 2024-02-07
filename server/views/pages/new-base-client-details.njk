@@ -24,7 +24,7 @@
 {% block content %}
 
   <div class="govuk-grid-row">
-    <form class="govuk-grid-column-two-thirds" action="/base-clients/new" method="POST">
+    <form class="govuk-grid-column-two-thirds" action="/base-clients/new?grant={{ grant }}" method="POST">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       <input type="hidden" value="{{ grant }}" name="grant">
 
@@ -132,7 +132,7 @@
 
       <h2 class="govuk-heading-l">Grant details</h2>
 
-      {% if grant == "client-credentials" %}
+      {% if kebab(grant) == "client-credentials" %}
         {{ govukInput({
           label: {
             text: "Grant type"
@@ -174,7 +174,7 @@
         }) }}
       {% endif %}
 
-      {% if grant == "authorization-code" %}
+      {% if kebab(grant) == "authorization-code" %}
         {{ govukInput({
           label: {
             text: "Grant type"

@@ -1,6 +1,7 @@
 import Page from '../pages/page'
 import ViewBaseClientPage from '../pages/viewBaseClient'
 import EditBaseClientDeploymentDetailsPage from '../pages/editBaseClientDeploymentDetails'
+import { GrantTypes } from '../../server/data/enums/grantTypes'
 import AuthSignInPage from '../pages/authSignIn'
 import AuthErrorPage from '../pages/authError'
 
@@ -15,7 +16,7 @@ context('Edit base client deployment: Auth', () => {
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient')
+    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
     cy.task('stubGetListClientInstancesList')
   })
 
@@ -40,7 +41,7 @@ context('Edit base client deployment details page', () => {
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient')
+    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
     cy.task('stubGetListClientInstancesList')
     editBaseClientDeploymentDetailsPage = visitEditBaseClientDeploymentDetailsPage()
   })
