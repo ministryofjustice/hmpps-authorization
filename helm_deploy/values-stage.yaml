@@ -13,7 +13,7 @@ generic-service:
     HMPPS_AUTHORIZATION_SERVER_URL: "https://authorization-server-stage.hmpps.service.justice.gov.uk"
     MANAGE_USERS_API_URL: "https://manage-users-api-stage.hmpps.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-stage.prison.service.justice.gov.uk"
-    ENVIRONMENT_NAME: DEV
+    ENVIRONMENT_NAME: STAGE
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
