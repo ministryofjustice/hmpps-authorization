@@ -63,7 +63,7 @@ const redirect = () =>
         'Content-Type': 'text/html',
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
-      body: '<html><body>SignIn page<h1>Sign in</h1></body></html>',
+      body: '<html><body>Sign in page<h1>Sign in</h1></body></html>',
     },
   })
 
@@ -78,7 +78,7 @@ const signOut = () =>
       headers: {
         'Content-Type': 'text/html',
       },
-      body: '<html><body>SignIn page<h1>Sign in</h1></body></html>',
+      body: '<html><body>Sign in page<h1>Sign in</h1></body></html>',
     },
   })
 
@@ -122,8 +122,7 @@ const token = (roles: string[] = []) =>
 export default {
   getSignInUrl,
   stubAuthPing: ping,
-  stubSignIn: (
-    roles: string[] = ['ROLE_OAUTH_ADMIN'],
-  ): Promise<[Response, Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
+  stubSignIn: (roles: string[] = ['ROLE_OAUTH_ADMIN']): Promise<[Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), token(roles), tokenVerification.stubVerifyToken()]),
+  stubAuthManageDetails: manageDetails,
 }

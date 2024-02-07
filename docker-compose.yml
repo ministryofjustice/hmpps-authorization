@@ -10,7 +10,6 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - '6379:6379'
-
   hmpps-auth:
     image: quay.io/hmpps/hmpps-auth:latest
     networks:
@@ -23,23 +22,6 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
-
-  manage-users-api:
-    image: quay.io/hmpps/hmpps-manage-users-api:latest
-    networks:
-      - hmpps
-    container_name: manage-users-api_mhaa
-    depends_on:
-      - hmpps-auth
-    ports:
-      - "9091:8080"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
-    environment:
-      - SERVER_PORT=8080
-      - SPRING_PROFILES_ACTIVE=dev
-      - HMPPS_AUTH_ENDPOINT_URL=http://hmpps-auth:8080/auth
-      - EXTERNAL_USERS_ENDPOINT_URL=http://hmpps-external-users-api:8080
 
   app:
     build:
@@ -56,9 +38,9 @@ services:
     environment:
       - PRODUCT_ID=UNASSIGNED
       - REDIS_HOST=redis
+      - REDIS_ENABLED=false
       - HMPPS_AUTH_EXTERNAL_URL=http://localhost:9090/auth
       - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
-      # These will need to match new creds in the seed auth service auth
       - API_CLIENT_ID=client-id
       - API_CLIENT_SECRET=client-secret
       - SYSTEM_CLIENT_ID=system-client-id

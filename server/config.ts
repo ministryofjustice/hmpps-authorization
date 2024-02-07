@@ -23,7 +23,11 @@ export class AgentConfig {
 export interface ApiConfig {
   url: string
   timeout: {
+    // sets maximum time to wait for the first byte to arrive from the server, but it does not limit how long the
+    // entire download can take.
     response: number
+    // sets a deadline for the entire request (including all uploads, redirects, server processing time) to complete.
+    // If the response isn't fully downloaded within that time, the request will be aborted.
     deadline: number
   }
   agent: AgentConfig
@@ -38,9 +42,10 @@ export default {
   https: production,
   staticResourceCacheDuration: '1h',
   redis: {
+    enabled: get('REDIS_ENABLED', 'false', requiredInProduction) === 'true',
     host: get('REDIS_HOST', 'localhost', requiredInProduction),
     port: parseInt(process.env.REDIS_PORT, 10) || 6379,
-    password: process.env.REDIS_PASSWORD,
+    password: process.env.REDIS_AUTH_TOKEN,
     tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
   },
   session: {
