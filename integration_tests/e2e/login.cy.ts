@@ -11,6 +11,7 @@ context('SignIn', () => {
     cy.task('stubListBaseClients')
     cy.task('stubGetBaseClient')
     cy.task('stubManageUser')
+    cy.task('stubAuthManageDetails')
   })
 
   it('Unauthenticated user directed to auth', () => {

@@ -249,6 +249,11 @@
           {
             value: "expire",
             text: "allow client to expire",
+            label: {
+            attributes: {
+              "data-qa": "config-does-expire-label"
+            }
+          },
             checked: presenter.expiry,
             conditional: {
               html: "<label class=\"govuk-label\" for=\"expiry-days\">Number of days client is valid for</label><input class=\"govuk-input govuk-!-width-one-quarter\" id=\"expiry-days\" name=\"expiryDays\" type=\"text\" value=\"" + presenter.daysRemaining +"\" data-qa=\"config-expiry-days-input\">"

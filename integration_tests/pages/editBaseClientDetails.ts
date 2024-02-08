@@ -32,6 +32,8 @@ export default class EditBaseClientDetailsPage extends Page {
 
   configExpiryDaysInput = (): PageElement => cy.get('[data-qa="config-expiry-days-input"]')
 
+  configDoesExpireLabel = (): PageElement => cy.get('[data-qa="config-does-expire-label"]')
+
   configAllowedIpsInput = (): PageElement => cy.get('[data-qa="config-allowed-ips-input"]')
 
   saveButton = (): PageElement => cy.get('[data-qa="save-button"]')
