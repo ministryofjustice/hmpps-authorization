@@ -192,7 +192,7 @@
                 text: "Registered redirect URIs",
                 classes: "govuk-!-width-one-half"
               },{
-                text: toLinesHtml(baseClient.authorisationCode.registeredRedirectURIs)
+                html: toLinesHtml(baseClient.authorisationCode.registeredRedirectURIs)
               }
             ],[
               {
@@ -206,7 +206,7 @@
                 text: "Azure Ad login flow",
                 classes: "govuk-!-width-one-half"
               },{
-                text: presenter.skipToAzureField
+                text: baseClient.authorisationCode.azureAdLoginFlow
               }
             ]
           ],
@@ -249,7 +249,7 @@
       }) }}
 
 
-      {% if baseClient.grantType == "authorization_code" %}
+      {% if baseClient.grantType == "authorization_code" and presenter.enableServiceDetails %}
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-two-thirds">
             <h2 class="govuk-heading-l">Service details</h2>
@@ -275,35 +275,35 @@
                 text: "Name",
                 classes: "govuk-!-width-one-half"
               },{
-              text: baseClient.serviceDetails.serviceName
+              text: baseClient.service.serviceName
             }
             ],[
               {
                 text: "Description",
                 classes: "govuk-!-width-one-half"
               },{
-                text: baseClient.serviceDetails.serviceDescription
+                text: baseClient.service.description
               }
             ],[
               {
                 text: "Authorised roles",
                 classes: "govuk-!-width-one-half"
               },{
-                text: baseClient.serviceDetails.serviceAuthorisedRoles.join('</br>')
+                html: toLinesHtml(baseClient.service.authorisedRoles)
               }
             ],[
               {
                 text: "URL",
                 classes: "govuk-!-width-one-half"
               },{
-                text: baseClient.serviceDetails.serviceURL
+                text: baseClient.service.url
               }
             ],[
               {
                 text: "Contact URL/email",
                 classes: "govuk-!-width-one-half"
               },{
-                text: baseClient.serviceDetails.contactUsURL
+                text: baseClient.service.contact
               }
             ],[
               {

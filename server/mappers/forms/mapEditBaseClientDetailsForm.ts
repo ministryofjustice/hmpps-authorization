@@ -1,6 +1,7 @@
 import type { Request } from 'express'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { getAccessTokenValiditySeconds, getDayOfExpiry, multiSeparatorSplit, snake } from '../../utils/utils'
+import { MfaType } from '../../data/enums/mfaTypes'
 
 export default (baseClient: BaseClient, request: Request): BaseClient => {
   const data = request.body
@@ -14,10 +15,17 @@ export default (baseClient: BaseClient, request: Request): BaseClient => {
     accessTokenValidity: accessTokenValiditySeconds,
     scopes: multiSeparatorSplit(data.approvedScopes, [',', '\r\n', '\n']),
     audit: data.audit,
-    grantType: snake(data.grant),
+    grantType: snake(data.grantType),
     clientCredentials: {
       authorities: multiSeparatorSplit(data.authorities, [',', '\r\n', '\n']),
       databaseUserName: data.databaseUsername,
+    },
+    authorisationCode: {
+      registeredRedirectURIs: multiSeparatorSplit(data.redirectUris, [',', '\r\n', '\n']),
+      jwtFields: data.jwtFields,
+      azureAdLoginFlow: data.azureAdLoginFlow === 'redirect',
+      mfa: MfaType.None,
+      mfaRememberMe: false,
     },
     config: {
       allowedIPs: multiSeparatorSplit(data.allowedIPs, [',', '\r\n', '\n']),

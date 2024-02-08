@@ -1,3 +1,5 @@
+import { MfaType } from '../../data/enums/mfaTypes'
+
 export interface BaseClient {
   baseClientId: string
   accessTokenValidity: number
@@ -23,6 +25,8 @@ interface AuthorisationCodeDetails {
   registeredRedirectURIs: string[]
   jwtFields: string
   azureAdLoginFlow: boolean
+  mfaRememberMe: boolean
+  mfa: MfaType
 }
 
 interface ServiceDetails {

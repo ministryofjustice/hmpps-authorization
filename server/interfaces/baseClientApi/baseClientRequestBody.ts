@@ -7,6 +7,11 @@ export interface AddBaseClientRequest {
   databaseUserName?: string
   validDays?: number
   accessTokenValidityMinutes?: number
+  grantType?: string
+  mfa?: string
+  mfaRememberMe?: boolean
+  jwtFields?: string
+  redirectUris?: string
 }
 
 export interface UpdateBaseClientRequest {
@@ -17,6 +22,11 @@ export interface UpdateBaseClientRequest {
   databaseUserName?: string
   validDays?: number
   accessTokenValidityMinutes?: number
+  grantType?: string
+  mfa?: string
+  mfaRememberMe?: boolean
+  jwtFields?: string
+  redirectUris?: string
 }
 
 export interface UpdateBaseClientDeploymentRequest {

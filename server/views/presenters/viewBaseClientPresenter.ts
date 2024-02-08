@@ -1,6 +1,7 @@
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { Client } from '../../interfaces/baseClientApi/client'
 import { dateTimeFormat, daysRemaining } from '../../utils/utils'
+import config from '../../config'
 
 export default (baseClient: BaseClient, clients: Client[]) => {
   return {
@@ -20,6 +21,6 @@ export default (baseClient: BaseClient, clients: Client[]) => {
     ]),
     expiry: baseClient.config.expiryDate ? `Yes - days remaining ${daysRemaining(baseClient.config.expiryDate)}` : 'No',
     skipToAzureField: '',
-    serviceEnabledCode: '',
+    enableServiceDetails: config.enableServiceDetails,
   }
 }

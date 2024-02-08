@@ -72,8 +72,9 @@ context('Add client page', () => {
       addBaseClientGrantPage.clientCredentialsRadio().should('have.attr', 'checked')
     })
 
-    it('Authorization code is disabled (for now)', () => {
-      addBaseClientGrantPage.authorizationCodeRadio().should('have.attr', 'disabled')
+    it('Authorization code is not disabled but is unchecked', () => {
+      addBaseClientGrantPage.authorizationCodeRadio().should('not.have.attr', 'disabled')
+      addBaseClientGrantPage.authorizationCodeRadio().should('not.have.attr', 'checked')
     })
 
     it('User clicks cancel to return to home screen', () => {
