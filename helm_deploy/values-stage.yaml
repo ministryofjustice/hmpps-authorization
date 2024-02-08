@@ -2,7 +2,7 @@
 # Per environment values which override defaults in hmpps-authorization/values.yaml
 
 generic-service:
-  serviceAccountName: hmpps-auth-stage
+#  serviceAccountName: hmpps-auth-stage
   replicaCount: 2
 
   ingress:
