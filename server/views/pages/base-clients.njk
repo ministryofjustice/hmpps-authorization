@@ -94,21 +94,39 @@
 
 {% endset %}
 
-
-
 {% block content %}
 
-  <form class="moj-filter-layout"  action='/' method='POST'>
+  <form class="moj-filter-layout" action='/' method='POST'>
 
     <div class="moj-filter-layout__filter">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {% if presenter.showSelectedFilters %}
+        {{ mojFilter({
+          heading: {
+            text: 'Filter'
+          },
+          selectedFilters: {
+            heading: {
+              text: 'Selected filters'
+            },
+
+            clearLink: {
+              text: 'Clear filters',
+              href: '/'
+            },
+
+            categories: presenter.selectedFilterCategories
+          },
+          optionsHtml: filterOptionsHtml
+        }) }}
+      {% else %}
       {{ mojFilter({
         heading: {
           text: 'Filter'
         },
-
         optionsHtml: filterOptionsHtml
       }) }}
+      {% endif %}
 
     </div>
 
@@ -136,6 +154,7 @@
             }
           }]
         }) }}
+        <div class="moj-action-bar__filterTagsContainer"></div>
       </div>
 
       <div class="moj-scrollable-pane">

@@ -137,17 +137,75 @@ export const filterBaseClient = (baseClient: BaseClient, filter: BaseClientListF
   return true
 }
 
+type SelectedFilterCategory = {
+  heading: { text: string }
+  items: { href: string; text: string }[]
+}
+
+const getSelectedFilterCategories = (filter: BaseClientListFilter): SelectedFilterCategory[] => {
+  const categories: SelectedFilterCategory[] = []
+  if (filter.roleSearch) {
+    categories.push({
+      heading: {
+        text: 'Role',
+      },
+      items: [{ href: '/base-clients', text: filter.roleSearch }],
+    })
+  }
+
+  if (filter.clientCredentials === false || filter.authorisationCode === false) {
+    const grantTypesCategory: SelectedFilterCategory = {
+      heading: {
+        text: 'Grant type',
+      },
+      items: [],
+    }
+    if (filter.clientCredentials) {
+      grantTypesCategory.items.push({ href: '/base-clients', text: 'Client credentials' })
+    }
+    if (filter.authorisationCode) {
+      grantTypesCategory.items.push({ href: '/base-clients', text: 'Authorisation code' })
+    }
+    categories.push(grantTypesCategory)
+  }
+
+  if (filter.personalClientType === false || filter.serviceClientType === false || filter.blankClientType === false) {
+    const clientTypeCategory: SelectedFilterCategory = {
+      heading: {
+        text: 'Client type',
+      },
+      items: [],
+    }
+    if (filter.personalClientType) {
+      clientTypeCategory.items.push({ href: '/base-clients', text: 'Personal' })
+    }
+    if (filter.serviceClientType) {
+      clientTypeCategory.items.push({ href: '/base-clients', text: 'Service' })
+    }
+    if (filter.blankClientType) {
+      clientTypeCategory.items.push({ href: '/base-clients', text: 'Blank' })
+    }
+    categories.push(clientTypeCategory)
+  }
+
+  return categories
+}
 export default (data: BaseClient[], filter?: BaseClientListFilter) => {
+  const defaultFilter: BaseClientListFilter = {
+    roleSearch: '',
+    clientCredentials: true,
+    authorisationCode: true,
+    serviceClientType: true,
+    personalClientType: true,
+    blankClientType: true,
+  }
+  const currentFilter = filter || defaultFilter
+
   return {
     tableHead: indexTableHead(),
     tableRows: indexTableRows(data, filter),
-    filter: filter || {
-      roleSearch: '',
-      clientCredentials: true,
-      authorisationCode: true,
-      serviceClientType: true,
-      personalClientType: true,
-      blankClientType: true,
-    },
+    filter: currentFilter,
+    showSelectedFilters: JSON.stringify(currentFilter) !== JSON.stringify(defaultFilter),
+    selectedFilterCategories: getSelectedFilterCategories(currentFilter),
   }
 }

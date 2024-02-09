@@ -19,3 +19,11 @@ new MOJFrontend.FilterToggleButton({
     container: $('.moj-filter'),
   },
 })
+
+function moveFilterTagsToResults() {
+  var newContainer = $('.moj-action-bar__filterTagsContainer')
+  var tagsContainer = $('.moj-filter__selected')
+  tagsContainer.appendTo(newContainer)
+}
+
+moveFilterTagsToResults()
