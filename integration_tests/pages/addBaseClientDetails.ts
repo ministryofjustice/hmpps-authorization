@@ -30,6 +30,8 @@ export default class AddBaseClientDetailsPage extends Page {
 
   configDoesExpireCheckbox = (): PageElement => cy.get('[data-qa="config-does-expire-checkbox"]')
 
+  configDoesExpireLabel = (): PageElement => cy.get('[data-qa="config-does-expire-label"]')
+
   configExpiryDaysInput = (): PageElement => cy.get('[data-qa="config-expiry-days-input"]')
 
   configAllowedIpsInput = (): PageElement => cy.get('[data-qa="config-allowed-ips-input"]')

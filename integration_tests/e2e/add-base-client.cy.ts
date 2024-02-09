@@ -133,7 +133,7 @@ context('Add client page', () => {
       })
 
       it('Expiry days input is shown if checkbox is selected', () => {
-        addBaseClientDetailsPage.configDoesExpireCheckbox().click()
+        addBaseClientDetailsPage.configDoesExpireLabel().click()
         addBaseClientDetailsPage.configExpiryDaysInput().should('be.visible')
       })
     })

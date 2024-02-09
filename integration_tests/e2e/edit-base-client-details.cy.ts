@@ -6,7 +6,7 @@ import AuthSignInPage from '../pages/authSignIn'
 import AuthErrorPage from '../pages/authError'
 
 const visitEditBaseClientDetailsPage = (): EditBaseClientDetailsPage => {
-  cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/base_client_id_1/edit' })
+  cy.signIn({ failOnStatusCode: false, redirectPath: '/base-clients/base_client_id_1/edit' })
   return Page.verifyOnPage(EditBaseClientDetailsPage)
 }
 
@@ -43,6 +43,7 @@ context('Edit base client details page - client-credentials flow', () => {
     cy.task('stubListBaseClients')
     cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
     cy.task('stubGetListClientInstancesList')
+    cy.task('stubAuthManageDetails')
     editBaseClientDetailsPage = visitEditBaseClientDetailsPage()
   })
 

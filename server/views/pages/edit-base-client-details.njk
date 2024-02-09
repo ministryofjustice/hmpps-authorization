@@ -28,7 +28,7 @@
   }) }}
 
   <div class="govuk-grid-row">
-    <form class="govuk-grid-column-two-thirds" action="/base-clients/{{baseClient.baseClientId}}/edit" method="POST">
+    <form class="govuk-grid-column-two-thirds" action="/base-clients/{{ baseClient.baseClientId }}/edit" method="POST">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       <input type="hidden" name="baseClientId" value="{{ baseClient.baseClientId }}">
       <input type="hidden" name="grantType" value="{{ baseClient.grantType }}">
@@ -254,6 +254,11 @@
             value: "expire",
             text: "allow client to expire",
             checked: presenter.expiry,
+            label: {
+            attributes: {
+              "data-qa": "config-does-expire-label"
+            }
+          },
             conditional: {
             html: "<label class=\"govuk-label\" for=\"expiry-days\">Number of days client is valid for</label><input class=\"govuk-input govuk-!-width-one-quarter\" id=\"expiry-days\" name=\"expiryDays\" type=\"text\" value=\"" + presenter.daysRemaining +"\" data-qa=\"config-expiry-days-input\">"
           }
@@ -289,7 +294,8 @@
             "data-qa": "save-button"
           }
         }) }}
-        <a href="/base-clients/{{baseClient.baseClientId}}" role="button" class="govuk-button govuk-button--secondary" data-qa="cancel-link">Cancel</a>
+        <a href="/base-clients/{{ baseClient.baseClientId }}" role="button" class="govuk-button govuk-button--secondary"
+           data-qa="cancel-link">Cancel</a>
       </div>
 
     </form>

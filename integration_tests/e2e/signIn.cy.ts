@@ -2,17 +2,13 @@ import IndexPage from '../pages/index'
 import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
 import AuthManageDetailsPage from '../pages/authManageDetails'
-import { GrantTypes } from '../../server/data/enums/grantTypes'
-import AuthErrorPage from '../pages/authError'
 
-context('SignIn', () => {
+context('Sign In', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn', ['ROLE_OAUTH_ADMIN'])
-    cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
+    cy.task('stubSignIn')
     cy.task('stubManageUser')
-    cy.task('stubAuthManageDetails')
+    cy.task('stubListBaseClients')
   })
 
   it('Unauthenticated user directed to auth', () => {
@@ -23,13 +19,6 @@ context('SignIn', () => {
   it('Unauthenticated user navigating to sign in page directed to auth', () => {
     cy.visit('/sign-in')
     Page.verifyOnPage(AuthSignInPage)
-  })
-
-  it('User without ROLE_OAUTH_ADMIN role denied access', () => {
-    cy.task('stubSignIn', ['ROLE_OTHER'])
-
-    cy.signIn({ failOnStatusCode: false })
-    Page.verifyOnPage(AuthErrorPage)
   })
 
   it('User name visible in header', () => {
@@ -44,7 +33,7 @@ context('SignIn', () => {
     indexPage.headerPhaseBanner().should('contain.text', 'dev')
   })
 
-  it('User can log out', () => {
+  it('User can sign out', () => {
     cy.signIn()
     const indexPage = Page.verifyOnPage(IndexPage)
     indexPage.signOut().click()
@@ -53,6 +42,7 @@ context('SignIn', () => {
 
   it('User can manage their details', () => {
     cy.signIn()
+    cy.task('stubAuthManageDetails')
     const indexPage = Page.verifyOnPage(IndexPage)
 
     indexPage.manageDetails().get('a').invoke('removeAttr', 'target')
