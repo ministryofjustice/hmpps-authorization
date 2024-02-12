@@ -166,7 +166,9 @@ const getSelectedFilterCategories = (filter: BaseClientListFilter): SelectedFilt
     if (filter.authorisationCode) {
       grantTypesCategory.items.push({ href: '/base-clients', text: 'Authorisation code' })
     }
-    categories.push(grantTypesCategory)
+    if (grantTypesCategory.items.length > 0) {
+      categories.push(grantTypesCategory)
+    }
   }
 
   if (filter.personalClientType === false || filter.serviceClientType === false || filter.blankClientType === false) {
@@ -185,7 +187,9 @@ const getSelectedFilterCategories = (filter: BaseClientListFilter): SelectedFilt
     if (filter.blankClientType) {
       clientTypeCategory.items.push({ href: '/base-clients', text: 'Blank' })
     }
-    categories.push(clientTypeCategory)
+    if (clientTypeCategory.items.length > 0) {
+      categories.push(clientTypeCategory)
+    }
   }
 
   return categories
