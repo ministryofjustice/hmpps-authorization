@@ -1,4 +1,4 @@
-import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
+import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
 import { baseClientFactory, filterFactory } from '../../testutils/factories'
 import listBaseClientsPresenter, { filterBaseClient } from './listBaseClientsPresenter'
 import { GrantTypes } from '../../data/enums/grantTypes'
@@ -275,6 +275,51 @@ describe('listBaseClientsPresenter', () => {
         expect(selectedFilterCategories[2].heading.text).toEqual('Client type')
         expect(selectedFilterCategories[2].items[0].text).toEqual('Personal')
         expect(selectedFilterCategories[2].items[1].text).toEqual('Blank')
+      })
+    })
+
+    describe('removeFilterLink', () => {
+      // Given some base clients
+      const baseClientA = baseClientFactory.build({
+        baseClientId: 'baseClientIdA',
+        count: 1,
+        clientCredentials: { authorities: ['ONE', 'TWO'] },
+      })
+      const baseClientB = baseClientFactory.build({
+        baseClientId: 'baseClientIdB',
+        count: 2,
+        clientCredentials: { authorities: ['ALPHA'] },
+      })
+      baseClients = [baseClientA, baseClientB]
+
+      // current URL is /?role=ONE&grantType=authorization-code&clientType=personal&clientType=blank
+      const compoundFilter = filterFactory.build({
+        roleSearch: 'ONE',
+        clientCredentials: false,
+        serviceClientType: false,
+      })
+
+      const presenter = listBaseClientsPresenter(baseClients, compoundFilter)
+
+      it('removes the role search', () => {
+        const roleItem = presenter.selectedFilterCategories[0].items[0]
+        const expected = '/?grantType=authorization-code&clientType=personal&clientType=blank'
+        const actual = roleItem.href
+        expect(actual).toEqual(expected)
+      })
+
+      it('removes the grant category completely if all grant type items removed', () => {
+        const grantTypeItem = presenter.selectedFilterCategories[1].items[0]
+        const expected = '/?role=ONE&clientType=personal&clientType=blank'
+        const actual = grantTypeItem.href
+        expect(actual).toEqual(expected)
+      })
+
+      it('retains the blank clientType item if personal clientType removed', () => {
+        const clientTypeItem = presenter.selectedFilterCategories[2].items[0]
+        const expected = '/?role=ONE&grantType=authorization-code&clientType=blank'
+        const actual = clientTypeItem.href
+        expect(actual).toEqual(expected)
       })
     })
   })

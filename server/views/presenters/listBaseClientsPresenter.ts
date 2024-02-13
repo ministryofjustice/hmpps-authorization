@@ -2,6 +2,7 @@ import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi
 import { convertToTitleCase, dateFormatFromString, snake } from '../../utils/utils'
 import { GrantTypes } from '../../data/enums/grantTypes'
 import { ClientType } from '../../data/enums/clientTypes'
+import { mapFilterToUrlQuery } from '../../mappers/baseClientApi/listBaseClients'
 
 const indexTableHead = () => {
   return [
@@ -149,7 +150,7 @@ const getSelectedFilterCategories = (filter: BaseClientListFilter): SelectedFilt
       heading: {
         text: 'Role',
       },
-      items: [{ href: '/base-clients', text: filter.roleSearch }],
+      items: [{ href: removeFilterLink(filter, 'roleSearch'), text: filter.roleSearch }],
     })
   }
 
@@ -161,10 +162,10 @@ const getSelectedFilterCategories = (filter: BaseClientListFilter): SelectedFilt
       items: [],
     }
     if (filter.clientCredentials) {
-      grantTypesCategory.items.push({ href: '/base-clients', text: 'Client credentials' })
+      grantTypesCategory.items.push({ href: removeFilterLink(filter, 'clientCredentials'), text: 'Client credentials' })
     }
     if (filter.authorisationCode) {
-      grantTypesCategory.items.push({ href: '/base-clients', text: 'Authorisation code' })
+      grantTypesCategory.items.push({ href: removeFilterLink(filter, 'authorisationCode'), text: 'Authorisation code' })
     }
     if (grantTypesCategory.items.length > 0) {
       categories.push(grantTypesCategory)
@@ -179,13 +180,13 @@ const getSelectedFilterCategories = (filter: BaseClientListFilter): SelectedFilt
       items: [],
     }
     if (filter.personalClientType) {
-      clientTypeCategory.items.push({ href: '/base-clients', text: 'Personal' })
+      clientTypeCategory.items.push({ href: removeFilterLink(filter, 'personalClientType'), text: 'Personal' })
     }
     if (filter.serviceClientType) {
-      clientTypeCategory.items.push({ href: '/base-clients', text: 'Service' })
+      clientTypeCategory.items.push({ href: removeFilterLink(filter, 'serviceClientType'), text: 'Service' })
     }
     if (filter.blankClientType) {
-      clientTypeCategory.items.push({ href: '/base-clients', text: 'Blank' })
+      clientTypeCategory.items.push({ href: removeFilterLink(filter, 'blankClientType'), text: 'Blank' })
     }
     if (clientTypeCategory.items.length > 0) {
       categories.push(clientTypeCategory)
@@ -194,6 +195,26 @@ const getSelectedFilterCategories = (filter: BaseClientListFilter): SelectedFilt
 
   return categories
 }
+
+const removeFilterLink = (filter: BaseClientListFilter, filterToRemove: string): string => {
+  const newFilter: BaseClientListFilter = { ...filter }
+  if (filterToRemove === 'roleSearch') {
+    newFilter.roleSearch = ''
+  } else if (filterToRemove === 'clientCredentials') {
+    newFilter.clientCredentials = false
+  } else if (filterToRemove === 'authorisationCode') {
+    newFilter.authorisationCode = false
+  } else if (filterToRemove === 'personalClientType') {
+    newFilter.personalClientType = false
+  } else if (filterToRemove === 'serviceClientType') {
+    newFilter.serviceClientType = false
+  } else if (filterToRemove === 'blankClientType') {
+    newFilter.blankClientType = false
+  }
+  const query = mapFilterToUrlQuery(newFilter)
+  return query ? `/?${query}` : '/'
+}
+
 export default (data: BaseClient[], filter?: BaseClientListFilter) => {
   const defaultFilter: BaseClientListFilter = {
     roleSearch: '',
