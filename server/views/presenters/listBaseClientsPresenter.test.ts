@@ -1,4 +1,4 @@
-import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
+import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { baseClientFactory, filterFactory } from '../../testutils/factories'
 import listBaseClientsPresenter, { filterBaseClient } from './listBaseClientsPresenter'
 import { GrantTypes } from '../../data/enums/grantTypes'
