@@ -13,7 +13,7 @@ export default (baseClient: BaseClient): AddBaseClientRequest => {
     databaseUserName: baseClient.clientCredentials.databaseUserName,
     validDays: baseClient.config.expiryDate ? daysRemaining(baseClient.config.expiryDate) : null,
     accessTokenValidityMinutes: baseClient.accessTokenValidity ? baseClient.accessTokenValidity / 60 : null,
-    grantType: baseClient.grantType === GrantTypes.ClientCredentials ? 'CLIENT_CREDENTIALS' : 'AUTHORIZATION_CODE',
+    grantType: baseClient.grantType,
     mfa: baseClient.authorisationCode.mfa,
     mfaRememberMe: baseClient.authorisationCode.mfaRememberMe,
     jwtFields: baseClient.authorisationCode.jwtFields,

@@ -11,7 +11,9 @@ export default (response: GetBaseClientResponse): BaseClient => {
     accessTokenValidity: response.accessTokenValidityMinutes ? response.accessTokenValidityMinutes * 60 : 0,
     scopes: response.scopes ? response.scopes : [],
     grantType:
-      response.grantType === 'CLIENT_CREDENTIALS' ? GrantTypes.ClientCredentials : GrantTypes.AuthorizationCode,
+      snake(response.grantType) === GrantTypes.ClientCredentials
+        ? GrantTypes.ClientCredentials
+        : GrantTypes.AuthorizationCode,
     audit: response.jiraNumber ? response.jiraNumber : '',
     count: 1,
     clientCredentials: {
