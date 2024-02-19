@@ -1,7 +1,6 @@
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { UpdateBaseClientRequest } from '../../interfaces/baseClientApi/baseClientRequestBody'
 import { daysRemaining } from '../../utils/utils'
-import { GrantTypes } from '../../data/enums/grantTypes'
 
 export default (baseClient: BaseClient): UpdateBaseClientRequest => {
   return {
