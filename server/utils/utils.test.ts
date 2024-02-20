@@ -11,6 +11,7 @@ import {
   dateTimeFormat,
   dateFormat,
   dateTimeFormatFromString,
+  snakeUpper,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -100,6 +101,21 @@ describe('snake', () => {
     ['Mixed', 'one-two Three  ', 'one_two_three'],
   ])('%s snake', (_: string, a: string, expected: string) => {
     expect(snake(a)).toEqual(expected)
+  })
+})
+
+describe('snake_upper', () => {
+  it.each([
+    ['Null', null, null],
+    ['Empty string', '', ''],
+    ['Spaced', 'one two three', 'ONE_TWO_THREE'],
+    ['Snake', 'one_two_three', 'ONE_TWO_THREE'],
+    ['Kebab', 'one-two-three', 'ONE_TWO_THREE'],
+    ['Capitalised', 'One Two THREE', 'ONE_TWO_THREE'],
+    ['Extra spaces', '  one two three   ', 'ONE_TWO_THREE'],
+    ['Mixed', 'one-two Three  ', 'ONE_TWO_THREE'],
+  ])('%s snakeUpper', (_: string, a: string, expected: string) => {
+    expect(snakeUpper(a)).toEqual(expected)
   })
 })
 
