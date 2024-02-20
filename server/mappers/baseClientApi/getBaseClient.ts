@@ -1,6 +1,5 @@
 import { GetBaseClientResponse } from '../../interfaces/baseClientApi/baseClientResponse'
 import { BaseClient, DeploymentDetails } from '../../interfaces/baseClientApi/baseClient'
-import { GrantTypes } from '../../data/enums/grantTypes'
 import { ClientType } from '../../data/enums/clientTypes'
 import { HostingType } from '../../data/enums/hostingTypes'
 import { snake } from '../../utils/utils'
@@ -10,8 +9,7 @@ export default (response: GetBaseClientResponse): BaseClient => {
     baseClientId: response.clientId,
     accessTokenValidity: response.accessTokenValidityMinutes ? response.accessTokenValidityMinutes * 60 : 0,
     scopes: response.scopes ? response.scopes : [],
-    grantType:
-      response.grantType === 'CLIENT_CREDENTIALS' ? GrantTypes.ClientCredentials : GrantTypes.AuthorizationCode,
+    grantType: snake(response.grantType),
     audit: response.jiraNumber ? response.jiraNumber : '',
     count: 1,
     clientCredentials: {
