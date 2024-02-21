@@ -46,6 +46,14 @@ export const snake = (str: string): string => {
   return value
 }
 
+export const snakeUpper = (str: string): string => {
+  if (!str) return str
+  let value = str.trim().toLowerCase()
+  value = value.replace(/ /g, '_')
+  value = value.replace(/-/g, '_')
+  return value.toUpperCase()
+}
+
 export const kebab = (str: string): string => {
   if (!str) return str
   return snake(str).replace(/_/g, '-')
