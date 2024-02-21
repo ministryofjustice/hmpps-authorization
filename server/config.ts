@@ -48,7 +48,7 @@ export default {
     password: process.env.REDIS_PASSWORD,
     tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
   },
-  enableAuthorizationCode: get('ENABLE_AUTHORIZATION_CODE', 'false') === 'true',
+  enableAuthorizationCode: get('ENABLE_AUTHORIZATION_CODE', 'true') === 'true',
   enableServiceDetails: get('ENABLE_SERVICE_DETAILS', 'false') === 'true',
   session: {
     secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
