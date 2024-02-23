@@ -2,7 +2,7 @@ import { GetBaseClientResponse } from '../../interfaces/baseClientApi/baseClient
 import { BaseClient, DeploymentDetails } from '../../interfaces/baseClientApi/baseClient'
 import { ClientType } from '../../data/enums/clientTypes'
 import { HostingType } from '../../data/enums/hostingTypes'
-import { snake } from '../../utils/utils'
+import { snake, toBaseClientId } from '../../utils/utils'
 
 export default (response: GetBaseClientResponse): BaseClient => {
   return {

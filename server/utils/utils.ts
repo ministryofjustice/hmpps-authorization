@@ -141,3 +141,9 @@ export const dateTimeFormatFromString = (date: string): string => {
 
   return format(new Date(date), 'dd-MM-yyyy HH:mm', { locale: enGB })
 }
+
+export const toBaseClientId = (id: string): string => {
+  // remove any trailing hyphen and number
+  if (!id) return id
+  return id.replace(/-\d+$/, '')
+}
