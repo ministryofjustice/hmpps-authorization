@@ -21,7 +21,7 @@ export interface GetBaseClientResponse {
   jiraNumber?: string
   databaseUserName?: string
   validDays?: number
-  accessTokenValidityMinutes?: number
+  accessTokenValiditySeconds?: number
   grantType?: string
   mfa?: string
   mfaRememberMe?: boolean

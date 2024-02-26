@@ -7,7 +7,7 @@ import { snake } from '../../utils/utils'
 export default (response: GetBaseClientResponse): BaseClient => {
   return {
     baseClientId: response.clientId,
-    accessTokenValidity: response.accessTokenValidityMinutes ? response.accessTokenValidityMinutes * 60 : 0,
+    accessTokenValidity: response.accessTokenValiditySeconds ? response.accessTokenValiditySeconds : 0,
     scopes: response.scopes ? response.scopes : [],
     grantType: snake(response.grantType),
     audit: response.jiraNumber ? response.jiraNumber : '',

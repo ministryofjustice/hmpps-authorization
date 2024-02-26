@@ -6,7 +6,7 @@ export interface AddBaseClientRequest {
   jiraNumber?: string
   databaseUserName?: string
   validDays?: number
-  accessTokenValidityMinutes?: number
+  accessTokenValiditySeconds?: number
   grantType?: string
   mfa?: string
   mfaRememberMe?: boolean
@@ -21,7 +21,7 @@ export interface UpdateBaseClientRequest {
   jiraNumber?: string
   databaseUserName?: string
   validDays?: number
-  accessTokenValidityMinutes?: number
+  accessTokenValiditySeconds?: number
   grantType?: string
   mfa?: string
   mfaRememberMe?: boolean
