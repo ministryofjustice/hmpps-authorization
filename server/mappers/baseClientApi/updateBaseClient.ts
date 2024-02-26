@@ -1,6 +1,6 @@
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { UpdateBaseClientRequest } from '../../interfaces/baseClientApi/baseClientRequestBody'
-import { daysRemaining, snakeUpper } from '../../utils/utils'
+import { daysRemaining } from '../../utils/utils'
 
 export default (baseClient: BaseClient): UpdateBaseClientRequest => {
   return {
@@ -11,7 +11,7 @@ export default (baseClient: BaseClient): UpdateBaseClientRequest => {
     databaseUserName: baseClient.clientCredentials.databaseUserName,
     validDays: baseClient.config.expiryDate ? daysRemaining(baseClient.config.expiryDate) : null,
     accessTokenValiditySeconds: baseClient.accessTokenValidity ? baseClient.accessTokenValidity : null,
-    grantType: snakeUpper(baseClient.grantType),
+    grantType: baseClient.grantType,
     mfa: baseClient.authorisationCode.mfa,
     mfaRememberMe: baseClient.authorisationCode.mfaRememberMe,
     jwtFields: baseClient.authorisationCode.jwtFields,
