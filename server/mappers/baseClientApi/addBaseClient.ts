@@ -11,7 +11,7 @@ export default (baseClient: BaseClient): AddBaseClientRequest => {
     jiraNumber: baseClient.audit,
     databaseUserName: baseClient.clientCredentials.databaseUserName,
     validDays: baseClient.config.expiryDate ? daysRemaining(baseClient.config.expiryDate) : null,
-    accessTokenValidityMinutes: baseClient.accessTokenValidity ? baseClient.accessTokenValidity / 60 : null,
+    accessTokenValiditySeconds: baseClient.accessTokenValidity ? baseClient.accessTokenValidity : null,
     grantType: baseClient.grantType,
     mfa: baseClient.authorisationCode.mfa,
     mfaRememberMe: baseClient.authorisationCode.mfaRememberMe,
