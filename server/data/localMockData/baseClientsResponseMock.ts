@@ -4,7 +4,7 @@ import {
   ListBaseClientsResponse,
   ListClientInstancesResponse,
 } from '../../interfaces/baseClientApi/baseClientResponse'
-import { GrantTypes } from '../enums/grantTypes'
+import { GrantType } from '../enums/grantType'
 import { MfaType } from '../enums/mfaTypes'
 import { snake } from '../../utils/utils'
 
@@ -36,7 +36,7 @@ export const listBaseClientsResponseMock: ListBaseClientsResponse = {
   ],
 }
 
-export const getBaseClientResponseMock: (grantType: GrantTypes) => GetBaseClientResponse = (grantType: GrantTypes) => {
+export const getBaseClientResponseMock: (grantType: GrantType) => GetBaseClientResponse = (grantType: GrantType) => {
   const response: GetBaseClientResponse = {
     grantType: 'CLIENT_CREDENTIALS',
     clientId: 'base_client_id_1',
@@ -59,7 +59,7 @@ export const getBaseClientResponseMock: (grantType: GrantTypes) => GetBaseClient
       deploymentInfo: 'deployment deployment info',
     },
   }
-  if (snake(grantType) === GrantTypes.ClientCredentials) {
+  if (snake(grantType) === GrantType.ClientCredentials) {
     return {
       ...response,
       grantType: 'CLIENT_CREDENTIALS',

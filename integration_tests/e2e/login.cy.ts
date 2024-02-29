@@ -2,7 +2,7 @@ import IndexPage from '../pages/index'
 import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
 import AuthManageDetailsPage from '../pages/authManageDetails'
-import { GrantTypes } from '../../server/data/enums/grantTypes'
+import { GrantType } from '../../server/data/enums/grantType'
 import AuthErrorPage from '../pages/authError'
 
 context('SignIn', () => {
@@ -10,7 +10,7 @@ context('SignIn', () => {
     cy.task('reset')
     cy.task('stubSignIn', ['ROLE_OAUTH_ADMIN'])
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
+    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials })
     cy.task('stubManageUser')
     cy.task('stubAuthManageDetails')
   })

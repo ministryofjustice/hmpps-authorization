@@ -4,7 +4,7 @@ import ViewClientSecretsPage from '../pages/viewClientSecrets'
 import ConfirmDeleteClientPage from '../pages/confirmDeleteClient'
 import EditBaseClientDetailsPage from '../pages/editBaseClientDetails'
 import EditBaseClientDeploymentDetailsPage from '../pages/editBaseClientDeploymentDetails'
-import { GrantTypes } from '../../server/data/enums/grantTypes'
+import { GrantType } from '../../server/data/enums/grantType'
 import AuthSignInPage from '../pages/authSignIn'
 import AuthErrorPage from '../pages/authError'
 
@@ -17,7 +17,7 @@ context('Base client page - Auth', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
+    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
     cy.task('stubAddClientInstance')
@@ -42,7 +42,7 @@ context('Base client page - client credentials flow', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
+    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
     cy.task('stubAddClientInstance')
@@ -115,7 +115,7 @@ context('Base client page - authorization-code flow', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubGetBaseClient', { grantType: GrantTypes.AuthorizationCode })
+    cy.task('stubGetBaseClient', { grantType: GrantType.AuthorizationCode })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
     cy.task('stubAddClientInstance')

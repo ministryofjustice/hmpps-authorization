@@ -5,7 +5,7 @@ import {
   getListClientInstancesResponseMock,
   getSecretsResponseMock,
 } from '../../server/data/localMockData/baseClientsResponseMock'
-import { GrantTypes } from '../../server/data/enums/grantTypes'
+import { GrantType } from '../../server/data/enums/grantType'
 
 export default {
   stubListBaseClients: () => {
@@ -24,7 +24,7 @@ export default {
     })
   },
 
-  stubGetBaseClient: (config: { grantType: GrantTypes }) => {
+  stubGetBaseClient: (config: { grantType: GrantType }) => {
     return stubFor({
       request: {
         method: 'GET',

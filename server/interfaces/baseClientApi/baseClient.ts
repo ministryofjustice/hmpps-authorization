@@ -1,4 +1,6 @@
 import { MfaType } from '../../data/enums/mfaTypes'
+import { GrantType } from '../../data/enums/grantType'
+import { ClientType } from '../../data/enums/clientTypes'
 
 export interface BaseClient {
   baseClientId: string
