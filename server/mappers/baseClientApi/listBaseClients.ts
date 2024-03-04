@@ -2,26 +2,28 @@ import { Request } from 'express'
 import { ListBaseClientsResponse } from '../../interfaces/baseClientApi/baseClientResponse'
 import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
 import { kebab, multiSeparatorSplit, snake } from '../../utils/utils'
-import { GrantTypes } from '../../data/enums/grantTypes'
-import { ClientType } from '../../data/enums/clientTypes'
+import { toClientType } from '../../data/enums/clientTypes'
+import { toGrantType } from '../../data/enums/grantType'
 
 export const mapListBaseClientRequest = (request: Request): BaseClientListFilter => {
   const asJson = JSON.stringify(request.query)
   const data = asJson ? JSON.parse(asJson) : {}
 
-  const grantTypes = mapQueryList(data.grantType, [GrantTypes.ClientCredentials, GrantTypes.AuthorizationCode]).map(
-    snake,
-  )
-  const clientTypes = mapQueryList(data.clientType, [ClientType.Personal, ClientType.Service, 'blank']).map(snake)
-
-  return {
-    roleSearch: data.role ? data.role.trim() : '',
-    clientCredentials: grantTypes.includes(GrantTypes.ClientCredentials),
-    authorisationCode: grantTypes.includes(GrantTypes.AuthorizationCode),
-    serviceClientType: clientTypes.includes(ClientType.Service),
-    personalClientType: clientTypes.includes(ClientType.Personal),
-    blankClientType: clientTypes.includes('blank'),
+  const filter: BaseClientListFilter = {}
+  if (data.role) {
+    filter.roleSearch = data.role.trim()
   }
+  if (data.grantType) {
+    filter.grantType = toGrantType(data.grantType)
+  }
+  if (data.clientType) {
+    if (Array.isArray(data.clientType)) {
+      filter.clientType = data.clientType.map(toClientType)
+    } else {
+      filter.clientType = [toClientType(data.clientType)]
+    }
+  }
+  return filter
 }
 
 export const mapFilterToUrlQuery = (filter: BaseClientListFilter): string => {
@@ -29,36 +31,20 @@ export const mapFilterToUrlQuery = (filter: BaseClientListFilter): string => {
   if (filter.roleSearch) {
     urlQuery += `role=${encodeURIComponent(filter.roleSearch)}&`
   }
-  if (!(filter.clientCredentials && filter.authorisationCode)) {
-    if (filter.clientCredentials) {
-      urlQuery += `grantType=${kebab(GrantTypes.ClientCredentials)}&`
-    }
-    if (filter.authorisationCode) {
-      urlQuery += `grantType=${kebab(GrantTypes.AuthorizationCode)}&`
-    }
+  if (filter.grantType) {
+    urlQuery += `grantType=${kebab(filter.grantType)}&`
   }
-  if (!(filter.personalClientType && filter.serviceClientType && filter.blankClientType)) {
-    if (filter.personalClientType) {
-      urlQuery += `clientType=${kebab(ClientType.Personal)}&`
-    }
-    if (filter.serviceClientType) {
-      urlQuery += `clientType=${kebab(ClientType.Service)}&`
-    }
-    if (filter.blankClientType) {
-      urlQuery += `clientType=blank&`
-    }
+  if (filter.clientType) {
+    filter.clientType.forEach(clientType => {
+      urlQuery += `clientType=${kebab(clientType)}&`
+    })
   }
+
   if (urlQuery.endsWith('&')) {
     urlQuery = urlQuery.slice(0, -1)
   }
-  return urlQuery
-}
 
-const mapQueryList = (value: string | string[], defaults: string[]): string[] => {
-  if (Array.isArray(value)) {
-    return value
-  }
-  return value ? [value] : defaults
+  return urlQuery
 }
 
 export default (response: ListBaseClientsResponse): BaseClient[] => {

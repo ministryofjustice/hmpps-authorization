@@ -1,24 +1,32 @@
 import { Request } from 'express'
 import { BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
-import { GrantTypes } from '../../data/enums/grantTypes'
-import { ClientType } from '../../data/enums/clientTypes'
+import { toGrantType } from '../../data/enums/grantType'
+import { toClientType } from '../../data/enums/clientTypes'
 import { snake } from '../../utils/utils'
 
 export default (request: Request): BaseClientListFilter => {
   // valid days is calculated from expiry date
   const data = request.body
 
-  const grantTypes = mapCheckboxes(data.grantType).map(snake)
-  const clientTypes = mapCheckboxes(data.clientType).map(snake)
-
-  return {
-    roleSearch: data.role ? data.role.trim() : '',
-    clientCredentials: grantTypes.includes(GrantTypes.ClientCredentials),
-    authorisationCode: grantTypes.includes(GrantTypes.AuthorizationCode),
-    serviceClientType: clientTypes.includes(ClientType.Service),
-    personalClientType: clientTypes.includes(ClientType.Personal),
-    blankClientType: clientTypes.includes('blank'),
+  const filter: BaseClientListFilter = {}
+  if (data.role) {
+    filter.roleSearch = data.role.trim()
   }
+
+  if (data.grantType && data.grantType !== 'all') {
+    filter.grantType = toGrantType(snake(data.grantType))
+  }
+
+  if (data.filterClientType === 'clientFilter') {
+    const clientTypes = mapCheckboxes(data.clientType).map(snake).map(toClientType)
+
+    // if no or all client types are selected, we don't want to filter by client type
+    if (clientTypes.length > 0 && clientTypes.length < 3) {
+      filter.clientType = clientTypes
+    }
+  }
+
+  return filter
 }
 
 const mapCheckboxes = (value: string | string[]): string[] => {

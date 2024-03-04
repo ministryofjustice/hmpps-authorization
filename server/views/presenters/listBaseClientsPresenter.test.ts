@@ -1,7 +1,7 @@
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { baseClientFactory, filterFactory } from '../../testutils/factories'
 import listBaseClientsPresenter, { filterBaseClient } from './listBaseClientsPresenter'
-import { GrantTypes } from '../../data/enums/grantTypes'
+import { GrantType } from '../../data/enums/grantType'
 import { ClientType } from '../../data/enums/clientTypes'
 
 let baseClients: BaseClient[]
@@ -109,28 +109,32 @@ describe('listBaseClientsPresenter', () => {
     })
 
     describe('by grant type', () => {
-      const clientCredentialsBaseClient = baseClientFactory.build({ grantType: GrantTypes.ClientCredentials })
-      const authCodeBaseClient = baseClientFactory.build({ grantType: GrantTypes.AuthorizationCode })
+      const clientCredentialsBaseClient = baseClientFactory.build({ grantType: GrantType.ClientCredentials })
+      const authCodeBaseClient = baseClientFactory.build({ grantType: GrantType.AuthorizationCode })
 
       it('defaults to matching all types', () => {
-        const filter = filterFactory.build()
+        const filter = filterFactory.build({})
 
         expect(filterBaseClient(clientCredentialsBaseClient, filter)).toBeTruthy()
         expect(filterBaseClient(authCodeBaseClient, filter)).toBeTruthy()
       })
 
-      it('can filter out only client credentials', () => {
-        const filter = filterFactory.build({ clientCredentials: false })
-
-        expect(filterBaseClient(clientCredentialsBaseClient, filter)).toBeFalsy()
-        expect(filterBaseClient(authCodeBaseClient, filter)).toBeTruthy()
-      })
-
-      it('can filter out only auth code', () => {
-        const filter = filterFactory.build({ authorisationCode: false })
+      it('can filter to client credentials only', () => {
+        const filter = filterFactory.build({
+          grantType: GrantType.ClientCredentials,
+        })
 
         expect(filterBaseClient(clientCredentialsBaseClient, filter)).toBeTruthy()
         expect(filterBaseClient(authCodeBaseClient, filter)).toBeFalsy()
+      })
+
+      it('can filter to auth code only', () => {
+        const filter = filterFactory.build({
+          grantType: GrantType.AuthorizationCode,
+        })
+
+        expect(filterBaseClient(clientCredentialsBaseClient, filter)).toBeFalsy()
+        expect(filterBaseClient(authCodeBaseClient, filter)).toBeTruthy()
       })
     })
 
@@ -147,28 +151,36 @@ describe('listBaseClientsPresenter', () => {
         expect(filterBaseClient(blankBaseClient, filter)).toBeTruthy()
       })
 
-      it('can filter out service clients', () => {
-        const filter = filterFactory.build({ serviceClientType: false })
+      it('can filter to only service clients', () => {
+        const filter = filterFactory.build({ clientType: [ClientType.Service] })
+
+        expect(filterBaseClient(serviceBaseClient, filter)).toBeTruthy()
+        expect(filterBaseClient(personalBaseClient, filter)).toBeFalsy()
+        expect(filterBaseClient(blankBaseClient, filter)).toBeFalsy()
+      })
+
+      it('can filter to only personal clients', () => {
+        const filter = filterFactory.build({ clientType: [ClientType.Personal] })
 
         expect(filterBaseClient(serviceBaseClient, filter)).toBeFalsy()
         expect(filterBaseClient(personalBaseClient, filter)).toBeTruthy()
-        expect(filterBaseClient(blankBaseClient, filter)).toBeTruthy()
+        expect(filterBaseClient(blankBaseClient, filter)).toBeFalsy()
       })
 
-      it('can filter out personal clients', () => {
-        const filter = filterFactory.build({ personalClientType: false })
+      it('can filter to only blank clients', () => {
+        const filter = filterFactory.build({ clientType: [ClientType.Blank] })
 
-        expect(filterBaseClient(serviceBaseClient, filter)).toBeTruthy()
+        expect(filterBaseClient(serviceBaseClient, filter)).toBeFalsy()
         expect(filterBaseClient(personalBaseClient, filter)).toBeFalsy()
         expect(filterBaseClient(blankBaseClient, filter)).toBeTruthy()
       })
 
-      it('can filter out blank clients', () => {
-        const filter = filterFactory.build({ blankClientType: false })
+      it('can filter to multiple client types', () => {
+        const filter = filterFactory.build({ clientType: [ClientType.Personal, ClientType.Blank] })
 
-        expect(filterBaseClient(serviceBaseClient, filter)).toBeTruthy()
+        expect(filterBaseClient(serviceBaseClient, filter)).toBeFalsy()
         expect(filterBaseClient(personalBaseClient, filter)).toBeTruthy()
-        expect(filterBaseClient(blankBaseClient, filter)).toBeFalsy()
+        expect(filterBaseClient(blankBaseClient, filter)).toBeTruthy()
       })
     })
   })
@@ -213,8 +225,8 @@ describe('listBaseClientsPresenter', () => {
         expect(selectedFilterCategories[0].items[0].text).toEqual('ONE')
       })
 
-      it('has visible grant type category if either of the grant types are deselected', () => {
-        const filter = filterFactory.build({ clientCredentials: false })
+      it('has visible grant type category if non-all grantType category selected', () => {
+        const filter = filterFactory.build({ grantType: GrantType.AuthorizationCode })
         const { selectedFilterCategories } = listBaseClientsPresenter(baseClients, filter)
 
         expect(selectedFilterCategories).toHaveLength(1)
@@ -222,37 +234,37 @@ describe('listBaseClientsPresenter', () => {
         expect(selectedFilterCategories[0].items[0].text).toEqual('Authorisation code')
       })
 
-      it('has no grant type category if all grant types are deselected', () => {
-        const filter = filterFactory.build({ clientCredentials: false, authorisationCode: false })
-        const { selectedFilterCategories } = listBaseClientsPresenter(baseClients, filter)
-
-        expect(selectedFilterCategories).toHaveLength(0)
-      })
-
       it('has visible client type category if single client type is selected', () => {
-        const filter = filterFactory.build({ serviceClientType: false, personalClientType: false })
-        const { selectedFilterCategories } = listBaseClientsPresenter(baseClients, filter)
-
-        expect(selectedFilterCategories).toHaveLength(1)
-        expect(selectedFilterCategories[0].heading.text).toEqual('Client type')
-        expect(selectedFilterCategories[0].items[0].text).toEqual('Blank')
-      })
-
-      it('has two client type categories if single client type is selected', () => {
-        const filter = filterFactory.build({ serviceClientType: false })
+        const filter = filterFactory.build({ clientType: [ClientType.Personal] })
         const { selectedFilterCategories } = listBaseClientsPresenter(baseClients, filter)
 
         expect(selectedFilterCategories).toHaveLength(1)
         expect(selectedFilterCategories[0].heading.text).toEqual('Client type')
         expect(selectedFilterCategories[0].items[0].text).toEqual('Personal')
-        expect(selectedFilterCategories[0].items[1].text).toEqual('Blank')
+      })
+
+      it('has two client type categories if single client type is selected', () => {
+        const filter = filterFactory.build({ clientType: [ClientType.Personal, ClientType.Service] })
+        const { selectedFilterCategories } = listBaseClientsPresenter(baseClients, filter)
+
+        expect(selectedFilterCategories).toHaveLength(1)
+        expect(selectedFilterCategories[0].heading.text).toEqual('Client type')
+        expect(selectedFilterCategories[0].items[0].text).toEqual('Personal')
+        expect(selectedFilterCategories[0].items[1].text).toEqual('Service')
       })
 
       it('has no client type category if no client type is selected', () => {
         const filter = filterFactory.build({
-          blankClientType: false,
-          personalClientType: false,
-          serviceClientType: false,
+          clientType: [],
+        })
+        const { selectedFilterCategories } = listBaseClientsPresenter(baseClients, filter)
+
+        expect(selectedFilterCategories).toHaveLength(0)
+      })
+
+      it('has no client type category if all client types are selected', () => {
+        const filter = filterFactory.build({
+          clientType: [ClientType.Personal, ClientType.Service, ClientType.Blank],
         })
         const { selectedFilterCategories } = listBaseClientsPresenter(baseClients, filter)
 
@@ -262,8 +274,8 @@ describe('listBaseClientsPresenter', () => {
       it('can have complex filters with multiple categories', () => {
         const filter = filterFactory.build({
           roleSearch: 'ONE',
-          clientCredentials: false,
-          serviceClientType: false,
+          grantType: GrantType.AuthorizationCode,
+          clientType: [ClientType.Personal, ClientType.Blank],
         })
         const { selectedFilterCategories } = listBaseClientsPresenter(baseClients, filter)
 
@@ -295,8 +307,8 @@ describe('listBaseClientsPresenter', () => {
       // current URL is /?role=ONE&grantType=authorization-code&clientType=personal&clientType=blank
       const compoundFilter = filterFactory.build({
         roleSearch: 'ONE',
-        clientCredentials: false,
-        serviceClientType: false,
+        grantType: GrantType.AuthorizationCode,
+        clientType: [ClientType.Personal, ClientType.Blank],
       })
 
       const presenter = listBaseClientsPresenter(baseClients, compoundFilter)
