@@ -28,6 +28,14 @@ export default class AddBaseClientDetailsPage extends Page {
 
   grantAzureAdLoginFlowCheckboxes = (): PageElement => cy.get('[data-qa="grant-azure-ad-login-flow-checkboxes"]')
 
+  grantMfaRadioNone = (): PageElement => cy.get('[data-qa="mfa-none-radio"]')
+
+  grantMfaRadioAll = (): PageElement => cy.get('[data-qa="mfa-all-radio"]')
+
+  grantMfaRadioUntrusted = (): PageElement => cy.get('[data-qa="mfa-untrusted-radio"]')
+
+  grantMfaRememberMeFlowCheckboxes = (): PageElement => cy.get('[data-qa="grant-mfa-remember-me-flow-checkboxes"]')
+
   configDoesExpireCheckbox = (): PageElement => cy.get('[data-qa="config-does-expire-checkbox"]')
 
   configDoesExpireLabel = (): PageElement => cy.get('[data-qa="config-does-expire-label"]')
