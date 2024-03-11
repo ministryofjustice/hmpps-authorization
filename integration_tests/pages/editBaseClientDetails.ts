@@ -26,6 +26,14 @@ export default class EditBaseClientDetailsPage extends Page {
 
   grantJwtFieldsInput = (): PageElement => cy.get('[data-qa="grant-jwt-fields-input"]')
 
+  grantMfaRadioNone = (): PageElement => cy.get('[data-qa="mfa-none-radio"]')
+
+  grantMfaRadioAll = (): PageElement => cy.get('[data-qa="mfa-all-radio"]')
+
+  grantMfaRadioUntrusted = (): PageElement => cy.get('[data-qa="mfa-untrusted-radio"]')
+
+  grantMfaRememberMeFlowCheckboxes = (): PageElement => cy.get('[data-qa="grant-mfa-remember-me-flow-checkboxes"]')
+
   grantAzureAdLoginFlowCheckboxes = (): PageElement => cy.get('[data-qa="grant-azure-ad-login-flow-checkboxes"]')
 
   configDoesExpireCheckbox = (): PageElement => cy.get('[data-qa="config-does-expire-checkbox"]')
