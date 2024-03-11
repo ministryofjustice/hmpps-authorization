@@ -244,6 +244,70 @@
             "data-qa": "grant-azure-ad-login-flow-checkboxes"
           }
         }) }}
+
+        {{ govukRadios({
+          name: "mfa",
+          value: snake(baseClient.authorisationCode.mfa),
+          fieldset: {
+            legend: {
+              text: "Multi Factor Authentication (MFA)",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Customize behaviour of MFA flow"
+          },
+          items: [
+            {
+              value: "none",
+              text: "None",
+              attributes: {
+              "data-qa": "mfa-none-radio"
+            }
+            },
+            {
+              value: "all",
+              text: "All",
+              attributes: {
+              "data-qa": "mfa-all-radio"
+            }
+            },
+            {
+              value: "untrusted",
+              text: "Untrusted",
+              attributes: {
+              "data-qa": "mfa-untrusted-radio"
+            }
+            }
+          ],
+          attributes: {
+            "data-qa": "grant-type-radio-group"
+          }
+        }) }}
+
+        {{ govukCheckboxes({
+          name: "mfaRememberMe",
+          fieldset: {
+            legend: {
+              text: "MFA Remember Me Flow",
+              isPageHeading: false
+            },
+            hint: {
+              text: "Customize behaviour of MFA Remember Me Flow"
+            }
+          },
+          items: [
+            {
+              value: "rememberMe",
+              text: "Remember me",
+              checked: baseClient.authorisationCode.mfaRememberMe
+            }
+          ],
+          attributes: {
+            "data-qa": "grant-mfa-remember-me-flow-checkboxes"
+          }
+        }) }}
       {% endif %}
 
       <h2 class="govuk-heading-l">Config</h2>
