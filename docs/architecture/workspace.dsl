@@ -8,6 +8,8 @@ workspace {
 
         externalUser = person " External User" "Someone who needs access to prisoner information from an agency e.g. the police, NHS or other agency"
 
+        AdminUser = person "Admin User" "A user that administrates HMPPS auth"
+
         DOM1 = person "DOM1 Login User"{
             tags "external system", "Azure"
             prisonUser -> DOM1 "is a"
@@ -15,7 +17,9 @@ workspace {
         }
 
         ExternalUsers = softwareSystem "External Users"{
-            ExternalUsersApi = container "External Users API"
+            ExternalUsersApi = container "External Users API" {
+                tags "Existing"
+            }
         }
 
         GovNotify = softwareSystem "Gov Notify" {
@@ -41,8 +45,13 @@ workspace {
 
         HMPPSManageUsers = softwareSystem "HMPPS Manage Users" {
             tags "HMPPS Digital Service"
-            HMPPSManageUsersApi = container "Manage Users API"
-            HMPPSManageUsersUi = container "Manage Users UI"
+            HMPPSManageUsersApi = container "Manage Users API" {
+                tags "Existing"
+            }
+
+            HMPPSManageUsersUi = container "Manage Users UI" {
+                tags "Existing"
+            }
             
             HMPPSManageUsersUi -> HMPPSManageUsersApi "connects to"
             HMPPSManageUsersApi -> NOMISUserRolesAPI "gets NOMIS users and roles"
@@ -63,8 +72,12 @@ workspace {
                 tags "New"
             }
             
-            HMPPSLegacyAuth = container "HMPPS Legacy auth service"
-            tokenVerificationAPI = container "Token Verification API"
+            HMPPSLegacyAuth = container "HMPPS Legacy auth service" {
+                tags "Existing"
+            }
+            tokenVerificationAPI = container "Token Verification API"{
+                tags "Existing"
+            }
 
             HMPPSLegacyAuth -> HMPPSAuthorizationServer "Proxies"
             HMPPSAuthorizationUI -> HMPPSAuthorizationServer "gets client credential info from"
@@ -76,6 +89,7 @@ workspace {
             DOM1 -> HMPPSLegacyAuth "Logs in"
             probationUser -> HMPPSLegacyAuth "Logs in"
             externalUser -> HMPPSLegacyAuth "Logs in"
+            AdminUser -> HMPPSAuthorizationUI "administers"
         }
 
         HMPPSDigitalServices = softwareSystem "HMPPS Digital Services"{
@@ -129,6 +143,10 @@ workspace {
 
             element "Legacy System" {
                 background #cccccc
+                color #000000
+            }
+            element "Existing"{
+                background #bbbbff
                 color #000000
             }  
             element "External System" {
