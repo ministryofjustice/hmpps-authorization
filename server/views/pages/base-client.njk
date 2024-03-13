@@ -208,6 +208,20 @@
               },{
                 text: baseClient.authorisationCode.azureAdLoginFlow
               }
+            ],[
+              {
+                text: "MFA",
+                classes: "govuk-!-width-one-half"
+              },{
+                text: capitalCase(baseClient.authorisationCode.mfa)
+              }
+            ],[
+              {
+                text: "MFA Remember me",
+                classes: "govuk-!-width-one-half"
+              },{
+                text: baseClient.authorisationCode.mfaRememberMe
+              }
             ]
           ],
           attributes: {

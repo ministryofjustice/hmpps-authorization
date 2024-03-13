@@ -16,6 +16,11 @@ const visitAddWithClientCredentialsPage = (): AddBaseClientDetailsPage => {
   return Page.verifyOnPage(AddBaseClientDetailsPage)
 }
 
+const visitAddWithAuthorizationCodePage = (): AddBaseClientDetailsPage => {
+  cy.signIn({ failOnStatusCode: true, redirectPath: '/base-clients/new?grant=authorization-code' })
+  return Page.verifyOnPage(AddBaseClientDetailsPage)
+}
+
 context('Add client page', () => {
   beforeEach(() => {
     cy.task('reset')
@@ -109,6 +114,80 @@ context('Add client page', () => {
       addBaseClientDetailsPage.grantTypeInput().should('be.visible')
       addBaseClientDetailsPage.grantAuthoritiesInput().should('be.visible')
       addBaseClientDetailsPage.grantDatabaseUsernameInput().should('be.visible')
+    })
+
+    it('User can see config form inputs', () => {
+      addBaseClientDetailsPage.configDoesExpireCheckbox().should('exist')
+      addBaseClientDetailsPage.configAllowedIpsInput().should('be.visible')
+    })
+
+    context('Access token validity dropdown', () => {
+      it('Custom input is initially hidden', () => {
+        addBaseClientDetailsPage.baseClientAccessTokenValidityInput().should('not.be.visible')
+      })
+
+      it('Custom input is shown when custom option is selected', () => {
+        addBaseClientDetailsPage.baseClientAccessTokenValidityDropdown().select('Custom')
+        addBaseClientDetailsPage.baseClientAccessTokenValidityInput().should('be.visible')
+      })
+    })
+
+    context('Allow client to expire ', () => {
+      it('Does expire checkbox is unchecked by default', () => {
+        addBaseClientDetailsPage.configDoesExpireCheckbox().should('not.be.checked')
+      })
+
+      it('Expiry days input is shown if checkbox is selected', () => {
+        addBaseClientDetailsPage.configDoesExpireLabel().click()
+        addBaseClientDetailsPage.configExpiryDaysInput().should('be.visible')
+      })
+    })
+
+    it('User clicks cancel to return to home screen', () => {
+      addBaseClientDetailsPage.cancelLink().click()
+      Page.verifyOnPage(ViewBaseClientListPage)
+    })
+
+    it('User clicks continue to post new client details screen', () => {
+      // enter a base client id
+      addBaseClientDetailsPage.baseClientIdInput().type('new-client-id')
+
+      // set up to check the POST request
+      cy.intercept('POST', '/base-clients/new', req => {
+        const { body } = req
+        expect(body).to.contain('baseClientId=new-client-id')
+      })
+
+      addBaseClientDetailsPage.saveButton().click()
+    })
+  })
+
+  context('Add base client enter details screen - authorization code', () => {
+    let addBaseClientDetailsPage: AddBaseClientDetailsPage
+
+    beforeEach(() => {
+      addBaseClientDetailsPage = visitAddWithAuthorizationCodePage()
+    })
+
+    it('User can see base-client form inputs', () => {
+      addBaseClientDetailsPage.baseClientIdInput().should('be.visible')
+      addBaseClientDetailsPage.baseClientAccessTokenValidityDropdown().should('be.visible')
+      addBaseClientDetailsPage.baseClientApprovedScopesInput().should('be.visible')
+    })
+
+    it('User can see audit trail form inputs', () => {
+      addBaseClientDetailsPage.auditTrailDetailsInput().should('be.visible')
+    })
+
+    it('User can see authorization-code details form inputs', () => {
+      addBaseClientDetailsPage.grantTypeInput().should('be.visible')
+      addBaseClientDetailsPage.grantRedirectUrisInput().should('be.visible')
+      addBaseClientDetailsPage.grantJwtFieldsInput().should('be.visible')
+      addBaseClientDetailsPage.grantAzureAdLoginFlowCheckboxes().should('exist')
+      addBaseClientDetailsPage.grantMfaRadioNone().should('exist')
+      addBaseClientDetailsPage.grantMfaRadioAll().should('exist')
+      addBaseClientDetailsPage.grantMfaRadioUntrusted().should('exist')
+      addBaseClientDetailsPage.grantMfaRememberMeFlowCheckboxes().should('exist')
     })
 
     it('User can see config form inputs', () => {
