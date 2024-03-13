@@ -161,5 +161,46 @@ describe('mapEditBaseClientDetailsForm', () => {
       expect(update.authorisationCode.mfa).toEqual(MfaType.None)
       expect(update.authorisationCode.mfaRememberMe).toEqual(false)
     })
+
+    it.each([
+      [null, MfaType.None],
+      ['none', MfaType.None],
+      ['NONE', MfaType.None],
+      ['None', MfaType.None],
+      ['All', MfaType.All],
+      ['Untrusted', MfaType.Untrusted],
+    ])('maps mfa %s to %s', (mfa: string, expected: MfaType) => {
+      // Given a base client with fields populated
+      const detailedBaseClient = baseClientFactory.build({
+        accessTokenValidity: 3600,
+        deployment: {
+          team: 'deployment team',
+        },
+        service: {
+          serviceName: 'service serviceName',
+        },
+      })
+
+      // and given an edit request with client credentials fields populated
+      const request = formRequest({
+        baseClientId: detailedBaseClient.baseClientId,
+        approvedScopes: 'requestscope1,requestscope2',
+        audit: 'request audit',
+        grantType: GrantType.AuthorizationCode,
+        redirectUris: 'requestredirectUri1\r\nrequestredirectUri2',
+        jwtFields: 'request jwtFields',
+        azureAdLoginFlow: 'redirect',
+        mfa,
+        mfaRememberMe: false,
+        expiry: true,
+        expiryDays: '1',
+      })
+
+      // when the form is mapped
+      const update = mapEditBaseClientDetailsForm(detailedBaseClient, request)
+
+      // then the authorisationCode details are updated
+      expect(update.authorisationCode.mfa).toEqual(expected)
+    })
   })
 })

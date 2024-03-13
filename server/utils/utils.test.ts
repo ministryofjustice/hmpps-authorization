@@ -12,6 +12,7 @@ import {
   dateFormat,
   dateTimeFormatFromString,
   snakeUpper,
+  toBaseClientId,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -169,5 +170,16 @@ describe('dateTimeStringFormat', () => {
     ['a zulu date time during British Summer Time', '2020-08-31T12:00:00.000Z', '31-08-2020 13:00'],
   ])('handles %s: %s -> %s', (_inputType: string, input: string, expectedOutput: string) => {
     expect(dateTimeFormatFromString(input)).toEqual(expectedOutput)
+  })
+})
+
+describe('toBaseId', () => {
+  it.each([
+    ['an id without a trailing -digit', 'base_id', 'base_id'],
+    ['an id with an internal -digit', 'base-1-id', 'base-1-id'],
+    ['an id with a trailing -digit', 'base_id-1', 'base_id'],
+    ['an id with trailing -multiple_digits', 'base_id-10', 'base_id'],
+  ])('handles %s: %s -> %s', (_inputType: string, input: string, expectedOutput: string) => {
+    expect(toBaseClientId(input)).toEqual(expectedOutput)
   })
 })

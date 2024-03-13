@@ -1,9 +1,9 @@
 import { Request } from 'express'
 import { ListBaseClientsResponse } from '../../interfaces/baseClientApi/baseClientResponse'
 import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
-import { kebab, multiSeparatorSplit, snake } from '../../utils/utils'
 import { toClientType } from '../../data/enums/clientTypes'
 import { toGrantType } from '../../data/enums/grantType'
+import { kebab, multiSeparatorSplit, snake, toBaseClientId } from '../../utils/utils'
 
 export const mapListBaseClientRequest = (request: Request): BaseClientListFilter => {
   const asJson = JSON.stringify(request.query)
@@ -55,7 +55,7 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
   return clients.map(
     client =>
       ({
-        baseClientId: client.baseClientId,
+        baseClientId: toBaseClientId(client.baseClientId),
         accessTokenValidity: 24000,
         scopes: [],
         grantType: snake(client.grantType),

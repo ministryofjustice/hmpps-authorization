@@ -1,7 +1,7 @@
 import type { Request } from 'express'
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { getAccessTokenValiditySeconds, getDayOfExpiry, multiSeparatorSplit, snake } from '../../utils/utils'
-import { MfaType } from '../../data/enums/mfaTypes'
+import { MfaType, toMfaType } from '../../data/enums/mfaTypes'
 
 export default (baseClient: BaseClient, request: Request): BaseClient => {
   const data = request.body
@@ -24,8 +24,8 @@ export default (baseClient: BaseClient, request: Request): BaseClient => {
       registeredRedirectURIs: multiSeparatorSplit(data.redirectUris, [',', '\r\n', '\n']),
       jwtFields: data.jwtFields,
       azureAdLoginFlow: data.azureAdLoginFlow === 'redirect',
-      mfa: MfaType.None,
-      mfaRememberMe: false,
+      mfa: data.mfa ? toMfaType(data.mfa) : MfaType.None,
+      mfaRememberMe: data.mfaRememberMe === 'rememberMe',
     },
     config: {
       allowedIPs: multiSeparatorSplit(data.allowedIPs, [',', '\r\n', '\n']),
