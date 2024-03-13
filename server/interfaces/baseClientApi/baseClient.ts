@@ -1,4 +1,6 @@
 import { MfaType } from '../../data/enums/mfaTypes'
+import { GrantType } from '../../data/enums/grantType'
+import { ClientType } from '../../data/enums/clientTypes'
 
 export interface BaseClient {
   baseClientId: string
@@ -37,6 +39,7 @@ interface ServiceDetails {
   contact: string
   status: string
 }
+
 export interface DeploymentDetails {
   clientType: string
   team: string
@@ -64,10 +67,7 @@ export interface ClientSecrets {
 }
 
 export interface BaseClientListFilter {
-  roleSearch: string
-  clientCredentials: boolean
-  authorisationCode: boolean
-  serviceClientType: boolean
-  personalClientType: boolean
-  blankClientType: boolean
+  roleSearch?: string
+  grantType?: GrantType
+  clientType?: ClientType[]
 }

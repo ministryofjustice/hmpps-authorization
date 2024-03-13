@@ -2,7 +2,7 @@ import Page from '../pages/page'
 import ViewBaseClientListPage from '../pages/viewBaseClientList'
 import ViewBaseClientPage from '../pages/viewBaseClient'
 import NewBaseClientGrantPage from '../pages/newBaseClientGrant'
-import { GrantTypes } from '../../server/data/enums/grantTypes'
+import { GrantType } from '../../server/data/enums/grantType'
 import AuthSignInPage from '../pages/authSignIn'
 import AuthErrorPage from '../pages/authError'
 
@@ -17,7 +17,7 @@ context('Homepage - Auth', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
+    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
   })
@@ -42,7 +42,7 @@ context('Homepage - list base-clients', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient', { grantType: GrantTypes.ClientCredentials })
+    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
 

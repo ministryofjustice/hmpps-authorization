@@ -1,7 +1,8 @@
 import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
-import { convertToTitleCase, dateFormatFromString, snake } from '../../utils/utils'
-import { GrantTypes } from '../../data/enums/grantTypes'
-import { ClientType } from '../../data/enums/clientTypes'
+import { convertToTitleCase, dateFormatFromString } from '../../utils/utils'
+import { GrantType, toGrantType } from '../../data/enums/grantType'
+import { ClientType, toClientType } from '../../data/enums/clientTypes'
+import { mapFilterToUrlQuery } from '../../mappers/baseClientApi/listBaseClients'
 
 const indexTableHead = () => {
   return [
@@ -102,52 +103,157 @@ const filterItems = (data: BaseClient[], filter?: BaseClientListFilter) => {
   return filter ? data.filter(item => filterBaseClient(item, filter)) : data
 }
 
-export const filterBaseClient = (baseClient: BaseClient, filter: BaseClientListFilter) => {
-  if (filter.roleSearch) {
+const filterByRoleSearch = (baseClient: BaseClient, roleSearch: string): boolean => {
+  if (roleSearch) {
     const roles = baseClient.clientCredentials.authorities.join(' ').toLowerCase()
-    const roleSearch = filter.roleSearch.toLowerCase().trim()
-    if (roles.includes(roleSearch) === false) {
-      return false
+    const roleSearchLower = roleSearch.toLowerCase().trim()
+    return roles.includes(roleSearchLower)
+  }
+  return true
+}
+
+const filterByGrantType = (baseClient: BaseClient, grantTypeFilter: GrantType | undefined): boolean => {
+  const grantType = baseClient.grantType ? toGrantType(baseClient.grantType) : null
+  return grantTypeFilter ? grantType === grantTypeFilter : true
+}
+
+const filterByClientType = (baseClient: BaseClient, clientTypeFilter: ClientType[] | undefined): boolean => {
+  const clientType =
+    baseClient.deployment && baseClient.deployment.clientType
+      ? toClientType(baseClient.deployment.clientType)
+      : ClientType.Blank
+  return clientTypeFilter ? clientTypeFilter.includes(clientType) : true
+}
+
+export const filterBaseClient = (baseClient: BaseClient, filter: BaseClientListFilter): boolean => {
+  return (
+    filterByRoleSearch(baseClient, filter.roleSearch) &&
+    filterByGrantType(baseClient, filter.grantType) &&
+    filterByClientType(baseClient, filter.clientType)
+  )
+}
+
+type SelectedFilterCategory = {
+  heading: { text: string }
+  items: { href: string; text: string }[]
+}
+
+const createRoleSearchCategory = (filter: BaseClientListFilter): SelectedFilterCategory[] => {
+  return filter.roleSearch
+    ? [
+        {
+          heading: { text: 'Role' },
+          items: [{ href: removeFilterLink(filter, 'roleSearch'), text: filter.roleSearch }],
+        },
+      ]
+    : []
+}
+
+const createGrantTypeCategory = (filter: BaseClientListFilter): SelectedFilterCategory[] => {
+  if (!filter.grantType) return []
+
+  const grantTypesCategory: SelectedFilterCategory = {
+    heading: { text: 'Grant type' },
+    items: [],
+  }
+
+  if (filter.grantType === GrantType.ClientCredentials) {
+    grantTypesCategory.items.push({ href: removeFilterLink(filter, 'clientCredentials'), text: 'Client credentials' })
+  }
+
+  if (filter.grantType === GrantType.AuthorizationCode) {
+    grantTypesCategory.items.push({ href: removeFilterLink(filter, 'authorisationCode'), text: 'Authorisation code' })
+  }
+
+  return [grantTypesCategory]
+}
+
+const createClientTypeCategory = (filter: BaseClientListFilter): SelectedFilterCategory[] => {
+  if (!filter.clientType) return []
+
+  const clientTypeCategory: SelectedFilterCategory = {
+    heading: { text: 'Client type' },
+    items: [],
+  }
+
+  if (filter.clientType.includes(ClientType.Personal)) {
+    clientTypeCategory.items.push({ href: removeFilterLink(filter, 'personalClientType'), text: 'Personal' })
+  }
+
+  if (filter.clientType.includes(ClientType.Service)) {
+    clientTypeCategory.items.push({ href: removeFilterLink(filter, 'serviceClientType'), text: 'Service' })
+  }
+
+  if (filter.clientType.includes(ClientType.Blank)) {
+    clientTypeCategory.items.push({ href: removeFilterLink(filter, 'blankClientType'), text: 'Blank' })
+  }
+
+  if (clientTypeCategory.items.length > 0 && clientTypeCategory.items.length < 3) {
+    return [clientTypeCategory]
+  }
+  return []
+}
+
+const getSelectedFilterCategories = (filter?: BaseClientListFilter): SelectedFilterCategory[] => {
+  if (!filter) return []
+  return [...createRoleSearchCategory(filter), ...createGrantTypeCategory(filter), ...createClientTypeCategory(filter)]
+}
+
+const removeRoleSearchFilter = (filter: BaseClientListFilter, filterToRemove: string): BaseClientListFilter => {
+  if (filter.roleSearch && filterToRemove !== 'roleSearch') {
+    return { roleSearch: filter.roleSearch }
+  }
+  return {}
+}
+
+const removeGrantTypeFilter = (filter: BaseClientListFilter, filterToRemove: string): BaseClientListFilter => {
+  if (filter.grantType && !['clientCredentials', 'authorisationCode'].includes(filterToRemove)) {
+    return { grantType: filter.grantType }
+  }
+  return {}
+}
+
+const removeClientTypeFilter = (filter: BaseClientListFilter, filterToRemove: string): BaseClientListFilter => {
+  if (filter.clientType) {
+    let clients = filter.clientType
+    if (filterToRemove === 'personalClientType') {
+      clients = clients.filter(client => client !== ClientType.Personal)
+    }
+    if (filterToRemove === 'serviceClientType') {
+      clients = clients.filter(client => client !== ClientType.Service)
+    }
+    if (filterToRemove === 'blankClientType') {
+      clients = clients.filter(client => client !== ClientType.Blank)
+    }
+    if (clients.length > 0 && clients.length < 3) {
+      return { clientType: clients }
     }
   }
+  return {}
+}
 
-  const grantType = baseClient.grantType ? snake(baseClient.grantType) : ''
-  const clientType =
-    baseClient.deployment && baseClient.deployment.clientType ? snake(baseClient.deployment.clientType) : ''
-
-  if (grantType === GrantTypes.ClientCredentials && !filter.clientCredentials) {
-    return false
+const removeFilterLink = (filter: BaseClientListFilter, filterToRemove: string): string => {
+  const newFilter: BaseClientListFilter = {
+    ...removeRoleSearchFilter(filter, filterToRemove),
+    ...removeGrantTypeFilter(filter, filterToRemove),
+    ...removeClientTypeFilter(filter, filterToRemove),
   }
 
-  if (grantType === GrantTypes.AuthorizationCode && !filter.authorisationCode) {
-    return false
-  }
+  const query = mapFilterToUrlQuery(newFilter)
+  return query ? `/?${query}` : '/'
+}
 
-  if (clientType === ClientType.Personal && !filter.personalClientType) {
-    return false
-  }
-  if (clientType === ClientType.Service && !filter.serviceClientType) {
-    return false
-  }
-
-  if (clientType === '' && !filter.blankClientType) {
-    return false
-  }
-
-  return true
+const showSelectedFilters = (filter?: BaseClientListFilter) => {
+  if (!filter) return false
+  return !(!filter.roleSearch && !filter.grantType && !filter.clientType)
 }
 
 export default (data: BaseClient[], filter?: BaseClientListFilter) => {
   return {
     tableHead: indexTableHead(),
     tableRows: indexTableRows(data, filter),
-    filter: filter || {
-      roleSearch: '',
-      clientCredentials: true,
-      authorisationCode: true,
-      serviceClientType: true,
-      personalClientType: true,
-      blankClientType: true,
-    },
+    filter: filter || {},
+    showSelectedFilters: showSelectedFilters(filter),
+    selectedFilterCategories: getSelectedFilterCategories(filter),
   }
 }

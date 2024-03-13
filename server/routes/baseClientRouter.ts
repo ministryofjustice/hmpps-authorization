@@ -18,9 +18,15 @@ export default function baseClientRouter(services: Services): Router {
       handlers.map(handler => asyncMiddleware(handler)),
     )
 
+  const redirect = (path: string, redirectPath: string) =>
+    router.get(path, (req, res) => {
+      res.redirect(redirectPath)
+    })
+
   const baseClientController = new BaseClientController(services.baseClientService)
 
   get('/', baseClientController.displayBaseClients())
+  redirect('/base-clients', '/')
   get('/base-clients/new', baseClientController.displayNewBaseClient())
   get('/base-clients/:baseClientId/deployment', baseClientController.displayEditBaseClientDeployment())
   get('/base-clients/:baseClientId/edit', baseClientController.displayEditBaseClient())

@@ -22,6 +22,7 @@
 {%- from "govuk/components/table/macro.njk" import govukTable -%}
 {%- from "moj/components/filter/macro.njk" import mojFilter -%}
 {%- from "moj/components/button-menu/macro.njk" import mojButtonMenu -%}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 
 {% set filterOptionsHtml %}
@@ -39,76 +40,118 @@
     value: presenter.filter.roleSearch
   }) }}
 
-  {{ govukCheckboxes({
-    idPrefix: 'grant-type',
-    name: 'grantType',
-    classes: "govuk-checkboxes--small",
+  {{ govukRadios({
+    name: "grantType",
+    classes: "govuk-radios--small",
     fieldset: {
       legend: {
-        text: 'Grant type',
-        classes: 'govuk-fieldset__legend--m'
+        text: "Grant type",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--m"
       }
     },
     items: [
       {
-        value: 'client-credentials',
-        text: 'Client credentials',
-        checked: presenter.filter.clientCredentials
+        value: "all",
+        text: "All",
+        checked: 'grantType' not in  presenter.filter
       },
       {
-        value: 'authorization-code',
-        text: 'Authorization code',
-        checked: presenter.filter.authorisationCode
+        value: "client-credentials",
+        text: "Client credentials",
+        checked: presenter.filter.grantType === "client_credentials"
+      },
+      {
+        value: "authorization-code",
+        text: "Authorization code",
+        checked: presenter.filter.grantType === "authorization_code"
       }
     ]
   }) }}
 
-  {{ govukCheckboxes({
-    idPrefix: 'client-type',
-    name: 'clientType',
-    classes: "govuk-checkboxes--small",
+  {{ govukRadios({
+    name: "filterClientType",
+    classes: "govuk-radios--small",
     fieldset: {
       legend: {
-        text: 'Client type',
-        classes: 'govuk-fieldset__legend--m'
+        text: "Client type",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--m"
       }
     },
     items: [
       {
-        value: 'service',
-        text: 'Service',
-        checked: presenter.filter.serviceClientType
+        value: "all",
+        text: "All",
+        checked: 'clientType' not in  presenter.filter
       },
       {
-        value: 'personal',
-        text: 'Personal',
-        checked: presenter.filter.personalClientType
-      },
-      {
-        value: 'blank',
-        text: '[blank]',
-        checked: presenter.filter.blankClientType
+        value: "clientFilter",
+        text: "Filter",
+        checked: 'clientType' in  presenter.filter,
+        conditional: {
+        html: govukCheckboxes({
+          idPrefix: 'client-type',
+          name: 'clientType',
+          classes: "govuk-checkboxes--small",
+          items: [
+            {
+              value: 'service',
+              text: 'Service',
+              checked: 'clientType' in  presenter.filter and 'service' in presenter.filter.clientType
+            },
+            {
+              value: 'personal',
+              text: 'Personal',
+              checked: 'clientType' in  presenter.filter and 'personal' in presenter.filter.clientType
+            },
+            {
+              value: 'blank',
+              text: '[blank]',
+              checked: 'clientType' in  presenter.filter and 'blank' in presenter.filter.clientType
+            }
+          ]
+        })
+      }
       }
     ]
   }) }}
 
 {% endset %}
 
-
-
 {% block content %}
 
-  <form class="moj-filter-layout"  action='/' method='POST'>
+  <form class="moj-filter-layout" action='/' method='POST'>
 
     <div class="moj-filter-layout__filter">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {% if presenter.showSelectedFilters %}
+        {{ mojFilter({
+          heading: {
+            text: 'Filter'
+          },
+          selectedFilters: {
+            heading: {
+              text: 'Selected filters'
+            },
+
+            clearLink: {
+              text: 'Clear filters',
+              href: '/'
+            },
+
+            categories: presenter.selectedFilterCategories
+          },
+          optionsHtml: filterOptionsHtml
+        }) }}
+      {% else %}
       {{ mojFilter({
         heading: {
           text: 'Filter'
         },
-
         optionsHtml: filterOptionsHtml
       }) }}
+      {% endif %}
 
     </div>
 
@@ -136,6 +179,7 @@
             }
           }]
         }) }}
+        <div class="moj-action-bar__filterTagsContainer"></div>
       </div>
 
       <div class="moj-scrollable-pane">

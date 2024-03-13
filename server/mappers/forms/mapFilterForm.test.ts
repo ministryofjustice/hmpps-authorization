@@ -2,6 +2,8 @@ import type { Request } from 'express'
 import { createMock } from '@golevelup/ts-jest'
 import mapFilterForm from './mapFilterForm'
 import { BaseClientListFilter } from '../../interfaces/baseClientApi/baseClient'
+import { GrantType } from '../../data/enums/grantType'
+import { ClientType } from '../../data/enums/clientTypes'
 
 const formRequest = (form: Record<string, unknown>) => {
   return createMock<Request>({ body: form })
@@ -20,15 +22,7 @@ describe('mapFilterForm', () => {
     })
   })
 
-  describe('grant checkbox', () => {
-    it('processes undefined', () => {
-      const request = formRequest({})
-
-      const result: BaseClientListFilter = mapFilterForm(request)
-
-      expect(result.authorisationCode).toBeFalsy()
-      expect(result.clientCredentials).toBeFalsy()
-    })
+  describe('grant radios', () => {
     it('processes single string', () => {
       const request = formRequest({
         grantType: 'client_credentials',
@@ -36,52 +30,50 @@ describe('mapFilterForm', () => {
 
       const result: BaseClientListFilter = mapFilterForm(request)
 
-      expect(result.authorisationCode).toBeFalsy()
-      expect(result.clientCredentials).toBeTruthy()
+      expect(result.grantType).toEqual(GrantType.ClientCredentials)
     })
-    it('processes array', () => {
+  })
+
+  describe('client type radios', () => {
+    it('parses filter on but no selection as select all', () => {
       const request = formRequest({
-        grantType: ['client_credentials', 'authorization_code'],
+        filterClientType: 'clientFilter',
       })
 
       const result: BaseClientListFilter = mapFilterForm(request)
 
-      expect(result.authorisationCode).toBeTruthy()
-      expect(result.clientCredentials).toBeTruthy()
+      expect(result.clientType).toBeUndefined()
     })
-  })
-
-  describe('client type checkbox', () => {
-    it('processes undefined', () => {
-      const request = formRequest({})
+    it('parses filter on with all selected as select all', () => {
+      const request = formRequest({
+        filterClientType: 'clientFilter',
+        clientType: ['personal', 'service', 'blank'],
+      })
 
       const result: BaseClientListFilter = mapFilterForm(request)
 
-      expect(result.personalClientType).toBeFalsy()
-      expect(result.serviceClientType).toBeFalsy()
-      expect(result.blankClientType).toBeFalsy()
+      expect(result.clientType).toBeUndefined()
     })
+
     it('processes single string', () => {
       const request = formRequest({
+        filterClientType: 'clientFilter',
         clientType: 'personal',
       })
 
       const result: BaseClientListFilter = mapFilterForm(request)
 
-      expect(result.personalClientType).toBeTruthy()
-      expect(result.serviceClientType).toBeFalsy()
-      expect(result.blankClientType).toBeFalsy()
+      expect(result.clientType).toEqual([ClientType.Personal])
     })
     it('processes array', () => {
       const request = formRequest({
+        filterClientType: 'clientFilter',
         clientType: ['personal', 'service'],
       })
 
       const result: BaseClientListFilter = mapFilterForm(request)
 
-      expect(result.personalClientType).toBeTruthy()
-      expect(result.serviceClientType).toBeTruthy()
-      expect(result.blankClientType).toBeFalsy()
+      expect(result.clientType).toEqual([ClientType.Personal, ClientType.Service])
     })
   })
 })

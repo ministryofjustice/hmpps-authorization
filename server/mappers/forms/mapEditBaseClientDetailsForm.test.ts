@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { baseClientFactory } from '../../testutils/factories'
 import { dateISOString, offsetNow } from '../../utils/utils'
 import { mapEditBaseClientDetailsForm } from '../index'
-import { GrantTypes } from '../../data/enums/grantTypes'
+import { GrantType } from '../../data/enums/grantType'
 import { MfaType } from '../../data/enums/mfaTypes'
 
 const formRequest = (form: Record<string, unknown>) => {
@@ -99,7 +99,7 @@ describe('mapEditBaseClientDetailsForm', () => {
         baseClientId: detailedBaseClient.baseClientId,
         approvedScopes: 'requestscope1,requestscope2',
         audit: 'request audit',
-        grantType: GrantTypes.ClientCredentials,
+        grantType: GrantType.ClientCredentials,
         authorities: 'requestauthority1\r\nrequestauthority2',
         databaseUsername: 'request databaseUsername',
         allowedIPs: 'requestallowedIP1\r\nrequestallowedIP2',
@@ -114,7 +114,7 @@ describe('mapEditBaseClientDetailsForm', () => {
       expect(update.baseClientId).toEqual(detailedBaseClient.baseClientId)
       expect(update.scopes).toEqual(['requestscope1', 'requestscope2'])
       expect(update.audit).toEqual('request audit')
-      expect(update.grantType).toEqual(GrantTypes.ClientCredentials)
+      expect(update.grantType).toEqual(GrantType.ClientCredentials)
       expect(update.clientCredentials.authorities).toEqual(['requestauthority1', 'requestauthority2'])
       expect(update.clientCredentials.databaseUserName).toEqual('request databaseUsername')
       expect(update.config.allowedIPs).toEqual(['requestallowedIP1', 'requestallowedIP2'])
@@ -141,7 +141,7 @@ describe('mapEditBaseClientDetailsForm', () => {
         baseClientId: detailedBaseClient.baseClientId,
         approvedScopes: 'requestscope1,requestscope2',
         audit: 'request audit',
-        grantType: GrantTypes.AuthorizationCode,
+        grantType: GrantType.AuthorizationCode,
         redirectUris: 'requestredirectUri1\r\nrequestredirectUri2',
         jwtFields: 'request jwtFields',
         azureAdLoginFlow: 'redirect',
@@ -186,7 +186,7 @@ describe('mapEditBaseClientDetailsForm', () => {
         baseClientId: detailedBaseClient.baseClientId,
         approvedScopes: 'requestscope1,requestscope2',
         audit: 'request audit',
-        grantType: GrantTypes.AuthorizationCode,
+        grantType: GrantType.AuthorizationCode,
         redirectUris: 'requestredirectUri1\r\nrequestredirectUri2',
         jwtFields: 'request jwtFields',
         azureAdLoginFlow: 'redirect',
