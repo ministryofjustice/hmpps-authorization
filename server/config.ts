@@ -56,7 +56,7 @@ export default {
   },
   apis: {
     audit: {
-      enabled: get('AUDIT_ENABLED', 'false') === 'true',
+      enabled: get('AUDIT_ENABLED', 'true') === 'true',
       region: get('AUDIT_SQS_REGION', 'eu-west-2', requiredInProduction),
       queueUrl: get('AUDIT_SQS_QUEUE_URL', 'http://localhost:4566/000000000000/mainQueue', requiredInProduction),
       serviceName: get('AUDIT_SERVICE_NAME', 'authorization-ui', requiredInProduction),
