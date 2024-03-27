@@ -12,8 +12,6 @@ generic-service:
     HMPPS_AUTHORIZATION_SERVER_URL: "https://authorization-preprod.hmpps.service.justice.gov.uk"
     MANAGE_USERS_API_URL: "https://manage-users-api-preprod.hmpps.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
-    ENABLE_AUTHORIZATION_CODE: "true"
-    ENABLE_SERVICE_DETAILS: "false"
     ENVIRONMENT_NAME: PRE-PRODUCTION
 
 generic-prometheus-alerts:
