@@ -228,7 +228,33 @@
             "data-qa": "base-client-authorization-code-table"
           }
         }) }}
+
+        {{ govukTable({
+          firstCellIsHeader: false,
+          head: [
+            {
+              text: "Service details",
+              classes: "govuk-!-width-one-half"
+            },{
+              text: ""
+            }],
+          rows: [
+            [
+              {
+                text: "Service roles",
+                classes: "govuk-!-width-one-half"
+              },{
+              html: toLinesHtml(baseClient.service.serviceRoles)
+            }
+            ]
+          ],
+          attributes: {
+            "data-qa": "base-client-service-table"
+          }
+        }) }}
       {% endif %}
+
+
 
 
       {{ govukTable({
@@ -262,85 +288,12 @@
         }
       }) }}
 
-
-      {% if baseClient.grantType == "authorization_code" and presenter.enableServiceDetails %}
-        <div class="govuk-grid-row">
-          <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-l">Service details</h2>
-          </div>
-          <div class="govuk-grid-column-one-third">
-            <a class="govuk-link" href="/clients/{{ baseClient.baseClientId }}/edit-service-details">Change
-              service details</a>
-          </div>
-        </div>
-
-        {{ govukTable({
-          firstCellIsHeader: false,
-          head: [
-            {
-              text: "Service details",
-              classes: "govuk-!-width-one-half"
-            },{
-              text: ""
-            }],
-          rows: [
-            [
-              {
-                text: "Name",
-                classes: "govuk-!-width-one-half"
-              },{
-              text: baseClient.service.serviceName
-            }
-            ],[
-              {
-                text: "Description",
-                classes: "govuk-!-width-one-half"
-              },{
-                text: baseClient.service.description
-              }
-            ],[
-              {
-                text: "Authorised roles",
-                classes: "govuk-!-width-one-half"
-              },{
-                html: toLinesHtml(baseClient.service.authorisedRoles)
-              }
-            ],[
-              {
-                text: "URL",
-                classes: "govuk-!-width-one-half"
-              },{
-                text: baseClient.service.url
-              }
-            ],[
-              {
-                text: "Contact URL/email",
-                classes: "govuk-!-width-one-half"
-              },{
-                text: baseClient.service.contact
-              }
-            ],[
-              {
-                text: "Status",
-                classes: "govuk-!-width-one-half"
-              },{
-                text: presenter.serviceEnabledLabel
-              }
-            ]
-          ],
-          attributes: {
-            "data-qa": "base-client-service-table"
-          }
-        }) }}
-      {% endif %}
-
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
           <h2 class="govuk-heading-l">Deployment details</h2>
         </div>
         <div class="govuk-grid-column-one-third  govuk-!-text-align-right">
-          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/deployment" data-qa='change-deployment-details-link'>Change
-            deployment details</a>
+          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/deployment" data-qa='change-deployment-details-link'>Change deployment details</a>
         </div>
       </div>
 

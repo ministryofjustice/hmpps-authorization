@@ -34,7 +34,7 @@ interface AuthorisationCodeDetails {
 interface ServiceDetails {
   serviceName: string
   description: string
-  authorisedRoles: string[]
+  serviceRoles: string[]
   url: string
   contact: string
   status: string

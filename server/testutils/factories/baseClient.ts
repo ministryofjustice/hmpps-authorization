@@ -27,7 +27,7 @@ export default Factory.define<BaseClient>(() => ({
   service: {
     serviceName: 'service name',
     description: 'service description',
-    authorisedRoles: ['ROLE_CLIENT_CREDENTIALS'],
+    serviceRoles: ['ROLE_CLIENT_CREDENTIALS'],
     url: 'https://localhost:3000',
     contact: 'service contact',
     status: 'ACTIVE',
