@@ -143,5 +143,9 @@ context('Base client page - authorization-code flow', () => {
     it('User can see config table', () => {
       baseClientsPage.baseClientConfigTable().should('be.visible')
     })
+
+    it('User can see service details panel', () => {
+      baseClientsPage.baseClientServiceDetailsTable().should('be.visible')
+    })
   })
 })

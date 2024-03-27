@@ -1,7 +1,6 @@
 import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { Client } from '../../interfaces/baseClientApi/client'
 import { dateTimeFormat, daysRemaining } from '../../utils/utils'
-import config from '../../config'
 
 export default (baseClient: BaseClient, clients: Client[]) => {
   return {

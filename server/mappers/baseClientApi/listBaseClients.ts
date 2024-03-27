@@ -75,7 +75,7 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
         service: {
           serviceName: client.teamName || '',
           description: '',
-          authorisedRoles: multiSeparatorSplit(client.roles, [' ', ',', '\n']),
+          serviceRoles: [],
           url: '',
           contact: '',
           status: '',
