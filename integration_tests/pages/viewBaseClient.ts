@@ -23,6 +23,8 @@ export default class ViewBaseClientPage extends Page {
 
   baseClientConfigTable = () => cy.get('[data-qa="base-client-config-table"]')
 
+  baseClientServiceDetailsTable = () => cy.get('[data-qa="base-client-service-table"]')
+
   baseClientDeploymentContactTable = () => cy.get('[data-qa="base-client-deployment-contact-table"]')
 
   baseClientDeploymentPlatformTable = () => cy.get('[data-qa="base-client-deployment-platform-table"]')

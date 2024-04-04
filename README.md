@@ -69,11 +69,9 @@ Or run tests with the cypress UI:
 
 ## Environment variables
 
-The following environment variables can be set to run the application:
+The following environment variables can be set when running the application:
 
-`ENABLE_AUTHORIZATION_CODE` - set to `true` to enable the authorization code grant type. Default is `false`.
-
-`ENABLE_SERVICE_DETAILS` - set to `true` to enable the service details section. Default is `false`.
+`AUDIT_ENABLED` - Default is `true` - can be set to `false` to disable audit logging locally. Audit statements are sent to the console.
 
 ## Change log
 

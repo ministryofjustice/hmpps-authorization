@@ -34,7 +34,7 @@ export default (request: Request): BaseClient => {
     service: {
       serviceName: '',
       description: '',
-      authorisedRoles: [],
+      serviceRoles: [],
       url: '',
       contact: '',
       status: '',

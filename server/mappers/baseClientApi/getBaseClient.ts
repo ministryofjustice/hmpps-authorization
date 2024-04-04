@@ -2,11 +2,11 @@ import { GetBaseClientResponse } from '../../interfaces/baseClientApi/baseClient
 import { BaseClient, DeploymentDetails } from '../../interfaces/baseClientApi/baseClient'
 import { ClientType } from '../../data/enums/clientTypes'
 import { HostingType } from '../../data/enums/hostingTypes'
-import { snake } from '../../utils/utils'
+import { snake, toBaseClientId } from '../../utils/utils'
 
 export default (response: GetBaseClientResponse): BaseClient => {
   return {
-    baseClientId: response.clientId,
+    baseClientId: toBaseClientId(response.clientId),
     accessTokenValidity: response.accessTokenValiditySeconds ? response.accessTokenValiditySeconds : 0,
     scopes: response.scopes ? response.scopes : [],
     grantType: snake(response.grantType),
@@ -26,7 +26,7 @@ export default (response: GetBaseClientResponse): BaseClient => {
     service: {
       serviceName: '',
       description: '',
-      authorisedRoles: [],
+      serviceRoles: response.serviceAuthorities ? response.serviceAuthorities : [],
       url: '',
       contact: '',
       status: '',

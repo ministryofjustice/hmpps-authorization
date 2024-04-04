@@ -13,8 +13,6 @@ generic-service:
     HMPPS_AUTHORIZATION_SERVER_URL: "https://authorization-server-dev.hmpps.service.justice.gov.uk"
     MANAGE_USERS_API_URL: "https://manage-users-api-dev.hmpps.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
-    ENABLE_AUTHORIZATION_CODE: "true"
-    ENABLE_SERVICE_DETAILS: "false"
     ENVIRONMENT_NAME: DEV
 
 generic-prometheus-alerts:

@@ -177,7 +177,7 @@ describe('BaseClientController', () => {
         await baseClientController.displayNewBaseClient()(request, response, next)
 
         // THEN the choose client type page is rendered
-        expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk', expect.anything())
+        expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk')
       })
 
       it('if grant is specified with client-credentials renders the details screen', async () => {
@@ -218,7 +218,7 @@ describe('BaseClientController', () => {
         await baseClientController.displayNewBaseClient()(request, response, next)
 
         // THEN the choose client type page is rendered
-        expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk', expect.anything())
+        expect(response.render).toHaveBeenCalledWith('pages/new-base-client-grant.njk')
       })
 
       it('if validation fails because no id specified renders the details screen with error message', async () => {
