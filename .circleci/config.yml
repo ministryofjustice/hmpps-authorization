@@ -151,7 +151,7 @@ workflows:
           env: "stage"
           context:
             - hmpps-common-vars
-            - hmpps-authorization-stage
+            - hmpps-auth-stage
           filters:
             branches:
               only:
