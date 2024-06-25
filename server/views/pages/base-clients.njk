@@ -169,16 +169,23 @@
       <div class="moj-action-bar">
 
         <div class="moj-action-bar__filter"></div>
-        {{ mojButtonMenu({
-          items: [{
-            text: 'Add new client',
-            href:"/base-clients/new",
-            classes: 'govuk-button--primary',
-            attributes: {
-              'data-qa': 'addNewBaseClientButton'
-            }
-          }]
-        }) }}
+        {% if isReadOnly %}
+          {{ mojButtonMenu({
+            items: []
+          }) }}
+        {% else %}
+          {{ mojButtonMenu({
+            items: [{
+              text: 'Add new client',
+              href:"/base-clients/new",
+              classes: 'govuk-button--primary',
+              attributes: {
+                'data-qa': 'addNewBaseClientButton'
+              }
+            }]
+          }) }}
+        {% endif %}
+
         <div class="moj-action-bar__filterTagsContainer"></div>
       </div>
 

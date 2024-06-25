@@ -52,26 +52,30 @@
         }
       }) }}
 
-      <form class="govuk-grid-row" action="/base-clients/{{ baseClient.baseClientId }}/clients" method="POST">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        <div class="govuk-grid-column-one-half">
-          {{ govukButton({
-            text: "Add client instance",
-            attributes: {
-              "data-qa": "add-new-client-button"
-            }
-          }) }}
-        </div>
-      </form>
+      {% if not isReadOnly %}
+        <form class="govuk-grid-row" action="/base-clients/{{ baseClient.baseClientId }}/clients" method="POST">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <div class="govuk-grid-column-one-half">
+            {{ govukButton({
+              text: "Add client instance",
+              attributes: {
+                "data-qa": "add-new-client-button"
+              }
+            }) }}
+          </div>
+        </form>
+      {% endif %}
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
           <h2 class="govuk-heading-l">Client details</h2>
         </div>
-        <div class="govuk-grid-column-one-third govuk-!-text-align-right">
-          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/edit" data-qa='change-client-details-link'>Change
-            client details</a>
-        </div>
+        {% if not isReadOnly %}
+          <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+            <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/edit" data-qa='change-client-details-link'>Change
+              client details</a>
+          </div>
+        {% endif %}
       </div>
 
       {{ govukTable({
@@ -292,9 +296,11 @@
         <div class="govuk-grid-column-two-thirds">
           <h2 class="govuk-heading-l">Deployment details</h2>
         </div>
-        <div class="govuk-grid-column-one-third  govuk-!-text-align-right">
-          <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/deployment" data-qa='change-deployment-details-link'>Change deployment details</a>
-        </div>
+        {% if not isReadOnly %}
+          <div class="govuk-grid-column-one-third  govuk-!-text-align-right">
+            <a class="govuk-link" href="/base-clients/{{ baseClient.baseClientId }}/deployment" data-qa='change-deployment-details-link' disabled='{{ isReadOnly }}'>Change deployment details</a>
+          </div>
+        {% endif %}
       </div>
 
       {{ govukTable({

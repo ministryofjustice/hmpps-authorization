@@ -86,7 +86,8 @@
             classes: "govuk-button--warning",
             attributes: {
               "data-qa": "delete-button"
-            }
+            },
+            disabled: isReadOnly
           }) }}
           {{ govukButton({
             text: "Cancel",

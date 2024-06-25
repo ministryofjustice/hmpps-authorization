@@ -1,6 +1,7 @@
 import { baseClientFactory, clientFactory } from '../../testutils/factories'
 import viewBaseClientPresenter from './viewBaseClientPresenter'
 import { offsetNow } from '../../utils/utils'
+import config from '../../config'
 
 describe('viewBaseClientPresenter', () => {
   describe('clientsTable', () => {
@@ -33,19 +34,35 @@ describe('viewBaseClientPresenter', () => {
       expect(expectedAccessed).toEqual(actualAccessed)
     })
 
-    it('links to a delete page for each client', () => {
+    it('links to a delete page if not readOnly', () => {
       // Given some base clients with some clients
+      const isReadOnly = false
       const baseClient = baseClientFactory.build({ baseClientId: 'baseClientId' })
       const clients = [clientFactory.build({ clientId: 'clientIdA' }), clientFactory.build({ clientId: 'clientIdB' })]
 
       // When we map to a presenter
-      const presenter = viewBaseClientPresenter(baseClient, clients)
+      const presenter = viewBaseClientPresenter(baseClient, clients, isReadOnly)
 
-      // Then the dates are formatted as DD/MM/YYYY
+      // Then the delete links are correct
       const expected = [
-        '<a class="govuk-link" href="/base-clients/baseClientId/clients/clientIdA/delete" data-qa=\'delete-client-instance-link\'>delete</a>',
-        '<a class="govuk-link" href="/base-clients/baseClientId/clients/clientIdB/delete" data-qa=\'delete-client-instance-link\'>delete</a>',
+        "<a class='govuk-link' href='/base-clients/baseClientId/clients/clientIdA/delete' data-qa='delete-client-instance-link'>delete</a>",
+        "<a class='govuk-link' href='/base-clients/baseClientId/clients/clientIdB/delete' data-qa='delete-client-instance-link'>delete</a>",
       ]
+      const actual = presenter.clientsTable.map(row => row[3].html)
+      expect(expected).toEqual(actual)
+    })
+
+    it('does not link to a delete page if readOnly', () => {
+      // Given some base clients with some clients
+      const isReadOnly = true
+      const baseClient = baseClientFactory.build({ baseClientId: 'baseClientId' })
+      const clients = [clientFactory.build({ clientId: 'clientIdA' }), clientFactory.build({ clientId: 'clientIdB' })]
+
+      // When we map to a presenter
+      const presenter = viewBaseClientPresenter(baseClient, clients, isReadOnly)
+
+      // Then delete links are empty
+      const expected = ['', '']
       const actual = presenter.clientsTable.map(row => row[3].html)
       expect(expected).toEqual(actual)
     })
