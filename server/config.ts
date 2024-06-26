@@ -104,5 +104,6 @@ export default {
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
-  isReadonly: get('IS_READONLY', 'true') === 'true',
+  isReadOnly: get('IS_READ_ONLY', 'false') === 'true',
+  showMigrationWarning: get('SHOW_MIGRATION_WARNING', 'false') === 'true',
 }

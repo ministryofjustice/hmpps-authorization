@@ -15,6 +15,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.applicationName = 'HMPPS Authorization'
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+  app.locals.isReadOnly = config.isReadOnly
+  app.locals.showMigrationWarning = config.showMigrationWarning
 
   // Cachebusting version string
   if (production) {
@@ -44,5 +46,4 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addGlobal('homeUrl', config.apis.hmppsAuth.externalUrl)
-  njkEnv.addGlobal('isReadOnly', config.isReadonly)
 }

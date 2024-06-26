@@ -1,7 +1,6 @@
 import { baseClientFactory, clientFactory } from '../../testutils/factories'
 import viewBaseClientPresenter from './viewBaseClientPresenter'
 import { offsetNow } from '../../utils/utils'
-import config from '../../config'
 
 describe('viewBaseClientPresenter', () => {
   describe('clientsTable', () => {
