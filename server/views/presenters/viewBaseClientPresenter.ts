@@ -2,7 +2,7 @@ import { BaseClient } from '../../interfaces/baseClientApi/baseClient'
 import { Client } from '../../interfaces/baseClientApi/client'
 import { dateTimeFormat, daysRemaining } from '../../utils/utils'
 
-export default (baseClient: BaseClient, clients: Client[], isReadOnly: boolean = true) => {
+export default (baseClient: BaseClient, clients: Client[], isReadOnly: boolean = false) => {
   return {
     clientsTable: clients.map(item => [
       {
