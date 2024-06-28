@@ -1,3 +1,5 @@
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
 {% extends "govuk/template.njk" %}
 
 {% block head %}
@@ -14,6 +16,18 @@
 
 {% block header %}
   {% include "./header.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+  {% if showMigrationWarning and not isReadOnly %}
+    {{ govukPhaseBanner({
+      tag: {
+        text: "Warning",
+        classes: "govuk-tag--red"
+      },
+      html: 'This service is in migration phase - do not create or edit active clients.'
+    }) }}
+  {% endif %}
 {% endblock %}
 
 {% block bodyStart %}

@@ -6,10 +6,6 @@
 {% set pageName="Home" %}
 {% set bodyClasses = "extra-wide" %}
 
-{% block header %}
-  {% include "partials/header.njk" %}
-{% endblock %}
-
 {%- from "moj/components/header/macro.njk" import mojHeader -%}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -169,16 +165,23 @@
       <div class="moj-action-bar">
 
         <div class="moj-action-bar__filter"></div>
-        {{ mojButtonMenu({
-          items: [{
-            text: 'Add new client',
-            href:"/base-clients/new",
-            classes: 'govuk-button--primary',
-            attributes: {
-              'data-qa': 'addNewBaseClientButton'
-            }
-          }]
-        }) }}
+        {% if isReadOnly %}
+          {{ mojButtonMenu({
+            items: []
+          }) }}
+        {% else %}
+          {{ mojButtonMenu({
+            items: [{
+              text: 'Add new client',
+              href:"/base-clients/new",
+              classes: 'govuk-button--primary',
+              attributes: {
+                'data-qa': 'addNewBaseClientButton'
+              }
+            }]
+          }) }}
+        {% endif %}
+
         <div class="moj-action-bar__filterTagsContainer"></div>
       </div>
 

@@ -5,10 +5,6 @@
 
 {% set pageName="Delete client?" %}
 
-{% block header %}
-  {% include "partials/header.njk" %}
-{% endblock %}
-
 {%- from "moj/components/header/macro.njk" import mojHeader -%}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -86,7 +82,8 @@
             classes: "govuk-button--warning",
             attributes: {
               "data-qa": "delete-button"
-            }
+            },
+            disabled: isReadOnly
           }) }}
           {{ govukButton({
             text: "Cancel",
