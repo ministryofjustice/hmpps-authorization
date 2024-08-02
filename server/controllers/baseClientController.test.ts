@@ -123,6 +123,30 @@ describe('BaseClientController', () => {
       expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
     })
 
+    it('renders the main view of a base client with null service', async () => {
+      // GIVEN a base client with null service
+      const baseClient = baseClientFactory.build()
+      baseClient.service = null
+      const clients = clientFactory.buildList(3)
+      baseClientService.getBaseClient.mockResolvedValue(baseClient)
+      baseClientService.listClientInstances.mockResolvedValue(clients)
+
+      // WHEN the index page is requested
+      request = createMock<Request>({ params: { baseClientId: baseClient.baseClientId } })
+      await baseClientController.displayBaseClient()(request, response, next)
+
+      // THEN the view base client page is rendered
+      const presenter = viewBaseClientPresenter(baseClient, clients)
+      expect(response.render).toHaveBeenCalledWith('pages/base-client.njk', {
+        baseClient,
+        presenter,
+        ...nunjucksUtils,
+      })
+
+      // AND the base client is retrieved from the base client service
+      expect(baseClientService.getBaseClient).toHaveBeenCalledWith(token, baseClient.baseClientId)
+    })
+
     it('audits the view attempt', async () => {
       // GIVEN a base client
       const baseClient = baseClientFactory.build()
@@ -606,7 +630,7 @@ describe('BaseClientController', () => {
     it.each([
       ['renders one client instance', 1, true],
       ['renders multiple client instances', 3, false],
-    ])(`if %s renders the page with isLastClient %s`, async (_, clientCount, isLastClient) => {
+    ])(`if %s renders the page with isLastClient %s`, async (_, clientCount: number, isLastClient: boolean) => {
       // GIVEN a base client
       const baseClient = baseClientFactory.build()
       const clients = clientFactory.buildList(clientCount)
@@ -663,7 +687,7 @@ describe('BaseClientController', () => {
       it.each([
         ['one client instance exists', '/', 1],
         ['multiple client instances', '/base-clients/abcd', 3],
-      ])(`if delete successful and %s, redirects to %s`, async (_, redirectURL, clientCount) => {
+      ])(`if delete successful and %s, redirects to %s`, async (_, redirectURL: string, clientCount: number) => {
         // GIVEN a base client
         const baseClient = baseClientFactory.build({ baseClientId: 'abcd' })
         const clients = clientFactory.buildList(clientCount)

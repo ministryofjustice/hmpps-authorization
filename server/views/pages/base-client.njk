@@ -232,33 +232,72 @@
           }
         }) }}
 
-        {{ govukTable({
-          firstCellIsHeader: false,
-          head: [
-            {
-              text: "Service details",
-              classes: "govuk-!-width-one-half"
-            },{
-              text: ""
-            }],
-          rows: [
-            [
+        {% if presenter.displayService %}
+          {{ govukTable({
+            firstCellIsHeader: false,
+            head: [
               {
-                text: "Service roles",
+                text: "Service details",
                 classes: "govuk-!-width-one-half"
               },{
-              html: toLinesHtml(baseClient.service.serviceRoles)
+                text: ""
+              }],
+            rows: [
+              [
+                {
+                  text: "Name",
+                  classes: "govuk-!-width-one-half"
+                },{
+                text: baseClient.service.serviceName
+              }
+              ],
+              [
+                {
+                  text: "Description",
+                  classes: "govuk-!-width-one-half"
+                },{
+                text: baseClient.service.description
+              }
+              ],
+              [
+                {
+                  text: "Roles",
+                  classes: "govuk-!-width-one-half"
+                },{
+                html: toLinesHtml(baseClient.service.serviceRoles)
+              }
+              ],
+              [
+                {
+                  text: "URL",
+                  classes: "govuk-!-width-one-half"
+                },{
+                text: baseClient.service.url
+              }
+              ],
+              [
+                {
+                  text: "Contact us URL or email",
+                  classes: "govuk-!-width-one-half"
+                },{
+                text: baseClient.service.contact
+              }
+              ],
+              [
+                {
+                  text: "Status",
+                  classes: "govuk-!-width-one-half"
+                },{
+                text: ternary(baseClient.service.status, "Enabled", "Disabled")
+              }
+              ]
+            ],
+            attributes: {
+              "data-qa": "base-client-service-table"
             }
-            ]
-          ],
-          attributes: {
-            "data-qa": "base-client-service-table"
-          }
-        }) }}
+          }) }}
+        {% endif %}
       {% endif %}
-
-
-
 
       {{ govukTable({
         firstCellIsHeader: false,
