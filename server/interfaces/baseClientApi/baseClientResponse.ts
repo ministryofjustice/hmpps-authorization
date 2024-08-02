@@ -40,7 +40,14 @@ export interface GetBaseClientResponse {
     secretKey: string
     deploymentInfo: string
   }
-  serviceAuthorities?: string[]
+  service?: {
+    name: string
+    description: string
+    authorisedRoles: string[]
+    url: string
+    enabled: boolean
+    contact: string
+  }
 }
 
 export interface ClientSecretsResponse {
