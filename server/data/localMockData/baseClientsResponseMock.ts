@@ -48,7 +48,6 @@ export const getBaseClientResponseMock: (grantType: GrantType, includeService: b
     jiraNumber: 'jiraNumber',
     validDays: 1,
     accessTokenValiditySeconds: 3600,
-    serviceAuthorities: ['ROLE_ONE', 'ROLE_TWO'],
     deployment: {
       clientType: 'service',
       team: 'deployment team',
