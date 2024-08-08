@@ -17,7 +17,7 @@ context('Base client page - Auth', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials })
+    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials, includeService: false })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
     cy.task('stubAddClientInstance')
@@ -42,7 +42,7 @@ context('Base client page - client credentials flow', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials })
+    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials, includeService: false })
     cy.task('stubManageUser')
     cy.task('stubGetListClientInstancesList')
     cy.task('stubAddClientInstance')
@@ -112,18 +112,17 @@ context('Base client page - client credentials flow', () => {
 context('Base client page - authorization-code flow', () => {
   let baseClientsPage: ViewBaseClientPage
 
-  beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubGetBaseClient', { grantType: GrantType.AuthorizationCode })
-    cy.task('stubManageUser')
-    cy.task('stubGetListClientInstancesList')
-    cy.task('stubAddClientInstance')
+  context('Base client details - response includes service details', () => {
+    beforeEach(() => {
+      cy.task('reset')
+      cy.task('stubSignIn')
+      cy.task('stubGetBaseClient', { grantType: GrantType.AuthorizationCode, includeService: true })
+      cy.task('stubManageUser')
+      cy.task('stubGetListClientInstancesList')
+      cy.task('stubAddClientInstance')
+      baseClientsPage = visitBaseClientPage()
+    })
 
-    baseClientsPage = visitBaseClientPage()
-  })
-
-  context('Base client details', () => {
     it('User can see base client details table', () => {
       baseClientsPage.baseClientDetailsTable().should('be.visible')
     })
@@ -146,6 +145,42 @@ context('Base client page - authorization-code flow', () => {
 
     it('User can see service details panel', () => {
       baseClientsPage.baseClientServiceDetailsTable().should('be.visible')
+    })
+  })
+
+  context('Base client details - response has null service details', () => {
+    beforeEach(() => {
+      cy.task('reset')
+      cy.task('stubSignIn')
+      cy.task('stubGetBaseClient', { grantType: GrantType.AuthorizationCode, includeService: false })
+      cy.task('stubManageUser')
+      cy.task('stubGetListClientInstancesList')
+      cy.task('stubAddClientInstance')
+      baseClientsPage = visitBaseClientPage()
+    })
+
+    it('User can see base client details table', () => {
+      baseClientsPage.baseClientDetailsTable().should('be.visible')
+    })
+
+    it('User can see audit trail table', () => {
+      baseClientsPage.baseClientAuditTable().should('be.visible')
+    })
+
+    it('User cannot see client credentials table', () => {
+      baseClientsPage.baseClientClientCredentialsTable().should('not.exist')
+    })
+
+    it('User can see authorization-code table', () => {
+      baseClientsPage.baseClientAuthorizationCodeTable().should('be.visible')
+    })
+
+    it('User can see config table', () => {
+      baseClientsPage.baseClientConfigTable().should('be.visible')
+    })
+
+    it('User cannot see service details panel', () => {
+      baseClientsPage.baseClientServiceDetailsTable().should('not.exist')
     })
   })
 })

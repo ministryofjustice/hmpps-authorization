@@ -16,14 +16,16 @@ export const sendBaseClientEvent = async (
   if (!config.apis.audit.enabled) {
     logger.info(`${baseClientEvent} - ${baseClientId} - ${JSON.stringify(details)}`)
   } else {
-    await auditService.sendAuditMessage({
+    const auditMessage = {
       action: baseClientEvent,
       who: username,
       subjectId: baseClientId,
       subjectType: BASE_CLIENT_SUBJECT_TYPE,
       correlationId,
+      service: config.productId,
       details: JSON.stringify(details),
-    })
+    }
+    await auditService.sendAuditMessage(auditMessage)
   }
 }
 

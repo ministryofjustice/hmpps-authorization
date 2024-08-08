@@ -4,6 +4,7 @@ import { BaseClient, BaseClientListFilter } from '../../interfaces/baseClientApi
 import { toClientType } from '../../data/enums/clientTypes'
 import { toGrantType } from '../../data/enums/grantType'
 import { kebab, multiSeparatorSplit, snake, toBaseClientId } from '../../utils/utils'
+import { MfaType } from '../../data/enums/mfaTypes'
 
 export const mapListBaseClientRequest = (request: Request): BaseClientListFilter => {
   const asJson = JSON.stringify(request.query)
@@ -71,6 +72,8 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
           registeredRedirectURIs: [],
           jwtFields: '',
           azureAdLoginFlow: false,
+          mfaRememberMe: false,
+          mfa: MfaType.None,
         },
         service: {
           serviceName: client.teamName || '',
@@ -78,7 +81,7 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
           serviceRoles: [],
           url: '',
           contact: '',
-          status: '',
+          status: false,
         },
         deployment: {
           clientType: snake(client.clientType),
@@ -90,6 +93,8 @@ export default (response: ListBaseClientsResponse): BaseClient[] => {
           deployment: '',
           secretName: '',
           clientIdKey: '',
+          secretKey: '',
+          deploymentInfo: '',
         },
         config: {
           allowedIPs: [],

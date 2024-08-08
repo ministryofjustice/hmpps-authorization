@@ -13,7 +13,7 @@ export interface BaseClient {
   expired: boolean
   clientCredentials: ClientCredentialsDetails
   authorisationCode: AuthorisationCodeDetails
-  service: ServiceDetails
+  service?: ServiceDetails
   deployment: DeploymentDetails
   config: ClientConfig
 }
@@ -31,13 +31,13 @@ interface AuthorisationCodeDetails {
   mfa: MfaType
 }
 
-interface ServiceDetails {
+export interface ServiceDetails {
   serviceName: string
   description: string
   serviceRoles: string[]
   url: string
   contact: string
-  status: string
+  status: boolean
 }
 
 export interface DeploymentDetails {

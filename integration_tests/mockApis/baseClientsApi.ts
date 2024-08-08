@@ -24,7 +24,7 @@ export default {
     })
   },
 
-  stubGetBaseClient: (config: { grantType: GrantType }) => {
+  stubGetBaseClient: (config: { grantType: GrantType; includeService: boolean }) => {
     return stubFor({
       request: {
         method: 'GET',
@@ -35,7 +35,7 @@ export default {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: getBaseClientResponseMock(config.grantType),
+        jsonBody: getBaseClientResponseMock(config.grantType, config.includeService),
       },
     })
   },

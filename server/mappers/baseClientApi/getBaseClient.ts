@@ -1,5 +1,5 @@
 import { GetBaseClientResponse } from '../../interfaces/baseClientApi/baseClientResponse'
-import { BaseClient, DeploymentDetails } from '../../interfaces/baseClientApi/baseClient'
+import { BaseClient, DeploymentDetails, ServiceDetails } from '../../interfaces/baseClientApi/baseClient'
 import { ClientType } from '../../data/enums/clientTypes'
 import { HostingType } from '../../data/enums/hostingTypes'
 import { snake, toBaseClientId } from '../../utils/utils'
@@ -23,14 +23,7 @@ export default (response: GetBaseClientResponse): BaseClient => {
       mfaRememberMe: response.mfaRememberMe ? response.mfaRememberMe : false,
       mfa: response.mfa ? response.mfa : '',
     },
-    service: {
-      serviceName: '',
-      description: '',
-      serviceRoles: response.serviceAuthorities ? response.serviceAuthorities : [],
-      url: '',
-      contact: '',
-      status: '',
-    },
+    service: getService(response),
     deployment: getDeployment(response),
     config: {
       allowedIPs: response.ips ? response.ips : [],
@@ -76,4 +69,19 @@ const getDeployment = (response: GetBaseClientResponse): DeploymentDetails => {
   deployment.clientType = getClientType(response)
 
   return deployment
+}
+
+const getService = (response: GetBaseClientResponse): ServiceDetails => {
+  if (!response.service) {
+    return null
+  }
+
+  return {
+    serviceName: response.service.name,
+    description: response.service.description,
+    serviceRoles: response.service.authorisedRoles ? response.service.authorisedRoles : [],
+    url: response.service.url,
+    contact: response.service.contact,
+    status: response.service.enabled,
+  }
 }

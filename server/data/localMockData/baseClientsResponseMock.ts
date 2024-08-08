@@ -36,7 +36,10 @@ export const listBaseClientsResponseMock: ListBaseClientsResponse = {
   ],
 }
 
-export const getBaseClientResponseMock: (grantType: GrantType) => GetBaseClientResponse = (grantType: GrantType) => {
+export const getBaseClientResponseMock: (grantType: GrantType, includeService: boolean) => GetBaseClientResponse = (
+  grantType: GrantType,
+  includeService: boolean = true,
+) => {
   const response: GetBaseClientResponse = {
     grantType: 'CLIENT_CREDENTIALS',
     clientId: 'base_client_id_1',
@@ -45,7 +48,6 @@ export const getBaseClientResponseMock: (grantType: GrantType) => GetBaseClientR
     jiraNumber: 'jiraNumber',
     validDays: 1,
     accessTokenValiditySeconds: 3600,
-    serviceAuthorities: ['ROLE_ONE', 'ROLE_TWO'],
     deployment: {
       clientType: 'service',
       team: 'deployment team',
@@ -69,7 +71,7 @@ export const getBaseClientResponseMock: (grantType: GrantType) => GetBaseClientR
     }
   }
 
-  return {
+  const baseClient = {
     ...response,
     grantType: 'AUTHORIZATION_CODE',
     redirectUris: ['redirectUri1', 'redirectUri2'],
@@ -77,6 +79,20 @@ export const getBaseClientResponseMock: (grantType: GrantType) => GetBaseClientR
     mfa: MfaType.None,
     mfaRememberMe: false,
   }
+
+  return includeService
+    ? {
+        ...baseClient,
+        service: {
+          name: 'service name',
+          description: 'service description',
+          authorisedRoles: ['ROLE_ONE', 'ROLE_TWO'],
+          url: 'https://localhost:3000',
+          enabled: true,
+          contact: 'service contact',
+        },
+      }
+    : baseClient
 }
 
 export const getListClientInstancesResponseMock: ListClientInstancesResponse = {

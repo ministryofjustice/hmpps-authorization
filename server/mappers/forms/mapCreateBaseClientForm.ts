@@ -37,7 +37,7 @@ export default (request: Request): BaseClient => {
       serviceRoles: [],
       url: '',
       contact: '',
-      status: '',
+      status: false,
     },
     deployment: {
       clientType: '',

@@ -22,5 +22,6 @@ export default (baseClient: BaseClient, clients: Client[], isReadOnly: boolean =
     ]),
     expiry: baseClient.config.expiryDate ? `Yes - days remaining ${daysRemaining(baseClient.config.expiryDate)}` : 'No',
     skipToAzure: baseClient.authorisationCode.azureAdLoginFlow,
+    displayService: baseClient.service && baseClient.service.serviceName !== '',
   }
 }

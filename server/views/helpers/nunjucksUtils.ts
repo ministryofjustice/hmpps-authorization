@@ -39,6 +39,10 @@ const toLines = (str?: string[]): string | null => {
   return str.join('\n')
 }
 
+const ternary = (condition: boolean, value: string, alternative: string): string => {
+  return condition ? value : alternative
+}
+
 export default {
   toLinesHtml,
   toLines,
@@ -49,4 +53,5 @@ export default {
   kebab,
   dateFormat,
   dateTimeFormat,
+  ternary,
 }

@@ -16,7 +16,7 @@ context('Edit base client deployment: Auth', () => {
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials })
+    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials, includeService: true })
     cy.task('stubGetListClientInstancesList')
   })
 
@@ -41,7 +41,7 @@ context('Edit base client deployment details page', () => {
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubListBaseClients')
-    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials })
+    cy.task('stubGetBaseClient', { grantType: GrantType.ClientCredentials, includeService: true })
     cy.task('stubGetListClientInstancesList')
     editBaseClientDeploymentDetailsPage = visitEditBaseClientDeploymentDetailsPage()
   })
