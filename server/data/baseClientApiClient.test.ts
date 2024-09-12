@@ -123,7 +123,7 @@ describe('baseClientApiClient', () => {
       // When we call the API client
       try {
         await baseClientApiClient.updateBaseClient('base_client_id', testRequest)
-      } catch (e) {
+      } catch {
         return
       }
       fail('Should have thrown an error')
@@ -152,7 +152,7 @@ describe('baseClientApiClient', () => {
       // When we call the API client
       try {
         await baseClientApiClient.updateBaseClientDeployment('base_client_id', testRequest)
-      } catch (e) {
+      } catch {
         return
       }
       fail('Should have thrown an error')
@@ -193,7 +193,7 @@ describe('baseClientApiClient', () => {
       // When we call the API client
       try {
         await baseClientApiClient.deleteClientInstance('base-client-id', 'client-id')
-      } catch (e) {
+      } catch {
         return
       }
       fail('Should have thrown an error')

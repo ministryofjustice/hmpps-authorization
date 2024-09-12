@@ -86,7 +86,7 @@ describe('BaseClientController', () => {
       // WHEN the index page is requested
       try {
         await baseClientController.displayBaseClients()(request, response, next)
-      } catch (e) {
+      } catch {
         // THEN a view base clients failure audit event is sent
         expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
           BaseClientEvent.LIST_BASE_CLIENTS_FAILURE,
@@ -178,7 +178,7 @@ describe('BaseClientController', () => {
       try {
         request = createMock<Request>({ params: { baseClientId } })
         await baseClientController.displayBaseClient()(request, response, next)
-      } catch (e) {
+      } catch {
         // THEN a view base clients failure audit event is sent
         expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
           BaseClientEvent.VIEW_BASE_CLIENT_FAILURE,
@@ -369,7 +369,7 @@ describe('BaseClientController', () => {
         // WHEN it is posted
         try {
           await baseClientController.createBaseClient()(request, response, next)
-        } catch (e) {
+        } catch {
           // THEN the view attempt is audited
           expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
             BaseClientEvent.VIEW_CLIENT_SECRETS_FAILURE,
@@ -460,7 +460,7 @@ describe('BaseClientController', () => {
       // WHEN it is posted
       try {
         await baseClientController.updateBaseClientDetails()(request, response, next)
-      } catch (e) {
+      } catch {
         // THEN the attempt is audited
         expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
           BaseClientEvent.UPDATE_BASE_CLIENT_FAILURE,
@@ -547,7 +547,7 @@ describe('BaseClientController', () => {
       // WHEN it is posted
       try {
         await baseClientController.updateBaseClientDeployment()(request, response, next)
-      } catch (e) {
+      } catch {
         // THEN the attempt is audited
         expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
           BaseClientEvent.UPDATE_BASE_CLIENT_DEPLOYMENT_FAILURE,
@@ -613,7 +613,7 @@ describe('BaseClientController', () => {
       try {
         // WHEN it is posted
         await baseClientController.createClientInstance()(request, response, next)
-      } catch (e) {
+      } catch {
         // THEN the failed attempt is audited
         expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
           BaseClientEvent.CREATE_CLIENT_FAILURE,
@@ -774,7 +774,7 @@ describe('BaseClientController', () => {
         })
         try {
           await baseClientController.deleteClientInstance()(request, response, next)
-        } catch (e) {
+        } catch {
           // THEN the failed attempt is audited
           expect(baseClientAudit.sendBaseClientEvent).toHaveBeenCalledWith(
             BaseClientEvent.DELETE_CLIENT_FAILURE,
