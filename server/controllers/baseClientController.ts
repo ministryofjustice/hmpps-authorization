@@ -115,7 +115,7 @@ export default class BaseClientController {
     try {
       await this.baseClientService.getBaseClient(token, baseClient.baseClientId)
       return 'A base client with this ID already exists'
-    } catch (e) {
+    } catch {
       return ''
     }
   }
