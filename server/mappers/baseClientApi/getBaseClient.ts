@@ -27,9 +27,10 @@ export default (response: GetBaseClientResponse): BaseClient => {
     deployment: getDeployment(response),
     config: {
       allowedIPs: response.ips ? response.ips : [],
-      expiryDate: response.validDays
-        ? new Date(Date.now() + response.validDays * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-        : null,
+      expiryDate:
+        response.validDays !== null
+          ? new Date(Date.now() + response.validDays * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+          : null,
     },
   } as BaseClient
 }
