@@ -47,7 +47,7 @@ export default class RestClient {
     return this.config.timeout
   }
 
-  async get<T>(options: Request & { raw: true }): Promise<SuperAgentResponse>
+  async get(options: Request & { raw: true }): Promise<SuperAgentResponse>
 
   async get<T>(options: Request & { raw?: false }): Promise<T>
 
