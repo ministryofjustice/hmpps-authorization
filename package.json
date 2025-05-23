@@ -128,7 +128,7 @@
     "@golevelup/ts-jest": "^0.7.0",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
-    "@types/compression": "^1.7.5",
+    "@types/compression": "^1.8.0",
     "@types/connect-flash": "0.0.40",
     "@types/cookie-session": "^2.0.49",
     "@types/csurf": "^1.11.5",
