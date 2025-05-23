@@ -1,7 +1,7 @@
 import { Readable } from 'stream'
 
 import Agent, { HttpsAgent } from 'agentkeepalive'
-import superagent from 'superagent'
+import superagent, { Response as SuperAgentResponse } from 'superagent'
 
 import logger from '../../logger'
 import sanitiseError from '../sanitisedError'
@@ -47,13 +47,17 @@ export default class RestClient {
     return this.config.timeout
   }
 
+  async get(options: Request & { raw: true }): Promise<SuperAgentResponse>
+
+  async get<T>(options: Request & { raw?: false }): Promise<T>
+
   async get<Response = unknown>({
     path,
     query = {},
     headers = {},
     responseType = '',
     raw = false,
-  }: Request): Promise<Response> {
+  }: Request): Promise<Response | SuperAgentResponse> {
     logger.info(`${this.name} GET: ${path}`)
     try {
       const result = await superagent
@@ -81,7 +85,7 @@ export default class RestClient {
   private async requestWithBody<Response = unknown>(
     method: 'patch' | 'post' | 'put',
     { path, query = {}, headers = {}, responseType = '', data = {}, raw = false, retry = false }: RequestWithBody,
-  ): Promise<Response> {
+  ): Promise<Response | SuperAgentResponse> {
     logger.info(`${this.name} ${method.toUpperCase()}: ${path}`)
     try {
       const result = await superagent[method](`${this.apiUrl()}${path}`)
@@ -109,15 +113,15 @@ export default class RestClient {
     }
   }
 
-  async patch<Response = unknown>(request: RequestWithBody): Promise<Response> {
+  async patch<Response = unknown>(request: RequestWithBody): Promise<Response | SuperAgentResponse> {
     return this.requestWithBody('patch', request)
   }
 
-  async post<Response = unknown>(request: RequestWithBody): Promise<Response> {
+  async post<Response = unknown>(request: RequestWithBody): Promise<Response | SuperAgentResponse> {
     return this.requestWithBody('post', request)
   }
 
-  async put<Response = unknown>(request: RequestWithBody): Promise<Response> {
+  async put<Response = unknown>(request: RequestWithBody): Promise<Response | SuperAgentResponse> {
     return this.requestWithBody('put', request)
   }
 
@@ -127,7 +131,7 @@ export default class RestClient {
     headers = {},
     responseType = '',
     raw = false,
-  }: Request): Promise<Response> {
+  }: Request): Promise<Response | SuperAgentResponse> {
     logger.info(`${this.name} DELETE: ${path}`)
     try {
       const result = await superagent

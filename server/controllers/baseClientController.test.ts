@@ -25,7 +25,9 @@ describe('BaseClientController', () => {
     jest.resetAllMocks()
     jest.spyOn(baseClientAudit, 'sendBaseClientEvent').mockResolvedValue()
 
-    request = createMock<Request>()
+    request = createMock<Request>({
+      body: {},
+    })
     response = createMock<Response>({
       locals: {
         clientToken: 'CLIENT_TOKEN',
@@ -585,7 +587,7 @@ describe('BaseClientController', () => {
       // GIVEN the service returns success and a set of secrets
       const baseClient = baseClientFactory.build()
       baseClientService.getBaseClient.mockResolvedValue(baseClient)
-      request = createMock<Request>({ body: { baseClientId: baseClient.baseClientId } })
+      request = createMock<Request>({ body: { baseClientId: baseClient.baseClientId }, params: {} })
 
       const secrets = clientSecretsFactory.build()
       baseClientService.addClientInstance.mockResolvedValue(secrets)
@@ -606,7 +608,7 @@ describe('BaseClientController', () => {
       // GIVEN the service returns success and a set of secrets
       const baseClient = baseClientFactory.build()
       baseClientService.getBaseClient.mockResolvedValue(baseClient)
-      request = createMock<Request>({ body: { baseClientId: baseClient.baseClientId } })
+      request = createMock<Request>({ body: { baseClientId: baseClient.baseClientId }, params: {} })
 
       baseClientService.addClientInstance.mockRejectedValue(400)
 

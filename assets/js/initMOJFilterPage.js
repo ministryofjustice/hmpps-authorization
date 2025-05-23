@@ -1,5 +1,8 @@
-window.MOJFrontend.initAll()
-new MOJFrontend.FilterToggleButton({
+import { initAll, FilterToggleButton } from '/assets/moj/moj-frontend.min.js'
+
+initAll()
+const $filter = document.querySelector('[data-module="moj-filter"]')
+new FilterToggleButton($filter, {
   bigModeMediaQuery: '(min-width: 48.063em)',
   startHidden: true,
   toggleButton: {
